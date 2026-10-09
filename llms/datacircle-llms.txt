@@ -1,0 +1,25 @@
+# Datacircle
+
+- [Datacircle](https://docs.datacircle.dev/index.md): B2B data API. Co-op. No markup.
+- [Quickstart](https://docs.datacircle.dev/quickstart.md)
+- [MCP server](https://docs.datacircle.dev/mcp-server.md): Datacircle in Claude, ChatGPT, Cursor and any MCP client: one URL, sign in, and your agent fetches profiles from your balance.
+- [Pricing](https://docs.datacircle.dev/pricing.md): What each provider costs, side by side, so you can pick one at a glance.
+- [Balance and credits](https://docs.datacircle.dev/balance.md): Your balance, adding funds, the credits Datacircle gives, and the order they are spent in.
+- [LinkedIn Profile API](https://docs.datacircle.dev/linkedin-profile.md): Up2Data's and HarvestAPI's own APIs, through your Datacircle key, at the provider's cost.
+- [Files](https://docs.datacircle.dev/files.md): The 10M and 50M US datasets, the co-op file (every LinkedIn profile fetched through Up2Data), and the free lists you got.
+- [Dataset fields](https://docs.datacircle.dev/fields.md): Columns of the 10M+ and 50M+ U.S. datasets, with fill rates, and of the co-op files.
+- [Read the balance](https://docs.datacircle.dev/api-reference/datacircle/read-the-balance.md)
+- [Start a Stripe Checkout](https://docs.datacircle.dev/api-reference/datacircle/start-a-stripe-checkout.md)
+- [List files](https://docs.datacircle.dev/api-reference/datacircle/list-files.md)
+- [Get a download link](https://docs.datacircle.dev/api-reference/datacircle/get-a-download-link.md)
+- [Get your invite link](https://docs.datacircle.dev/api-reference/datacircle/get-your-invite-link.md): Your invite link and how many people you invited signed up. What they unlock: `unlocks` and `unlocks_datasets` below, and [Files](/files).
+- [Reset your API key](https://docs.datacircle.dev/api-reference/datacircle/reset-your-api-key.md): The old key stops working at once.
+- [Enrich one LinkedIn profile](https://docs.datacircle.dev/api-reference/up2data/enrich-one-linkedin-profile.md): Up2Data's own request (https://api.up2data.ai/v1/profiles/enrich), sent to api.datacircle.dev with your Datacircle key in `Authorization` and `X-Data-Provider: up2data`. Nothing else changes. $0.00125 per profile found (Up2Data's price, no markup).
+- [Get one LinkedIn profile](https://docs.datacircle.dev/api-reference/harvestapi/get-one-linkedin-profile.md): HarvestAPI's own request (https://api.harvest-api.com/linkedin/profile), sent to api.datacircle.dev with your Datacircle key in `Authorization` and `X-Data-Provider: harvestapi`. Nothing else changes. $0.0037 per profile found, 0.0023 per profile not found (HarvestAPI's price, no markup).
+
+## OpenAPI Specs
+
+- [openapi](/openapi.json)
+
+
+This documentation is built and hosted on [Mintlify](https://mintlify.com), a developer documentation platform.

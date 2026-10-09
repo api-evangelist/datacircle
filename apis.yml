@@ -1,30 +1,179 @@
 aid: datacircle
 name: Datacircle
-description: 'Datacircle is a company surfaced via the API Evangelist harvest backlog (source: new-submission)
-  and added to the network as a stub for full-pipeline profiling.'
+image: https://datacircle.dev/og-co-op.jpg
+description: 'Datacircle is a B2B data co-op API: customers send the original request
+  of a supported data provider (currently the Up2Data and HarvestAPI LinkedIn profile
+  APIs) to api.datacircle.dev with a Datacircle key at the provider''s own price with
+  no markup, and receive a daily flat file of pooled co-op data. It also ships a remote
+  MCP server at api.datacircle.dev/mcp.'
 url: https://raw.githubusercontent.com/api-evangelist/datacircle/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:new-submission
-x-tier: stub
-x-tier-reason: harvest
+x-tier: profiled
+x-tier-reason: enrichment pass 2026-10-09 (local-v5; was harvest)
 specificationVersion: '0.20'
 created: '2026-10-09'
 modified: '2026-10-09'
 tags:
 - Company
-apis: []
+- B2B Data
+- Data Enrichment
+- LinkedIn
+- Profiles
+- MCP
+- Data Co-op
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: AgenticAccess
+  url: agentic-access/datacircle-agentic-access.yml
+- type: RateLimits
+  url: rate-limits/datacircle-rate-limits.yml
+- type: Plans
+  url: plans/datacircle-plans-pricing.yml
+- type: Spectral
+  url: rules/datacircle-rules.yml
+- type: JSONLD
+  url: json-ld/datacircle-context.jsonld
+- type: Vocabulary
+  url: vocabulary/datacircle-vocabulary.yml
+- type: DataModel
+  url: data-model/datacircle-data-model.yml
+- type: ErrorCatalog
+  url: errors/datacircle-problem-types.yml
+- type: Conformance
+  url: conformance/datacircle-conformance.yml
+- type: LLMsTxt
+  url: llms/datacircle-llms.txt
+- type: AgentCard
+  url: a2a/datacircle-a2a.yml
+- type: ToolCrosswalk
+  url: mcp/datacircle-tool-crosswalk.yml
+- type: MCPServer
+  url: mcp/datacircle-mcp.yml
+- type: WellKnown
+  url: well-known/datacircle-well-known.yml
+- type: Hosts
+  url: hosts/datacircle-hosts.yml
+- type: Vendors
+  url: vendors/datacircle-vendors.yml
+- type: Authentication
+  url: authentication/datacircle-authentication.yml
+- type: DomainSecurity
+  url: security/datacircle-domain-security.yml
 - type: Website
   url: https://datacircle.dev
 - type: Documentation
-  url: https://docs.datacircle.dev
-x-submission-notes: 'B2B data co-op proxying LinkedIn profile APIs (Up2Data, HarvestAPI) | Kin approved
-  listing 2026-10-09 (case-by-case: Real API, but it resells LinkedIn-scraped profile data from third
-  parties and pools customers'' data)'
+  url: https://docs.datacircle.dev/
+- type: GettingStarted
+  url: https://docs.datacircle.dev/quickstart
+- type: Blog
+  url: https://datacircle.dev/blog
+- type: GitHubOrganization
+  url: https://github.com/waynehamadi/datacircle
+- type: Login
+  url: https://datacircle.dev/login
+- type: Pricing
+  url: https://datacircle.dev/pricing
+- type: TermsOfService
+  url: https://datacircle.dev/terms
+- type: LinkedIn
+  url: https://www.linkedin.com/company/datacircle-org
+- type: X
+  url: https://x.com/datacircle_dev
+- type: PrivacyPolicy
+  url: https://datacircle.dev/privacy
+- type: Support
+  url: https://datacircle.dev/support
+- type: APIReference
+  url: https://docs.datacircle.dev/api-reference/datacircle/reset-your-api-key
+apis:
+- aid: datacircle:datacircle-mcp
+  name: Datacircle MCP Server
+  description: >-
+    Remote Streamable HTTP MCP server exposing six tools that each wrap one Datacircle REST call; OAuth
+    sign-in or API key.
+  humanURL: https://docs.datacircle.dev/mcp-server
+  baseURL: https://api.datacircle.dev/mcp
+  tags:
+  - MCP
+  properties:
+  - type: Documentation
+    url: https://docs.datacircle.dev/mcp-server
+- aid: datacircle:datacircle-datacircle-api
+  name: Datacircle Datacircle API
+  description: 'Your Datacircle account: balance, adding funds, files, invites, API key.'
+  humanURL: https://docs.datacircle.dev
+  baseURL: https://api.datacircle.dev
+  tags:
+  - Datacircle
+  properties:
+  - type: OpenAPI
+    url: openapi/datacircle-datacircle-api-openapi.yml
+  - type: Documentation
+    url: https://docs.datacircle.dev/
+  - type: JSONSchema
+    url: json-schema/datacircle-harvest-api-profile-response-schema.json
+  - type: JSONSchema
+    url: json-schema/datacircle-file-schema.json
+  - type: JSONSchema
+    url: json-schema/datacircle-balance-schema.json
+  - type: JSONSchema
+    url: json-schema/datacircle-up2-data-enrich-response-schema.json
+- aid: datacircle:datacircle-harvestapi-api
+  name: Datacircle Harvest API
+  description: >-
+    LinkedIn Profile API: HarvestAPI's own request, sent to api.datacircle.dev with your Datacircle key
+    and `X-Data-Provider: harvestapi`.
+  humanURL: https://docs.datacircle.dev
+  baseURL: https://api.datacircle.dev
+  tags:
+  - HarvestAPI
+  properties:
+  - type: OpenAPI
+    url: openapi/datacircle-harvestapi-api-openapi.yml
+  - type: Documentation
+    url: https://docs.datacircle.dev/
+  - type: JSONSchema
+    url: json-schema/datacircle-harvest-api-profile-response-schema.json
+  - type: JSONSchema
+    url: json-schema/datacircle-file-schema.json
+  - type: JSONSchema
+    url: json-schema/datacircle-balance-schema.json
+  - type: JSONSchema
+    url: json-schema/datacircle-up2-data-enrich-response-schema.json
+- aid: datacircle:datacircle-up2data-api
+  name: Datacircle Up2 Data API
+  description: >-
+    LinkedIn Profile API: Up2Data's own request, sent to api.datacircle.dev with your Datacircle key and
+    `X-Data-Provider: up2data`.
+  humanURL: https://docs.datacircle.dev
+  baseURL: https://api.datacircle.dev
+  tags:
+  - Up2Data
+  properties:
+  - type: OpenAPI
+    url: openapi/datacircle-up2data-api-openapi.yml
+  - type: Documentation
+    url: https://docs.datacircle.dev/
+  - type: JSONSchema
+    url: json-schema/datacircle-harvest-api-profile-response-schema.json
+  - type: JSONSchema
+    url: json-schema/datacircle-file-schema.json
+  - type: JSONSchema
+    url: json-schema/datacircle-balance-schema.json
+  - type: JSONSchema
+    url: json-schema/datacircle-up2-data-enrich-response-schema.json
+x-submission-notes: 'B2B data co-op proxying LinkedIn profile APIs (Up2Data, HarvestAPI)
+  | Kin approved listing 2026-10-09 (case-by-case: Real API, but it resells LinkedIn-scraped
+  profile data from third parties and pools customers'' data)'
 x-submission-probe: docs OpenAPI 3.1 8 ops; invented path 404
 x-submitted-by: wayne@datacircle.dev (email, 2026-10-09)
+x-enrichment:
+  date: '2026-10-09'
+  status: enriched
+  artifacts_added: 20
+  pass: local-v5

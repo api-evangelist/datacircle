@@ -1,0 +1,700 @@
+openapi: 3.2.0
+info:
+  title: Datacircle Up2 Data API
+  version: '1'
+  contact:
+    name: Datacircle
+    url: https://datacircle.dev
+    email: wayne@datacircle.dev
+  termsOfService: https://datacircle.dev/terms
+  x-logo:
+    url: https://datacircle.dev/favicon.png
+    altText: Datacircle
+  description: 'Operations tagged Up2Data across 2 of this provider''s published API definitions: datacircle-openapi.json, datacircle-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.datacircle.dev
+security:
+- token: []
+tags:
+- name: Up2Data
+  description: 'LinkedIn Profile API: Up2Data''s own request, sent to api.datacircle.dev with your Datacircle key and `X-Data-Provider: up2data`.'
+paths:
+  /v1/profiles/enrich:
+    post:
+      tags:
+      - Up2Data
+      summary: Enrich one LinkedIn profile
+      description: 'Up2Data''s own request (https://api.up2data.ai/v1/profiles/enrich), sent to api.datacircle.dev with your Datacircle key in `Authorization` and `X-Data-Provider: up2data`. Nothing else changes. $0.00125 per profile found (Up2Data''s price, no markup).'
+      parameters:
+      - name: X-Data-Provider
+        in: header
+        required: true
+        description: 'names the provider: `up2data`. With the host, the only change from the provider''s own request.'
+        schema:
+          type: string
+          enum:
+          - up2data
+          default: up2data
+        example: up2data
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - url
+              properties:
+                url:
+                  type: string
+                  description: the profile's LinkedIn URL (`https://www.linkedin.com/in/williamhgates`); Up2Data refuses a bare public identifier with its own `400`
+                fields:
+                  type: array
+                  items:
+                    type: string
+                  description: Restrict response to these top-level fields. Same cost. Listing followers_count or connections_count also opts into the extra scrape; listing skill_endorsements also opts into the full-skills scrape.
+                with_followers_and_connections:
+                  type: boolean
+                  default: false
+                  description: 'Include followers_count and connections_count. Off by default — those numbers are a second LinkedIn request, not part of the main profile scrape. Same price; extra latency.
+
+                    '
+                with_full_skills_and_endorsements:
+                  type: boolean
+                  default: false
+                  description: 'Return every skill LinkedIn exposes (up to LinkedIn''s own 50-skill cap) plus skill_endorsements. Off by default — skills is capped at the first 20 without it, and this is a second LinkedIn request. Same price; extra latency.
+
+                    '
+              additionalProperties: false
+            example:
+              url: https://www.linkedin.com/in/williamhgates
+      responses:
+        '200':
+          description: Up2Data's answer plus `datacircle_meta`
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Up2DataEnrichResponse'
+              example:
+                data:
+                  url: https://www.linkedin.com/in/williamhgates
+                  full_name: Bill Gates
+                  first_name: Bill
+                  last_name: Gates
+                  public_identifier: williamhgates
+                  headline: Chair, Gates Foundation and Founder, Breakthrough Energy
+                  location:
+                    city: Seattle
+                    region: Washington
+                    country: United States
+                    raw: Seattle, Washington, United States
+                  about: Chair of the Gates Foundation. Founder of Breakthrough Energy. Co-founder of Microsoft. Voracious reader. Avid traveler. Active blogger.
+                  urn: urn:li:member:251749025
+                  linkedin_id: '251749025'
+                  profile_urn: urn:li:fsd_profile:ACoAAA8BYqEBCGLg_vT_ca6mMEqkpp9nVffJ3hc
+                  positions:
+                  - title: Co-chair
+                    company: Gates Foundation
+                    company_url: https://www.linkedin.com/company/gates-foundation
+                    linkedin_id: '8736'
+                    position_id: urn:li:fsd_profilePosition:(ACoAAA8BYqEBCGLg_vT_ca6mMEqkpp9nVffJ3hc,392598211)
+                    started_at: '2000'
+                    ended_at: null
+                    company_industry: Non-profit Organization Management
+                    company_headcount: 1001-5000
+                    company_logo_url: https://media.licdn.com/dms/image/v2/D560BAQEgMqqFTd40Tg/company-logo_400_400/company-logo_400_400/0/1736784969376/bill__melinda_gates_foundation_logo?e=1792627200&v=beta&t=pQQr7Y88vBlaIvx9BXqz34OGzr9w_sBzEShPWaPiJqE
+                  - title: Founder
+                    company: Breakthrough Energy
+                    company_url: https://www.linkedin.com/company/breakthrough-energy
+                    linkedin_id: '19141006'
+                    position_id: urn:li:fsd_profilePosition:(ACoAAA8BYqEBCGLg_vT_ca6mMEqkpp9nVffJ3hc,1836104012)
+                    started_at: '2015'
+                    ended_at: null
+                    company_industry: Management Consulting
+                    company_headcount: 51-200
+                    company_logo_url: https://media.licdn.com/dms/image/v2/D560BAQFRMYiQN7-2kA/company-logo_400_400/B56ZoI4SGPI0AY-/0/1761085563539/breakthrough_energy_logo?e=1792627200&v=beta&t=dtaAXFJ8-71Bvs5Qhj4c81nOc6l2hDqHqSE8qtHK0qk
+                  - title: Co-founder
+                    company: Microsoft
+                    company_url: https://www.linkedin.com/company/microsoft
+                    linkedin_id: '1035'
+                    position_id: urn:li:fsd_profilePosition:(ACoAAA8BYqEBCGLg_vT_ca6mMEqkpp9nVffJ3hc,392599749)
+                    started_at: '1975'
+                    ended_at: null
+                    company_industry: Computer Software
+                    company_headcount: 10001+
+                    company_logo_url: https://media.licdn.com/dms/image/v2/D560BAQH32RJQCl3dDQ/company-logo_400_400/B56ZYQ0mrGGoAc-/0/1744038948046/microsoft_logo?e=1792627200&v=beta&t=NqzcT-M4G01GGJ0WSG_kxqbOJ5GVTaeHs61vteFTnyE
+                  current_company:
+                    name: Gates Foundation
+                    url: https://www.linkedin.com/company/gates-foundation
+                    linkedin_id: '8736'
+                    title: Co-chair
+                    started_at: '2000'
+                    logo_url: https://media.licdn.com/dms/image/v2/D560BAQEgMqqFTd40Tg/company-logo_400_400/company-logo_400_400/0/1736784969376/bill__melinda_gates_foundation_logo?e=1792627200&v=beta&t=pQQr7Y88vBlaIvx9BXqz34OGzr9w_sBzEShPWaPiJqE
+                    industry: Non-profit Organization Management
+                    headcount: 1001-5000
+                  education:
+                  - school: Harvard University
+                    education_id: urn:li:fsd_profileEducation:(ACoAAA8BYqEBCGLg_vT_ca6mMEqkpp9nVffJ3hc,157656829)
+                    school_logo_url: https://media.licdn.com/dms/image/v2/C4E0BAQF5t62bcL0e9g/company-logo_400_400/company-logo_400_400/0/1631318058235?e=1792627200&v=beta&t=0hJGm1CmYzZ20L5NhyvLll-4sDmb1U_RwRue5QCSDSI
+                    started_at: '1973'
+                    ended_at: '1975'
+                  - school: Lakeside School
+                    education_id: urn:li:fsd_profileEducation:(ACoAAA8BYqEBCGLg_vT_ca6mMEqkpp9nVffJ3hc,157676006)
+                    school_logo_url: https://media.licdn.com/dms/image/v2/D560BAQGFmOQmzpxg9A/company-logo_400_400/company-logo_400_400/0/1683732883164/lakeside_school_logo?e=1792627200&v=beta&t=9AdS9k6n1uMsFx4ZSbTtjlXeuxIyoxV06LfYpNzqRSs
+                  primary_locale: en_US
+                  is_premium: true
+                  is_open_to_work: false
+                  profile_picture_url: https://media.licdn.com/dms/image/v2/D5603AQF-RYZP55jmXA/profile-displayphoto-shrink_800_800/B56ZRi8g.aGsAc-/0/1736826818808?e=1792627200&v=beta&t=wmgV6HYCkzeFN_YuUhRPVy-jys5YqHMucz6YL3NarYE
+                  scraped_at: '2026-10-03T13:54:57.750Z'
+                meta:
+                  creditsUsed: 1
+                  billed: true
+                  reason: profile_found
+                datacircle_meta:
+                  provider: up2data
+                  cost_usd: 0.00125
+                  balance_usd: 4.99875
+        '400':
+          description: 'Not charged. A body that isn''t a non-empty JSON object, or an `X-Data-Provider` value that isn''t `up2data` or `harvestapi` (`Error`); or Up2Data''s own `400`, passed on (`Up2DataError`, `error.type: invalid_request`): a `url` that isn''t a LinkedIn profile URL, a field Up2Data doesn''t take'
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/Error'
+                - $ref: '#/components/schemas/Up2DataError'
+        '401':
+          description: Missing or invalid API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '402':
+          description: Balance too low
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - error
+                - balance_usd
+                properties:
+                  error:
+                    type: string
+                    description: 'Why the call was refused: your balance can''t cover it. Not charged.'
+                  balance_usd:
+                    type: number
+                    description: Your balance now, in dollars (`balance_usd` in `GET /balance/`). `POST /checkout/` adds funds.
+                additionalProperties: false
+        '404':
+          description: 'No `X-Data-Provider` header, or a path Datacircle doesn''t call for that provider (e.g. `X-Data-Provider: harvestapi` on `/v1/profiles/enrich`); not charged'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: Up2Data can't reach that profile (private, deleted or unreachable); not charged
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Up2DataError'
+        '429':
+          description: Datacircle's daily Up2Data limit, for your account or for everyone (it resets at 00:00 UTC), or Up2Data's own rate limit; not charged
+          content:
+            application/json:
+              schema:
+                anyOf:
+                - $ref: '#/components/schemas/Error'
+                - $ref: '#/components/schemas/Up2DataError'
+        '502':
+          description: 'Up2Data''s own server failed three times in a row: its gateway answered an error page each time, and Datacircle sent the same request again twice before passing the last page on. Not charged; send the same request again. A gateway''s `503` or `504` page passes on the same way, with its status.'
+        '503':
+          description: 'Up2Data hasn''t answered within 45 s, retries included, or can''t be reached: Datacircle stops waiting. Not charged; send the same request again.'
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Datacircle's own answer when the provider hasn't answered within 45 s, retries included, or can't be reached. Not charged.
+                required:
+                - error
+                - balance_usd
+                properties:
+                  error:
+                    type: string
+                    description: What went wrong, in plain words.
+                  balance_usd:
+                    type: number
+                    description: Your balance now, in dollars (`balance_usd` in `GET /balance/`).
+                additionalProperties: false
+      x-codeSamples:
+      - lang: bash
+        label: curl
+        source: "curl -X POST \"https://api.datacircle.dev/v1/profiles/enrich\" \\\n  -H \"Authorization: Token $DATACIRCLE_API_KEY\" \\\n  -H \"X-Data-Provider: up2data\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"url\": \"https://www.linkedin.com/in/williamhgates\"}'"
+      - lang: python
+        label: Python
+        source: "import os\n\nimport requests\n\nresponse = requests.post(\n    \"https://api.datacircle.dev/v1/profiles/enrich\",\n    headers={\"Authorization\": f\"Token {os.environ['DATACIRCLE_API_KEY']}\", \"X-Data-Provider\": \"up2data\"},\n    json={'url': 'https://www.linkedin.com/in/williamhgates'},\n)\nprint(response.json())"
+      operationId: postV1ProfilesEnrich
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.datacircle.dev
+components:
+  schemas:
+    Up2DataEnrichResponse:
+      type: object
+      description: Up2Data's own response to POST /v1/profiles/enrich, plus `datacircle_meta`
+      required:
+      - data
+      - meta
+      - datacircle_meta
+      properties:
+        data:
+          $ref: '#/components/schemas/Up2DataProfile'
+        meta:
+          $ref: '#/components/schemas/Up2DataMeta'
+        datacircle_meta:
+          $ref: '#/components/schemas/DatacircleMeta'
+      additionalProperties: false
+    DatacircleMeta:
+      type: object
+      description: Datacircle's only addition to the provider's answer
+      required:
+      - provider
+      - cost_usd
+      - balance_usd
+      properties:
+        provider:
+          type: string
+          enum:
+          - up2data
+          - harvestapi
+          description: which provider answered
+        cost_usd:
+          type: number
+          description: 'what this call cost, in dollars: the provider''s price, no markup'
+        balance_usd:
+          type: number
+          description: your balance after this call, in dollars (`balance_usd` in `GET /balance/`)
+      additionalProperties: false
+    Up2DataError:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            type:
+              type: string
+              enum:
+              - invalid_request
+              - invalid_api_key
+              - insufficient_credits
+              - not_found
+              - unprocessable_target
+              - rate_limited
+              - internal_error
+              - upstream_error
+              - upstream_timeout
+              description: 'Up2Data''s error type: what went wrong (docs.up2data.ai/errors).'
+            message:
+              type: string
+              description: What went wrong, in Up2Data's words.
+          additionalProperties: false
+          description: Up2Data's error.
+        meta:
+          $ref: '#/components/schemas/Up2DataMeta'
+        datacircle_meta:
+          $ref: '#/components/schemas/DatacircleMeta'
+      additionalProperties: false
+      description: Up2Data's own error answer, plus `datacircle_meta`
+      required:
+      - error
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          description: What went wrong, in plain words.
+    Up2DataProfile:
+      type: object
+      properties:
+        url:
+          type: string
+          description: Canonical profile URL.
+        public_identifier:
+          type: string
+          description: 'The profile''s slug: linkedin.com/in/<public_identifier>.'
+        linkedin_id:
+          type: string
+          description: Numeric LinkedIn member ID.
+        full_name:
+          type: string
+          description: The member's full name.
+        first_name:
+          type: string
+          description: The member's first name.
+        last_name:
+          type: string
+          description: The member's last name.
+        headline:
+          type: string
+          description: The line under the member's name on the profile.
+        location:
+          type: object
+          properties:
+            city:
+              type: string
+              description: City.
+            region:
+              type: string
+              description: State or region.
+            country:
+              type: string
+              description: Country name (e.g. `United States`).
+            raw:
+              type: string
+              description: The location exactly as LinkedIn shows it (e.g. "Greater Seattle Area"), before parsing.
+          additionalProperties: false
+          description: 'Where the member is: `raw` as LinkedIn shows it, parsed into `city`, `region` and `country`.'
+        current_company:
+          type: object
+          properties:
+            name:
+              type: string
+              description: The company's name.
+            url:
+              type: string
+              description: The company's LinkedIn page URL.
+            title:
+              type: string
+              description: The member's title there.
+            started_at:
+              type: string
+              description: When the role started, `YYYY-MM` or `YYYY`.
+            linkedin_id:
+              type: string
+              description: Numeric LinkedIn organization ID.
+            logo_url:
+              type: string
+              description: The company's logo (a LinkedIn CDN link, which expires).
+            industry:
+              type: string
+              description: The company's LinkedIn industry.
+            headcount:
+              type: string
+              description: The company's size band on LinkedIn, e.g. `10001+`.
+          additionalProperties: false
+          description: The member's current role and its company.
+        positions:
+          type: array
+          items:
+            type: object
+            properties:
+              title:
+                type: string
+                description: The member's title in this role.
+              company:
+                type: string
+                description: The company's name.
+              company_url:
+                type: string
+                description: The company's LinkedIn page URL.
+              linkedin_id:
+                type: string
+                description: Numeric LinkedIn organization ID for this role's company.
+              position_id:
+                type: string
+                description: LinkedIn's id of this role (`urn:li:fsd_profilePosition:...`).
+              started_at:
+                type: string
+                description: When the role started, `YYYY-MM` or `YYYY`.
+              ended_at:
+                type:
+                - string
+                - 'null'
+                description: When the role ended, `YYYY-MM` or `YYYY`; `null` for a current role.
+              description:
+                type: string
+                description: The role's description.
+              skills:
+                type: array
+                items:
+                  type: string
+                description: Skills the member tied to this role.
+              company_industry:
+                type: string
+                description: The company's LinkedIn industry.
+              company_headcount:
+                type: string
+                description: The company's size band on LinkedIn, e.g. `10001+`.
+              company_logo_url:
+                type: string
+                description: The company's logo (a LinkedIn CDN link, which expires).
+            additionalProperties: false
+          description: Full experience history, current roles included.
+        education:
+          type: array
+          items:
+            type: object
+            properties:
+              school:
+                type: string
+                description: The school's name.
+              degree:
+                type: string
+                description: The degree.
+              field:
+                type: string
+                description: The field of study.
+              activities:
+                type: string
+                description: Activities and societies.
+              education_id:
+                type: string
+                description: LinkedIn's id of this entry (`urn:li:fsd_profileEducation:...`).
+              school_logo_url:
+                type: string
+                description: The school's logo (a LinkedIn CDN link, which expires).
+              description:
+                type: string
+                description: The entry's description.
+              started_at:
+                type: string
+                description: When it started, `YYYY-MM` or `YYYY`.
+              ended_at:
+                type:
+                - string
+                - 'null'
+                description: When it ended, `YYYY-MM` or `YYYY`; `null` when ongoing.
+            additionalProperties: false
+          description: Education history.
+        skills:
+          type: array
+          items:
+            type: string
+          description: 'Capped at the first 20 unless with_full_skills_and_endorsements is true, in which case every skill LinkedIn exposes is returned (up to LinkedIn''s own 50-skill cap).
+
+            '
+        skill_endorsements:
+          type: array
+          description: Present when with_full_skills_and_endorsements is true (or listed in fields).
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: The skill.
+              endorsement_count:
+                type: integer
+                description: How many members endorsed it.
+            additionalProperties: false
+        about:
+          type: string
+          description: The profile's About section.
+        urn:
+          type: string
+          description: 'urn:li:member:{id} on enrich.
+
+            '
+        profile_urn:
+          type: string
+          description: 'urn:li:fsd_profile:{ACo…}, the profile id Sales Navigator and LinkedIn messaging use.
+
+            '
+        languages:
+          type: array
+          items:
+            type: string
+          description: Language names listed on the profile. Omitted when none are listed.
+        language_proficiencies:
+          type: array
+          description: The same languages as `languages`, with the proficiency the member chose, when they chose one.
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: The language.
+              proficiency:
+                type: string
+                enum:
+                - NATIVE_OR_BILINGUAL
+                - FULL_PROFESSIONAL
+                - PROFESSIONAL_WORKING
+                - LIMITED_WORKING
+                - ELEMENTARY
+                description: The proficiency the member chose; omitted when they chose none.
+            additionalProperties: false
+        certifications:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: The certification's name.
+              authority:
+                type: string
+                description: Who issued it.
+              issued_at:
+                type: string
+                description: When it was issued, `YYYY-MM` or `YYYY`.
+              expires_at:
+                type: string
+                description: When it expires, `YYYY-MM` or `YYYY`.
+              url:
+                type: string
+                description: The credential's URL.
+              linkedin_id:
+                type: string
+                description: Numeric LinkedIn company id of the issuing organization, when listed.
+              license_number:
+                type: string
+                description: License or credential number, when listed on the certificate.
+            additionalProperties: false
+          description: Licenses and certifications on the profile.
+        publications:
+          type: array
+          items:
+            type: object
+            properties:
+              title:
+                type: string
+                description: The publication's title.
+              publisher:
+                type: string
+                description: Its publisher.
+              published_at:
+                type: string
+                description: When it was published, `YYYY-MM` or `YYYY`.
+              url:
+                type: string
+                description: Its URL.
+              description:
+                type: string
+                description: Its description.
+              authors:
+                type: array
+                items:
+                  type: object
+                  description: A person credited on a publication or patent.
+                  properties:
+                    name:
+                      type: string
+                      description: The person's name.
+                    public_identifier:
+                      type: string
+                      description: Their profile's slug (linkedin.com/in/<public_identifier>), when they are on LinkedIn.
+                    headline:
+                      type: string
+                      description: Their profile's headline, when they are on LinkedIn.
+                  additionalProperties: false
+                description: Its authors.
+            additionalProperties: false
+          description: Publications on the profile.
+        patents:
+          type: array
+          items:
+            type: object
+            properties:
+              title:
+                type: string
+                description: The patent's title.
+              number:
+                type: string
+                description: The patent or application number (e.g. `10,127,086`).
+              issuer:
+                type: string
+                description: Patent office country code as LinkedIn lists it (e.g. "us").
+              issued_at:
+                type: string
+                description: When it was issued, `YYYY-MM` or `YYYY`.
+              description:
+                type: string
+                description: Its description.
+              inventors:
+                type: array
+                items:
+                  type: object
+                  description: A person credited on a publication or patent.
+                  properties:
+                    name:
+                      type: string
+                      description: The person's name.
+                    public_identifier:
+                      type: string
+                      description: Their profile's slug (linkedin.com/in/<public_identifier>), when they are on LinkedIn.
+                    headline:
+                      type: string
+                      description: Their profile's headline, when they are on LinkedIn.
+                  additionalProperties: false
+                description: Its inventors.
+            additionalProperties: false
+          description: Patents on the profile.
+        awards:
+          type: array
+          items:
+            type: object
+            properties:
+              title:
+                type: string
+                description: The award's title.
+              issuer:
+                type: string
+                description: Who gave it.
+              issued_at:
+                type: string
+                description: When it was received, `YYYY-MM` or `YYYY`.
+              description:
+                type: string
+                description: Its description.
+            additionalProperties: false
+          description: Honors and awards on the profile.
+        primary_locale:
+          type: string
+          description: LinkedIn primary locale as language_COUNTRY, e.g. en_US.
+        is_premium:
+          type: boolean
+          description: '`true` when the member has LinkedIn Premium.'
+        is_open_to_work:
+          type: boolean
+          description: '`true` when the member shows they are open to work.'
+        connections_count:
+          type: integer
+          description: Included when with_followers_and_connections is true (or listed in fields).
+        followers_count:
+          type: integer
+          description: Included when with_followers_and_connections is true (or listed in fields).
+        scraped_at:
+          type: string
+          format: date-time
+          description: When Up2Data scraped this profile from LinkedIn (ISO 8601).
+        profile_picture_url:
+          type: string
+          description: LinkedIn headshot CDN URL.
+      additionalProperties: false
+      description: Up2Data's profile record, every field as Up2Data documents it (docs.up2data.ai). `fields` in the request restricts it to the fields listed.
+    Up2DataMeta:
+      type: object
+      description: Up2Data's billing metadata, minus `creditsRemaining`, `requestId` and `latencyMs` (our account with Up2Data, not yours)
+      properties:
+        creditsUsed:
+          type: integer
+          description: 'Up2Data credits this call used (1 per profile found). What it costs you is `datacircle_meta.cost_usd`: $0.00125 per Up2Data credit'
+        billed:
+          type: boolean
+          description: 'Whether Up2Data billed this call (`false`: it didn''t, and you weren''t charged). What this call costs you is `datacircle_meta.cost_usd`'
+        reason:
+          type: string
+          description: Why Up2Data billed this call or not, in its words, e.g. `profile_found`.
+      additionalProperties: false
+  securitySchemes:
+    token:
+      type: http
+      scheme: bearer
+      description: 'Your API key: `Authorization: Bearer <your API key>`. `Authorization: Token <your API key>` works too.'
+externalDocs:
+  description: Datacircle docs
+  url: https://docs.datacircle.dev
+x-refined-from:
+- datacircle-openapi.json
+- datacircle-openapi.yml

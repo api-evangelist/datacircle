@@ -1,0 +1,45 @@
+name: Datacircle Tool Crosswalk
+generated: '2026-10-09'
+method: derived
+source: https://docs.datacircle.dev/mcp-server.md
+surfaces:
+  openapi: openapi/datacircle-openapi.yml
+  mcp: https://api.datacircle.dev/mcp (gated, 401 anonymous)
+crosswalk:
+- tool: get_linkedin_profile
+  rest:
+  - enrichLinkedinProfile
+  - getLinkedinProfile
+  binding: documented
+  confidence: high
+- tool: get_balance
+  rest:
+  - getBalance
+  binding: documented
+  confidence: high
+- tool: list_files
+  rest:
+  - listFiles
+  binding: documented
+  confidence: high
+- tool: get_download_link
+  rest:
+  - getFileDownloadLink
+  binding: documented
+  confidence: high
+- tool: add_funds
+  rest:
+  - createCheckout
+  binding: documented
+  confidence: high
+- tool: get_invite_link
+  rest:
+  - getInviteLink
+  binding: documented
+  confidence: high
+rest_only:
+- resetApiKey
+coverage:
+  tools: 6
+  bound: 6
+  rest_ops: 8

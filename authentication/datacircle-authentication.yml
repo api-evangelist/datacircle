@@ -1,0 +1,14 @@
+generated: '2026-10-09'
+method: derived
+source: openapi/datacircle-openapi.yml
+summary:
+  types:
+  - http
+schemes:
+- name: token
+  type: http
+  scheme: bearer
+  description: 'Your API key: `Authorization: Bearer <your API key>`. `Authorization: Token
+    <your API key>` works too.'
+  sources:
+  - openapi/datacircle-openapi.yml

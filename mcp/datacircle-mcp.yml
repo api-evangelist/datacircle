@@ -1,0 +1,43 @@
+name: Datacircle MCP Server
+generated: '2026-10-09'
+method: searched
+source: https://docs.datacircle.dev/mcp-server.md
+url: https://api.datacircle.dev/mcp
+transport: streamable-http
+deployment:
+  mode: remote
+  endpoint: https://api.datacircle.dev/mcp
+  auth: oauth
+  verified: probed
+  note: 'POST tools/list anonymously returned 401 "authentication required: Authorization:
+    Bearer <your API key or OAuth access token>"; OAuth sign-in or API key header
+    per docs.'
+tools:
+- name: get_linkedin_profile
+  source: documented
+  rest:
+  - enrichLinkedinProfile
+  - getLinkedinProfile
+- name: get_balance
+  source: documented
+  rest:
+  - getBalance
+- name: list_files
+  source: documented
+  rest:
+  - listFiles
+- name: get_download_link
+  source: documented
+  rest:
+  - getFileDownloadLink
+- name: add_funds
+  source: documented
+  rest:
+  - createCheckout
+- name: get_invite_link
+  source: documented
+  rest:
+  - getInviteLink
+note: Tool names are as documented on the provider MCP page (table); not observed
+  from a live tools/list (gated, 401). docs.datacircle.dev/mcp is a separate Mintlify
+  docs-search MCP.

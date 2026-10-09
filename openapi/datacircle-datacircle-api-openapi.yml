@@ -1,0 +1,327 @@
+openapi: 3.2.0
+info:
+  title: Datacircle API
+  version: '1'
+  contact:
+    name: Datacircle
+    url: https://datacircle.dev
+    email: wayne@datacircle.dev
+  termsOfService: https://datacircle.dev/terms
+  x-logo:
+    url: https://datacircle.dev/favicon.png
+    altText: Datacircle
+  description: 'Operations tagged Datacircle across 2 of this provider''s published API definitions: datacircle-openapi.json, datacircle-openapi.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.datacircle.dev
+security:
+- token: []
+tags:
+- name: Datacircle
+  description: 'Your Datacircle account: balance, adding funds, files, invites, API key.'
+paths:
+  /me/invites/:
+    get:
+      tags:
+      - Datacircle
+      summary: Get your invite link
+      description: 'Your invite link and how many people you invited signed up. What they unlock: `unlocks` and `unlocks_datasets` below, and Files.'
+      responses:
+        '200':
+          description: '`{"invite_url": ..., "signed_up_count": 0, "required_count": 3, "unlocks": ..., "unlocks_datasets": ["coop_up2data", "coop_harvestapi", "us_50m"]}`'
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - invite_url
+                - signed_up_count
+                - required_count
+                - unlocks
+                - unlocks_datasets
+                properties:
+                  invite_url:
+                    type: string
+                    description: 'Your own signup link: whoever signs up through it is your invitee.'
+                  signed_up_count:
+                    type: integer
+                    description: How many people you invited have signed up and verified their email. People on your own email domain and deactivated accounts don't count.
+                  required_count:
+                    type: integer
+                    description: How many signed-up invitees unlock the files in `unlocks_datasets`.
+                  unlocks:
+                    type: string
+                    description: What reaching `required_count` unlocks, in words, and that $50 in funds added unlocks only the co-op file.
+                  unlocks_datasets:
+                    type: array
+                    items:
+                      type: string
+                    description: The `dataset`s in `GET /files/` that reaching `required_count` unlocks.
+      operationId: getMeInvites
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.datacircle.dev
+  /me/api-key/reset/:
+    post:
+      tags:
+      - Datacircle
+      summary: Reset your API key
+      description: The old key stops working at once.
+      responses:
+        '200':
+          description: '`{"api_key": ...}`'
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - api_key
+                properties:
+                  api_key:
+                    type: string
+                    description: 'Your new API key: send it as `Authorization: Token <api_key>`. The old one stopped working when this answered.'
+      operationId: postMeApiKeyReset
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.datacircle.dev
+  /balance/:
+    get:
+      tags:
+      - Datacircle
+      summary: Read the balance
+      responses:
+        '200':
+          description: Balance split by kind
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Balance'
+      operationId: getBalance
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.datacircle.dev
+  /checkout/:
+    post:
+      tags:
+      - Datacircle
+      summary: Start a Stripe Checkout
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - amount_usd
+              properties:
+                amount_usd:
+                  description: How much to add to your balance, in whole dollars.
+                  type: integer
+                  minimum: 5
+                  maximum: 10000
+      responses:
+        '200':
+          description: '`{"checkout_url": ...}`: send the browser there'
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - checkout_url
+                properties:
+                  checkout_url:
+                    type: string
+                    description: 'The Stripe Checkout page for this payment: open it, or hand it to a human to pay. The funds land in `funds_usd` once Stripe confirms the payment.'
+        '400':
+          description: Amount not offered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '502':
+          description: Stripe refused the checkout session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Payments are not configured on this server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      operationId: postCheckout
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.datacircle.dev
+  /files/:
+    get:
+      tags:
+      - Datacircle
+      summary: List files
+      responses:
+        '200':
+          description: Every file with `is_unlocked` for this workspace
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/File'
+      operationId: getFiles
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.datacircle.dev
+  /files/{file_id}/download-link/:
+    post:
+      tags:
+      - Datacircle
+      summary: Get a download link
+      parameters:
+      - name: file_id
+        in: path
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: '`{"url": ...}`, valid one hour'
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - url
+                - next_step
+                properties:
+                  url:
+                    type: string
+                    description: A signed download URL for the file, valid one hour. Fetch it as is, without your API key.
+                  next_step:
+                    type: object
+                    required:
+                    - why
+                    - curls
+                    - docs_url
+                    properties:
+                      why:
+                        type: string
+                        description: What the file holds and what your balance can pull for its rows.
+                      curls:
+                        type: array
+                        description: 'One ready-to-run call per provider. Keys never name a provider: providers come and go in the list.'
+                        items:
+                          type: object
+                          required:
+                          - provider
+                          - curl
+                          properties:
+                            provider:
+                              type: string
+                              description: The provider the call goes to, e.g. `up2data` or `harvestapi`.
+                            curl:
+                              type: string
+                              description: A ready-to-run curl, your API key filled in.
+                      docs_url:
+                        type: string
+                        description: Where Datacircle's docs are (a URL).
+                    description: 'What to do with the file next: pull the live LinkedIn profile behind any row, at the provider''s cost.'
+        '403':
+          description: 'Not unlocked for this workspace: `error` says why, and how to unlock it.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      operationId: postFilesByFileIdDownloadLink
+      x-operation-id-source: derived
+    servers:
+    - url: https://api.datacircle.dev
+components:
+  schemas:
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          description: What went wrong, in plain words.
+    Balance:
+      type: object
+      properties:
+        balance_usd:
+          type: number
+          description: 'Everything you can spend right now, in dollars: `signup_credit_usd` + `funds_usd` + `manual_credit_usd` (permanent) + every `temporary_credits[].credit_usd` (temporary). `datacircle_meta.balance_usd` on a provider call is this number after the call.'
+        signup_credit_usd:
+          type: number
+          description: 'Permanent: what is left of the $5 signup credit every workspace gets once. Never expires.'
+        funds_usd:
+          type: number
+          description: 'Permanent: what is left of the funds you added through Stripe Checkout (`POST /checkout/`). Never expires.'
+        manual_credit_usd:
+          type: number
+          description: 'Permanent: what is left of the credits Datacircle added to your workspace by hand (a refund, a gift, a deal). Never expires. 0 for most workspaces.'
+        temporary_credits:
+          type: array
+          items:
+            type: object
+            properties:
+              campaign:
+                type: string
+                description: The campaign that gave this credit, e.g. `launch_20` (the launch week's $20 credit).
+              credit_usd:
+                type: number
+                description: 'Temporary: what is left of this credit until `expires_at`, in dollars. Also capped by what is left of the campaign''s shared budget, so it can drop to 0 before then.'
+              expires_at:
+                type: string
+                format: date-time
+                description: 'When this grant expires (ISO 8601): after it, what is left is gone.'
+          description: 'Temporary credits: one entry per campaign grant that has not expired yet, soonest to expire first; empty when you have none. At `expires_at` the entry leaves this list and whatever is left of it is gone.'
+    File:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 'The file''s id: pass it to `POST /files/{file_id}/download-link/`. Every daily file gets a new id; old ids still download.'
+        dataset:
+          type: string
+          enum:
+          - us_10m
+          - coop_up2data
+          - coop_harvestapi
+          - us_50m
+          - free_list
+          description: 'Which dataset this file is a snapshot of: `us_10m` is the 10M US dataset (10M+ US B2B leads), `us_50m` the 50M US dataset (50M+ US B2B), `coop_up2data` and `coop_harvestapi` the co-op files: every LinkedIn profile fetched through Up2Data, and through HarvestAPI, one flat Parquet table each (columns: docs Dataset fields), rebuilt every day. `GET /files/` lists the newest file of each dataset. `free_list` is a free list we give away (a CSV in a zip): `GET /files/` lists each one you opened the link of (`datacircle.dev/lists/<list>`), and `filename` says which.'
+        filename:
+          type: string
+          description: 'The name the file downloads as: `us_smb_mid_market.zip`, `coop_up2data.parquet`, `2026-10-07-us-software-founders.zip`.'
+        row_count:
+          type:
+          - integer
+          - 'null'
+          description: Rows in the file; `null` when we have not counted it.
+        size_bytes:
+          type: integer
+          description: The file's size, in bytes.
+        sha256:
+          type:
+          - string
+          - 'null'
+          description: The file's SHA-256, in hex, to check your download; `null` when we have not measured it.
+        created_at:
+          type: string
+          format: date-time
+          description: When the file was exported (ISO 8601).
+        is_unlocked:
+          type: boolean
+          description: 'Whether this workspace may download it: always `true` for `us_10m` and `free_list`; `true` for `coop_up2data` and `coop_harvestapi` once this workspace has added $50 in funds or 3 people you invited signed up; `true` for `us_50m` only once 3 people you invited signed up (`GET /me/invites/`).'
+  securitySchemes:
+    token:
+      type: http
+      scheme: bearer
+      description: 'Your API key: `Authorization: Bearer <your API key>`. `Authorization: Token <your API key>` works too.'
+externalDocs:
+  description: Datacircle docs
+  url: https://docs.datacircle.dev
+x-refined-from:
+- datacircle-openapi.json
+- datacircle-openapi.yml

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/datacircle/main/json-schema/datacircle-balance-schema.json",
+  "title": "Balance",
+  "x-generated": "2026-10-09",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/datacircle-openapi.yml#/components/schemas/Balance",
+  "type": "object",
+  "properties": {
+    "balance_usd": {
+      "type": "number",
+      "description": "Everything you can spend right now, in dollars: `signup_credit_usd` + `funds_usd` + `manual_credit_usd` (permanent) + every `temporary_credits[].credit_usd` (temporary). `datacircle_meta.balance_usd` on a provider call is this number after the call."
+    },
+    "signup_credit_usd": {
+      "type": "number",
+      "description": "Permanent: what is left of the $5 signup credit every workspace gets once. Never expires."
+    },
+    "funds_usd": {
+      "type": "number",
+      "description": "Permanent: what is left of the funds you added through Stripe Checkout (`POST /checkout/`). Never expires."
+    },
+    "manual_credit_usd": {
+      "type": "number",
+      "description": "Permanent: what is left of the credits Datacircle added to your workspace by hand (a refund, a gift, a deal). Never expires. 0 for most workspaces."
+    },
+    "temporary_credits": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "campaign": {
+            "type": "string",
+            "description": "The campaign that gave this credit, e.g. `launch_20` (the launch week's $20 credit)."
+          },
+          "credit_usd": {
+            "type": "number",
+            "description": "Temporary: what is left of this credit until `expires_at`, in dollars. Also capped by what is left of the campaign's shared budget, so it can drop to 0 before then."
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When this grant expires (ISO 8601): after it, what is left is gone."
+          }
+        }
+      },
+      "description": "Temporary credits: one entry per campaign grant that has not expired yet, soonest to expire first; empty when you have none. At `expires_at` the entry leaves this list and whatever is left of it is gone."
+    }
+  }
+}

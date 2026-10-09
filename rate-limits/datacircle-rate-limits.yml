@@ -1,0 +1,12 @@
+name: Datacircle Rate Limits
+generated: '2026-10-09'
+method: searched
+source: https://docs.datacircle.dev/pricing
+limits:
+- name: Up2Data daily spend
+  window: 1 day
+  scope: per-account
+  limit_text: $1 a day per account (800 profiles)
+  endpoint: POST /v1/profiles/enrich
+  status_on_exhaustion: 429
+  note: shared daily limit for all customers; past either, 429 until 00:00 UTC

@@ -1,0 +1,78 @@
+generated: '2026-10-09'
+method: derived
+generator: derive-problem-types.py
+source:
+- openapi/datacircle-openapi.yml
+format: custom
+envelope:
+  media_type: application/json
+  schema: Error
+coverage:
+  operations: 8
+  statuses_declared: 9
+problems:
+- status: 400
+  title: Bad Request
+  description: Amount not offered
+  operations: 3
+  media_types:
+  - application/json
+  schema: Error
+- status: 401
+  title: Unauthorized
+  description: Missing or invalid API key
+  operations: 2
+  media_types:
+  - application/json
+  schema: Error
+- status: 402
+  title: Payment Required
+  description: Balance too low
+  operations: 2
+  media_types:
+  - application/json
+  schema: null
+- status: 403
+  title: Forbidden
+  description: 'Not unlocked for this workspace: `error` says why, and how to unlock it.'
+  operations: 1
+  media_types:
+  - application/json
+  schema: Error
+- status: 404
+  title: Not Found
+  description: 'No `X-Data-Provider` header, or a path Datacircle doesn''t call for that provider (e.g. `X-Data-Provider:
+    harvestapi` on `/v1/profiles/enrich'
+  operations: 2
+  media_types:
+  - application/json
+  schema: Error
+- status: 422
+  title: Unprocessable Content
+  description: Up2Data can't reach that profile (private, deleted or unreachable); not charged
+  operations: 1
+  media_types:
+  - application/json
+  schema: Up2DataError
+- status: 429
+  title: Too Many Requests
+  description: Datacircle's daily Up2Data limit, for your account or for everyone (it resets at 00:00 UTC), or Up2Data's
+    own rate limit; not charged
+  operations: 1
+  media_types:
+  - application/json
+  schema: null
+- status: 502
+  title: Bad Gateway
+  description: Stripe refused the checkout session
+  operations: 3
+  media_types:
+  - application/json
+  schema: Error
+- status: 503
+  title: Service Unavailable
+  description: Payments are not configured on this server
+  operations: 3
+  media_types:
+  - application/json
+  schema: Error

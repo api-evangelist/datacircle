@@ -3,7 +3,7 @@
   "info": {
     "title": "Datacircle API",
     "version": "1",
-    "description": "Datacircle is a data co-op.\n\nStep 1: Query your favorite B2B data APIs through us. Same request, same price, no markup.\n\nStep 2: You're DONE. Every morning, you get the flat file of your data plus everyone else's.\n\nYou send the provider's own request to api.datacircle.dev, with your Datacircle key. That's the only change.\n\nRight now we have 2 live LinkedIn profile APIs that we trust: Up2Data and HarvestAPI. Each request goes to the provider and gets the profile as it is today.\n\nAdd $50 to your account: you get $50 of API PLUS the flat file. Or invite 3 people who sign up.\n\nSign up at datacircle.dev with your work email: a $5 credit, that's 4,000 LinkedIn profiles at $1.25 per 1,000.\n\nFree: 10M+ U.S. B2B leads, as a flat file. Download it at datacircle.dev.\n\nUse it from Claude, ChatGPT or Cursor: add api.datacircle.dev/mcp as an MCP server.\n\nThe docs: [docs.datacircle.dev](https://docs.datacircle.dev).",
+    "description": "Datacircle is a data co-op.\n\nStep 1: Query your favorite B2B data APIs through us. Same request, same price, no markup.\n\nStep 2: You're DONE. Every morning, you get the flat file of your data plus everyone else's.\n\nYou send the provider's own request to api.datacircle.dev, with your Datacircle key. That's the only change.\n\nRight now we have 3 live LinkedIn profile APIs that we trust: Up2Data, HarvestAPI and Fetchin. Each request goes to the provider and gets the profile as it is today.\n\nAdd \\$50 to your account: you get \\$50 of API PLUS the flat file.\n\nSign up at datacircle.dev with your work email: a \\$5 credit, that's 2,105 LinkedIn profiles at \\$2.375 per 1,000.\n\nUse it from Claude, ChatGPT or Cursor: add api.datacircle.dev/mcp as an MCP server.\n\nThe docs: [docs.datacircle.dev](https://docs.datacircle.dev).",
     "termsOfService": "https://datacircle.dev/terms",
     "contact": {
       "name": "Datacircle",
@@ -32,7 +32,7 @@
   "tags": [
     {
       "name": "Datacircle",
-      "description": "Your Datacircle account: balance, adding funds, files, invites, API key."
+      "description": "Your Datacircle account: balance, adding funds, files, API key."
     },
     {
       "name": "Up2Data",
@@ -41,6 +41,10 @@
     {
       "name": "HarvestAPI",
       "description": "LinkedIn Profile API: HarvestAPI's own request, sent to api.datacircle.dev with your Datacircle key and `X-Data-Provider: harvestapi`."
+    },
+    {
+      "name": "Fetchin",
+      "description": "LinkedIn Profile API: Fetchin's own request, sent to api.datacircle.dev with your Datacircle key and `X-Data-Provider: fetchin`."
     }
   ],
   "components": {
@@ -78,7 +82,7 @@
               "properties": {
                 "campaign": {
                   "type": "string",
-                  "description": "The campaign that gave this credit, e.g. `launch_20` (the launch week's $20 credit)."
+                  "description": "The campaign that gave this credit, by its name."
                 },
                 "credit_usd": {
                   "type": "number",
@@ -91,7 +95,7 @@
                 }
               }
             },
-            "description": "Temporary credits: one entry per campaign grant that has not expired yet, soonest to expire first; empty when you have none. At `expires_at` the entry leaves this list and whatever is left of it is gone."
+            "description": "Temporary credits: one entry per campaign grant that has not expired yet, soonest to expire first. Empty when you have none. At `expires_at` the entry leaves this list and whatever is left of it is gone."
           }
         }
       },
@@ -100,29 +104,27 @@
         "properties": {
           "id": {
             "type": "integer",
-            "description": "The file's id: pass it to `POST /files/{file_id}/download-link/`. Every daily file gets a new id; old ids still download."
+            "description": "The file's id: pass it to `POST /files/{file_id}/download-link/`. Every daily file gets a new id. Old ids still download."
           },
           "dataset": {
             "type": "string",
             "enum": [
-              "us_10m",
               "coop_up2data",
               "coop_harvestapi",
-              "us_50m",
-              "free_list"
+              "coop_fetchin"
             ],
-            "description": "Which dataset this file is a snapshot of: `us_10m` is the 10M US dataset (10M+ US B2B leads), `us_50m` the 50M US dataset (50M+ US B2B), `coop_up2data` and `coop_harvestapi` the co-op files: every LinkedIn profile fetched through Up2Data, and through HarvestAPI, one flat Parquet table each (columns: docs Dataset fields), rebuilt every day. `GET /files/` lists the newest file of each dataset. `free_list` is a free list we give away (a CSV in a zip): `GET /files/` lists each one you opened the link of (`datacircle.dev/lists/<list>`), and `filename` says which."
+            "description": "Which dataset this file is a snapshot of: `coop_up2data`, `coop_harvestapi` and `coop_fetchin` are the co-op files: every LinkedIn profile fetched through Up2Data, through HarvestAPI and through Fetchin, one flat Parquet table each (columns: docs Dataset fields), rebuilt every day. `GET /files/` lists the newest file of each dataset."
           },
           "filename": {
             "type": "string",
-            "description": "The name the file downloads as: `us_smb_mid_market.zip`, `coop_up2data.parquet`, `2026-10-07-us-software-founders.zip`."
+            "description": "The download's file name, such as `coop_up2data.parquet`."
           },
           "row_count": {
             "type": [
               "integer",
               "null"
             ],
-            "description": "Rows in the file; `null` when we have not counted it."
+            "description": "Rows in the file. `null` when we have not counted it."
           },
           "size_bytes": {
             "type": "integer",
@@ -133,7 +135,7 @@
               "string",
               "null"
             ],
-            "description": "The file's SHA-256, in hex, to check your download; `null` when we have not measured it."
+            "description": "The file's SHA-256, in hex, to check your download. `null` when we have not measured it."
           },
           "created_at": {
             "type": "string",
@@ -142,7 +144,7 @@
           },
           "is_unlocked": {
             "type": "boolean",
-            "description": "Whether this workspace may download it: always `true` for `us_10m` and `free_list`; `true` for `coop_up2data` and `coop_harvestapi` once this workspace has added $50 in funds or 3 people you invited signed up; `true` for `us_50m` only once 3 people you invited signed up (`GET /me/invites/`)."
+            "description": "Whether this workspace may download it: `true` once this workspace has added $50 in funds."
           }
         }
       },
@@ -171,17 +173,18 @@
             "type": "string",
             "enum": [
               "up2data",
-              "harvestapi"
+              "harvestapi",
+              "fetchin"
             ],
-            "description": "which provider answered"
+            "description": "Which provider answered"
           },
           "cost_usd": {
             "type": "number",
-            "description": "what this call cost, in dollars: the provider's price, no markup"
+            "description": "What this call cost, in dollars: the provider's price, no markup"
           },
           "balance_usd": {
             "type": "number",
-            "description": "your balance after this call, in dollars (`balance_usd` in `GET /balance/`)"
+            "description": "Your balance after this call, in dollars (`balance_usd` in `GET /balance/`)"
           }
         },
         "additionalProperties": false
@@ -313,7 +316,7 @@
                     "string",
                     "null"
                   ],
-                  "description": "When the role ended, `YYYY-MM` or `YYYY`; `null` for a current role."
+                  "description": "When the role ended, `YYYY-MM` or `YYYY`. `null` for a current role."
                 },
                 "description": {
                   "type": "string",
@@ -385,7 +388,7 @@
                     "string",
                     "null"
                   ],
-                  "description": "When it ended, `YYYY-MM` or `YYYY`; `null` when ongoing."
+                  "description": "When it ended, `YYYY-MM` or `YYYY`. `null` when ongoing."
                 }
               },
               "additionalProperties": false
@@ -423,11 +426,11 @@
           },
           "urn": {
             "type": "string",
-            "description": "urn:li:member:{id} on enrich.\n"
+            "description": "`urn:li:member:{id}` on enrich.\n"
           },
           "profile_urn": {
             "type": "string",
-            "description": "urn:li:fsd_profile:{ACo…}, the profile id Sales Navigator and LinkedIn messaging use.\n"
+            "description": "`urn:li:fsd_profile:{ACo…}`, the profile id Sales Navigator and LinkedIn messaging use.\n"
           },
           "languages": {
             "type": "array",
@@ -455,7 +458,7 @@
                     "LIMITED_WORKING",
                     "ELEMENTARY"
                   ],
-                  "description": "The proficiency the member chose; omitted when they chose none."
+                  "description": "The proficiency the member chose. Omitted when they chose none."
                 }
               },
               "additionalProperties": false
@@ -670,7 +673,7 @@
         "properties": {
           "creditsUsed": {
             "type": "integer",
-            "description": "Up2Data credits this call used (1 per profile found). What it costs you is `datacircle_meta.cost_usd`: $0.00125 per Up2Data credit"
+            "description": "Up2Data credits this call used (1 per profile found). What it costs you is `datacircle_meta.cost_usd`: $0.002375 per Up2Data credit"
           },
           "billed": {
             "type": "boolean",
@@ -727,7 +730,7 @@
       },
       "Up2DataEnrichResponse": {
         "type": "object",
-        "description": "Up2Data's own response to POST /v1/profiles/enrich, plus `datacircle_meta`",
+        "description": "Up2Data's own response to `POST /v1/profiles/enrich`, plus `datacircle_meta`",
         "required": [
           "data",
           "meta",
@@ -1036,7 +1039,7 @@
                     "string",
                     "null"
                   ],
-                  "description": "The company's slug: linkedin.com/company/<companyUniversalName>."
+                  "description": "The company's slug: `linkedin.com/company/<companyUniversalName>`."
                 },
                 "description": {
                   "type": [
@@ -1057,7 +1060,7 @@
                     "string",
                     "null"
                   ],
-                  "description": "e.g. `Full-time`, `Self-employed`."
+                  "description": "Employment type, e.g. `Full-time` or `Self-employed`."
                 },
                 "endDate": {
                   "type": "object",
@@ -1071,7 +1074,7 @@
                     "text"
                   ],
                   "additionalProperties": false,
-                  "description": "When it ended; `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them."
+                  "description": "When it ended. `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them."
                 },
                 "experienceGroupId": {
                   "type": [
@@ -1132,7 +1135,7 @@
                     "string",
                     "null"
                   ],
-                  "description": "e.g. `On-site`, `Hybrid`, `Remote`."
+                  "description": "Where the role is worked, e.g. `On-site`, `Hybrid` or `Remote`."
                 }
               },
               "required": [
@@ -1201,7 +1204,7 @@
                     "year"
                   ],
                   "additionalProperties": false,
-                  "description": "When it ended; `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them."
+                  "description": "When it ended. `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them."
                 },
                 "fieldOfStudy": {
                   "type": [
@@ -1429,7 +1432,7 @@
                     "string",
                     "null"
                   ],
-                  "description": "The company's slug: linkedin.com/company/<companyUniversalName>."
+                  "description": "The company's slug: `linkedin.com/company/<companyUniversalName>`."
                 },
                 "description": {
                   "type": [
@@ -1450,7 +1453,7 @@
                     "string",
                     "null"
                   ],
-                  "description": "e.g. `Full-time`, `Self-employed`."
+                  "description": "Employment type, e.g. `Full-time` or `Self-employed`."
                 },
                 "endDate": {
                   "type": [
@@ -1478,7 +1481,7 @@
                     "text"
                   ],
                   "additionalProperties": false,
-                  "description": "When it ended; `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them."
+                  "description": "When it ended. `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them."
                 },
                 "experienceGroupId": {
                   "type": [
@@ -1542,7 +1545,7 @@
                     "string",
                     "null"
                   ],
-                  "description": "e.g. `On-site`, `Hybrid`, `Remote`."
+                  "description": "Where the role is worked, e.g. `On-site`, `Hybrid` or `Remote`."
                 }
               },
               "required": [
@@ -1683,7 +1686,7 @@
               "title"
             ],
             "additionalProperties": false,
-            "description": "The profile's Featured section; `null` when it has none."
+            "description": "The profile's Featured section. `null` when it has none."
           },
           "firstName": {
             "type": "string",
@@ -2042,7 +2045,7 @@
                     "text"
                   ],
                   "additionalProperties": false,
-                  "description": "When it ended; `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them."
+                  "description": "When it ended. `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them."
                 },
                 "logo": {
                   "type": [
@@ -2312,7 +2315,7 @@
                     "year"
                   ],
                   "additionalProperties": false,
-                  "description": "When it ended; `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them."
+                  "description": "When it ended. `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them."
                 },
                 "fieldOfStudy": {
                   "type": [
@@ -2501,7 +2504,7 @@
                     "text"
                   ],
                   "additionalProperties": false,
-                  "description": "When it ended; `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them."
+                  "description": "When it ended. `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them."
                 },
                 "startDate": {
                   "type": [
@@ -2761,7 +2764,7 @@
               "volunteering"
             ],
             "additionalProperties": false,
-            "description": "How many entries each section of the profile has on LinkedIn; a list above may hold fewer."
+            "description": "How many entries each section of the profile has on LinkedIn. A list above may hold fewer."
           },
           "services": {
             "type": [
@@ -2882,7 +2885,7 @@
               "servicesList"
             ],
             "additionalProperties": false,
-            "description": "The services the member offers (LinkedIn's Services page); `null` when none."
+            "description": "The services the member offers (LinkedIn's Services page). `null` when none."
           },
           "skills": {
             "type": "array",
@@ -2975,7 +2978,7 @@
                     "text"
                   ],
                   "additionalProperties": false,
-                  "description": "When it ended; `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them."
+                  "description": "When it ended. `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them."
                 },
                 "organizationLinkedinUrl": {
                   "type": "string",
@@ -3119,7 +3122,7 @@
                 "type": "null"
               }
             ],
-            "description": "The profile; `null` when HarvestAPI can't find it (`status` `404`) or refuses the request (`status` `400`)."
+            "description": "The profile. `null` when HarvestAPI can't find it (`status` `404`) or refuses the request (`status` `400`)."
           },
           "cost": {
             "type": "number",
@@ -3130,7 +3133,7 @@
               "string",
               "null"
             ],
-            "description": "The profile's LinkedIn member id (`ACoAA…`), as `element.id`; `null` when not found."
+            "description": "The profile's LinkedIn member id (`ACoAA…`), as `element.id`. `null` when not found."
           },
           "error": {
             "type": "string",
@@ -3169,14 +3172,14 @@
                   "string",
                   "null"
                 ],
-                "description": "The profile's LinkedIn member id (`ACoAA…`); `null` when not found."
+                "description": "The profile's LinkedIn member id (`ACoAA…`). `null` when not found."
               },
               "publicIdentifier": {
                 "type": [
                   "string",
                   "null"
                 ],
-                "description": "The profile's slug, linkedin.com/in/<publicIdentifier>; `null` when not found."
+                "description": "The profile's slug, linkedin.com/in/<publicIdentifier>. `null` when not found."
               },
               "url": {
                 "type": "string",
@@ -3213,64 +3216,1397 @@
           "datacircle_meta"
         ],
         "additionalProperties": false,
-        "description": "HarvestAPI's own answer to GET /linkedin/profile, minus `user` and `requestId` (our account with HarvestAPI), plus `datacircle_meta`."
-      }
-    }
-  },
-  "paths": {
-    "/me/invites/": {
-      "get": {
-        "tags": [
-          "Datacircle"
-        ],
-        "summary": "Get your invite link",
-        "description": "Your invite link and how many people you invited signed up. What they unlock: `unlocks` and `unlocks_datasets` below, and [Files](/files).",
-        "responses": {
-          "200": {
-            "description": "`{\"invite_url\": ..., \"signed_up_count\": 0, \"required_count\": 3, \"unlocks\": ..., \"unlocks_datasets\": [\"coop_up2data\", \"coop_harvestapi\", \"us_50m\"]}`",
-            "content": {
-              "application/json": {
-                "schema": {
+        "description": "HarvestAPI's own answer to `GET /linkedin/profile`, minus `user` and `requestId` (our account with HarvestAPI), plus `datacircle_meta`."
+      },
+      "FetchinProfileResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Profile URN (unique identifier)"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "Profile first name."
+          },
+          "lastName": {
+            "type": "string",
+            "description": "Profile last name. Some members restrict their full surname to their own contacts. For those profiles this is the publicly displayed initial (e.g. \"D.\") and lastNameInitialOnly is true. The full surname is not available through any request in that case."
+          },
+          "lastNameInitialOnly": {
+            "type": "boolean",
+            "description": "Present and true only when lastName is an initial because the member restricts it. Absent otherwise, never false."
+          },
+          "title": {
+            "type": "string",
+            "description": "Professional headline. A member can publish their profile in several languages and the source does not translate between them. This is the English version when the member published one, otherwise the version in their primaryLocale. Deterministic: two calls return the same language. Every version they did publish is in titleLocalized / descriptionLocalized."
+          },
+          "titleLocalized": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "The title in each language the member published, keyed by locale (\"fr_FR\", \"en_US\")."
+          },
+          "description": {
+            "type": "string",
+            "description": "About/summary section. A member can publish their profile in several languages and the source does not translate between them. This is the English version when the member published one, otherwise the version in their primaryLocale. Deterministic: two calls return the same language. Every version they did publish is in titleLocalized / descriptionLocalized. Line breaks are returned exactly as the source stores them: for some profiles the source holds this text with its line breaks already removed, and they are not reconstructed by guesswork."
+          },
+          "descriptionLocalized": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "The description in each language the member published, keyed by locale."
+          },
+          "location": {
+            "type": "string",
+            "description": "Where the member is, as the profile shows it."
+          },
+          "profilePictureUrl": {
+            "type": "string",
+            "description": "Profile picture URL, largest size available. Always a string: when the member has no photo of their own it holds a generic placeholder image and `profilePictureUrls` is absent."
+          },
+          "profilePictureUrls": {
+            "type": "array",
+            "description": "Every size of the profile picture, smallest first, one entry per distinct size (how many varies: a small original comes in fewer sizes). The last entry is the image `profilePictureUrl` points to (the framed picture when the member displays a photo frame). Absent, not empty and not null, when the member has no photo of their own, which is how to tell a real photo from the placeholder in `profilePictureUrl`. Not returned for organization records.",
+            "items": {
+              "type": "object",
+              "description": "One size of an image. Read the size from `width` and `height`, never from the URL: the size written in the URL path is the size that was requested and can differ from the file served. Image URLs are signed and stop working after an expiry date the source sets (their `e=` query parameter), which we do not control. Download an image to keep it rather than storing its URL.",
+              "required": [
+                "url"
+              ],
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "description": "Image URL"
+                },
+                "width": {
+                  "type": "integer",
+                  "description": "Width in pixels, as declared by the source. Omitted when it declares none."
+                },
+                "height": {
+                  "type": "integer",
+                  "description": "Height in pixels, as declared by the source. Omitted when it declares none."
+                }
+              }
+            }
+          },
+          "experiences": {
+            "type": "array",
+            "description": "Complete work history, most recent first. Every position comes back in one call, with no pagination, even for members with dozens of past employers or many roles at one employer. When a section came back incomplete, the top-level `partial` object names it.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Company name"
+                },
+                "jobTitle": {
+                  "type": "string",
+                  "description": "Job title/role"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Role description"
+                },
+                "dateRange": {
+                  "type": "string",
+                  "description": "Date range"
+                },
+                "current": {
+                  "type": "boolean",
+                  "description": "Whether this is the role the member marks as primary, the one at the top of their profile. At most one experience in the response is true, and it is false once that role has ended. To find every current role, use `ongoing`."
+                },
+                "positionUrn": {
+                  "type": "string",
+                  "description": "URN of this position entity. Join key for currentPosition.positionUrn"
+                },
+                "positionGroupUrn": {
+                  "type": "string",
+                  "description": "The stint this role belongs to. A stint is one unbroken period at one employer: the member held its roles back to back, and they sit next to each other in `experiences`. A member who leaves an employer and comes back has two stints, so two different values with the same `company.companyId`: group by this, not by `companyId`. Opaque, and the same only within one response: Fetchin may give the same stint another value on a later fetch. Fetchin omits it in the rare case it cannot group the roles."
+                },
+                "positionGroupId": {
+                  "type": "string",
+                  "description": "The key inside `positionGroupUrn`, in the spirit of `companyId` / `geoId`. It is a 40-character hexadecimal string, not a number. Only meaningful together with the profile it came from, so never use it on its own."
+                },
+                "locationName": {
+                  "type": "string",
+                  "description": "Job location in the member's profile language (e.g. \"Barcelona, Cataluna, Espana\"). Free text: use geoId/geoUrn to normalise or group. The top-level primaryLocale gives the profile language."
+                },
+                "employmentType": {
+                  "type": "string",
+                  "description": "Employment type (e.g., Freelance, Part-time)"
+                },
+                "timePeriod": {
                   "type": "object",
-                  "required": [
-                    "invite_url",
-                    "signed_up_count",
-                    "required_count",
-                    "unlocks",
-                    "unlocks_datasets"
-                  ],
                   "properties": {
-                    "invite_url": {
-                      "type": "string",
-                      "description": "Your own signup link: whoever signs up through it is your invitee."
-                    },
-                    "signed_up_count": {
-                      "type": "integer",
-                      "description": "How many people you invited have signed up and verified their email. People on your own email domain and deactivated accounts don't count."
-                    },
-                    "required_count": {
-                      "type": "integer",
-                      "description": "How many signed-up invitees unlock the files in `unlocks_datasets`."
-                    },
-                    "unlocks": {
-                      "type": "string",
-                      "description": "What reaching `required_count` unlocks, in words, and that $50 in funds added unlocks only the co-op file."
-                    },
-                    "unlocks_datasets": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
+                    "startDate": {
+                      "type": "object",
+                      "properties": {
+                        "month": {
+                          "type": "integer",
+                          "description": "The month, 1 to 12."
+                        },
+                        "year": {
+                          "type": "integer",
+                          "description": "The year."
+                        }
                       },
-                      "description": "The `dataset`s in `GET /files/` that reaching `required_count` unlocks."
+                      "description": "When it started."
+                    },
+                    "endDate": {
+                      "type": [
+                        "object",
+                        "null"
+                      ],
+                      "properties": {
+                        "month": {
+                          "type": "integer",
+                          "description": "The month, 1 to 12."
+                        },
+                        "year": {
+                          "type": "integer",
+                          "description": "The year."
+                        }
+                      },
+                      "description": "When it ended. `null` while it lasts."
                     }
+                  },
+                  "description": "When it started and ended."
+                },
+                "totalDuration": {
+                  "type": "string",
+                  "description": "Duration string (e.g., 3 yrs 1 mo)"
+                },
+                "company": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "The company's name."
+                    },
+                    "url": {
+                      "type": "string",
+                      "description": "Company profile URL"
+                    },
+                    "logo": {
+                      "type": "string",
+                      "description": "Company logo URL"
+                    },
+                    "companyId": {
+                      "type": "string",
+                      "description": "Numeric company id (e.g. \"8736\"), parsed from the company URN"
+                    },
+                    "urn": {
+                      "type": "string",
+                      "description": "Full company URN"
+                    }
+                  },
+                  "description": "The employer. Three cases: the employer has a company page (name plus url/logo/companyId/urn), the member typed an employer with no page (name only), or the member saved no employer (name is \"\" with no company, and employmentType may give the reason). An empty name means \"no employer entered\", never \"employer has no page\"."
+                },
+                "ongoing": {
+                  "type": "boolean",
+                  "description": "Whether the role is still running: a start date and no end date, the same entries whose dateRange ends in \"Present\". It doesn't depend on `current`: any number of experiences can be ongoing, and someone holding four roles at once has four. An entry with no dates is false."
+                },
+                "geoLocationName": {
+                  "type": "string",
+                  "description": "The standardized location caption behind locationName, in the same language."
+                },
+                "geoUrn": {
+                  "type": "string",
+                  "description": "Stable identifier for the position location, e.g. \"urn:li:fsd_geo:107025191\". Language-independent, so the right key to join or group on."
+                },
+                "geoId": {
+                  "type": "string",
+                  "description": "Numeric tail of geoUrn, e.g. \"107025191\"."
+                },
+                "locationNameLocalized": {
+                  "type": "object",
+                  "description": "Every language the source holds for this location caption, keyed by locale, e.g. {\"es_ES\": \"Barcelona, Cataluna, Espana\"}.",
+                  "additionalProperties": {
+                    "type": "string"
                   }
                 }
               }
             }
+          },
+          "educations": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "School/University name"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Degree and field combined"
+                },
+                "dateRange": {
+                  "type": "string",
+                  "description": "Date range"
+                },
+                "current": {
+                  "type": "boolean",
+                  "description": "Whether this is the person's current (ongoing) education. At most one education is true."
+                },
+                "educationUrn": {
+                  "type": "string",
+                  "description": "URN of this education entity. Join key for currentSchool.educationUrn"
+                },
+                "degreeName": {
+                  "type": "string",
+                  "description": "Degree name (e.g., MBA, MSEE)"
+                },
+                "fieldOfStudy": {
+                  "type": "string",
+                  "description": "Field of study"
+                },
+                "grade": {
+                  "type": "string",
+                  "description": "Grade or honors, as free text (e.g. \"First Class Honours\")"
+                },
+                "details": {
+                  "type": "string",
+                  "description": "The member's own free-text description of this education entry. Distinct from `description`, which stays the synthesized degree + field string."
+                },
+                "schoolLogo": {
+                  "type": "string",
+                  "description": "School logo URL"
+                },
+                "schoolUrl": {
+                  "type": "string",
+                  "description": "School profile URL"
+                },
+                "timePeriod": {
+                  "type": "object",
+                  "properties": {
+                    "startDate": {
+                      "type": "object",
+                      "properties": {
+                        "year": {
+                          "type": "integer",
+                          "description": "The year."
+                        }
+                      },
+                      "description": "When it started."
+                    },
+                    "endDate": {
+                      "type": "object",
+                      "properties": {
+                        "year": {
+                          "type": "integer",
+                          "description": "The year."
+                        }
+                      },
+                      "description": "When it ended. `null` while it lasts."
+                    }
+                  },
+                  "description": "When it started and ended."
+                },
+                "ongoing": {
+                  "type": "boolean",
+                  "description": "Whether the studies are still running: a start year and no end year. Note an ongoing education dateRange reads \"2022\", not \"2022 - Present\"."
+                },
+                "activities": {
+                  "type": "string",
+                  "description": "The \"activities and societies\" line the member entered for this entry, e.g. \"Nature Club, LTS, Elocution\". Omitted when blank."
+                }
+              }
+            },
+            "description": "The schools, newest first."
+          },
+          "volunteerCauses": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Volunteer causes listed on the profile"
+          },
+          "skills": {
+            "type": "array",
+            "description": "Professional skills listed on the profile. Complete list, returned in the same single call as the rest of the profile.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Skill name"
+                }
+              }
+            }
+          },
+          "languages": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Language name"
+                },
+                "proficiency": {
+                  "type": "string",
+                  "description": "Proficiency level"
+                }
+              }
+            },
+            "description": "The languages the member lists."
+          },
+          "certifications": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Certification name"
+                },
+                "organizationName": {
+                  "type": "string",
+                  "description": "Issuing organization's name"
+                },
+                "organizationUrl": {
+                  "type": "string",
+                  "description": "Issuing organization's professional page URL, when available"
+                },
+                "issuedDate": {
+                  "type": "string",
+                  "description": "Issue date of the certification (e.g. Jun 2018). If it also expires, this string holds both dates, as in `Jun 2018 - Jun 2026`, a format the source keeps for older clients. Read expirationDate for the expiry alone."
+                },
+                "authority": {
+                  "type": "string",
+                  "deprecated": true,
+                  "description": "Legacy alias of organizationName, kept for backward compatibility"
+                },
+                "dateRange": {
+                  "type": "string",
+                  "deprecated": true,
+                  "description": "Legacy alias of issuedDate, kept for backward compatibility"
+                },
+                "expirationDate": {
+                  "type": "string",
+                  "description": "When the credential expires (e.g. Jun 2026). Omitted when it does not expire."
+                },
+                "credentialId": {
+                  "type": "string",
+                  "description": "The credential ID the member entered, as free text. Omitted when blank."
+                },
+                "credentialUrl": {
+                  "type": "string",
+                  "description": "The \"show credential\" link the member entered. Omitted when blank."
+                },
+                "organizationLogo": {
+                  "type": "string",
+                  "description": "Issuing organization logo image URL, when a professional page is linked."
+                }
+              }
+            },
+            "description": "Licenses and certifications."
+          },
+          "coverImageUrl": {
+            "type": "string",
+            "description": "Profile banner/background image URL"
+          },
+          "coverImageUrls": {
+            "type": "array",
+            "description": "Every size of the banner image, smallest first. Banners are not square, so use both `width` and `height`. Absent when the member has no banner, in which case `coverImageUrl` is absent too.",
+            "items": {
+              "type": "object",
+              "description": "One size of an image. Read the size from `width` and `height`, never from the URL: the size written in the URL path is the size that was requested and can differ from the file served. Image URLs are signed and stop working after an expiry date the source sets (their `e=` query parameter), which we do not control. Download an image to keep it rather than storing its URL.",
+              "required": [
+                "url"
+              ],
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "description": "Image URL"
+                },
+                "width": {
+                  "type": "integer",
+                  "description": "Width in pixels, as declared by the source. Omitted when it declares none."
+                },
+                "height": {
+                  "type": "integer",
+                  "description": "Height in pixels, as declared by the source. Omitted when it declares none."
+                }
+              }
+            }
+          },
+          "publicIdentifier": {
+            "type": "string",
+            "description": "Public identifier (slug)"
+          },
+          "profileId": {
+            "type": "string",
+            "description": "Member identifier"
+          },
+          "countryCode": {
+            "type": "string",
+            "description": "ISO country code"
+          },
+          "geoLocationName": {
+            "type": "string",
+            "description": "Full geographic location string"
+          },
+          "geoCountryName": {
+            "type": "string",
+            "description": "Country name"
+          },
+          "geoUrn": {
+            "type": "string",
+            "description": "Geo URN"
+          },
+          "connectionType": {
+            "type": "string",
+            "description": "Always \"OUT_OF_NETWORK\" in the answers we have seen. It says nothing about you: no LinkedIn account of yours is in the call."
+          },
+          "creatorInfo": {
+            "type": "object",
+            "description": "Creator mode information",
+            "properties": {
+              "hashTags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Creator hashtags"
+              },
+              "website": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "Creator website URL"
+              }
+            }
+          },
+          "jobTitle": {
+            "type": "string",
+            "description": "Title of the member's primary role (the entry flagged current in experiences). The member sets it, and an end date does not clear it: if the member has not updated their profile since that role ended, jobTitle still shows it while the matching experience shows ongoing:false."
+          },
+          "companyName": {
+            "type": "string",
+            "description": "Employer for the role in jobTitle. currentPosition comes from the top of the member's profile instead, so it can be null while jobTitle/companyName have values."
+          },
+          "companyPublicId": {
+            "type": "string",
+            "description": "Current company public identifier slug"
+          },
+          "companyLinkedinUrl": {
+            "type": "string",
+            "description": "Current company profile URL"
+          },
+          "currentPosition": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "Explicit \"current company\" block from the top of the profile page. Object when the member displays it, null when they don't (an ongoing primary position may still exist in experiences).",
+            "properties": {
+              "positionUrn": {
+                "type": "string",
+                "description": "URN of the designated position. Matches experiences[].positionUrn"
+              },
+              "title": {
+                "type": "string",
+                "description": "Role title of the designated position"
+              },
+              "name": {
+                "type": "string",
+                "description": "Company name"
+              },
+              "companyId": {
+                "type": "string",
+                "description": "LinkedIn's numeric id of the company."
+              },
+              "companyUrn": {
+                "type": "string",
+                "description": "Full company URN"
+              },
+              "publicIdentifier": {
+                "type": "string",
+                "description": "Company page slug"
+              },
+              "url": {
+                "type": "string",
+                "description": "Company page URL"
+              }
+            }
+          },
+          "currentSchool": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "Explicit \"education\" block from the top of the profile page. Object when the member displays it, null when they don't.",
+            "properties": {
+              "educationUrn": {
+                "type": "string",
+                "description": "URN of the designated education entry. Matches educations[].educationUrn"
+              },
+              "name": {
+                "type": "string",
+                "description": "School name"
+              },
+              "schoolId": {
+                "type": "string",
+                "description": "Legacy school id from urn:li:fsd_school:<id>. Distinct from companyId"
+              },
+              "schoolUrn": {
+                "type": "string",
+                "description": "Full school URN"
+              },
+              "companyId": {
+                "type": "string",
+                "description": "LinkedIn's numeric id of the school's page."
+              },
+              "publicIdentifier": {
+                "type": "string",
+                "description": "School page slug"
+              },
+              "url": {
+                "type": "string",
+                "description": "School page URL"
+              }
+            }
+          },
+          "followerCount": {
+            "type": "number",
+            "description": "Number of followers"
+          },
+          "connectionsCount": {
+            "type": "number",
+            "description": "Number of connections"
+          },
+          "creator": {
+            "type": "boolean",
+            "description": "Whether Creator mode is enabled"
+          },
+          "influencer": {
+            "type": "boolean",
+            "description": "Whether the profile carries the platform's long-standing editorial recognition. Distinct from topVoice: a profile can have one without the other."
+          },
+          "topVoice": {
+            "type": "boolean",
+            "description": "Present and true when the profile has a recognised-voice badge. Absent (not false) when it doesn't, as on most profiles: treat an absent key as false. The response has no display label for the badge, because the source translates the label for each viewer."
+          },
+          "premium": {
+            "type": "boolean",
+            "description": "Whether the profile has Premium"
+          },
+          "isVerified": {
+            "type": "boolean",
+            "description": "Whether the profile has a verification badge"
+          },
+          "memberId": {
+            "type": "string",
+            "description": "Numeric internal member id (e.g. \"251749025\"). Distinct from `id`/`profileId`, which carry the `urn:li:fsd_profile:…` form."
+          },
+          "openToWork": {
+            "type": "boolean",
+            "description": "Whether the profile shows the public #OPEN_TO_WORK photo frame. Reflects the publicly visible badge only. Recruiter-only 'open to work' is not exposed."
+          },
+          "hiring": {
+            "type": "boolean",
+            "description": "Whether the profile shows the public #HIRING photo frame. A profile picture carries one frame at most, so hiring and openToWork are never both true."
+          },
+          "inRemembrance": {
+            "type": "boolean",
+            "description": "Whether the account has been officially memorialized ('In Remembrance'). Only a memorialized account returns true: a regular profile whose headline mentions the member has passed away returns false."
+          },
+          "openProfile": {
+            "type": "boolean",
+            "description": "True when the member has an open profile: anyone can message them without connecting or spending a paid message credit. Unrelated to `openToWork`, and separate from `premium` (some members without premium have an open profile). An absent openProfile means unknown: on some calls the key is missing and partial.sections lists openProfile. If you request the profile again, the key comes back in most cases. A memorialized account (inRemembrance true) has openProfile false, since nobody can message it. openProfile is the only status boolean whose absence means unknown."
+          },
+          "joinDate": {
+            "type": "object",
+            "description": "Approximate account creation date (month + year).",
+            "properties": {
+              "month": {
+                "type": "integer",
+                "description": "The month, 1 to 12."
+              },
+              "year": {
+                "type": "integer",
+                "description": "The year."
+              }
+            }
+          },
+          "birthDate": {
+            "type": "object",
+            "description": "The member's birthday, only when their privacy settings make it visible to us. Absent when they hide it or never entered it. Members choose who can see it, so one who limits it to a narrower audience may appear on some calls and not on others. Included in every call at no extra cost. Always a month and a day. The year only when the member shares it, which is rare.",
+            "properties": {
+              "month": {
+                "type": "integer",
+                "description": "1-12"
+              },
+              "day": {
+                "type": "integer",
+                "description": "1-31"
+              },
+              "year": {
+                "type": "integer",
+                "description": "Only when the member shows it"
+              }
+            },
+            "required": [
+              "month",
+              "day"
+            ]
+          },
+          "websites": {
+            "type": "array",
+            "description": "The websites listed in the member's contact info, only when their privacy settings make them visible to us, in the order the member listed them. Absent (never an empty array) when there are none to show. Included in every call at no extra cost. Not the same as creatorInfo.website, the single link a creator pins to their profile.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "url": {
+                  "type": "string",
+                  "description": "The website's URL."
+                },
+                "category": {
+                  "type": "string",
+                  "description": "The type the member picked for it, e.g. `PERSONAL`, `COMPANY`, `BLOG`, `PORTFOLIO` or `OTHER`"
+                }
+              },
+              "required": [
+                "url"
+              ]
+            }
+          },
+          "url": {
+            "type": "string",
+            "description": "Canonical public URL of the professional profile page"
+          },
+          "pronoun": {
+            "type": "string",
+            "description": "Publicly displayed pronouns (e.g. \"she/her\"). Omitted when the member doesn't display pronouns."
+          },
+          "recommendations": {
+            "type": "array",
+            "description": "Recommendations received by the member. Best-effort: omitted when this section could not be fetched, empty array when the member has none.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "caption": {
+                  "type": "string",
+                  "description": "The recommender's headline at the time of the fetch (the context line shown under the author's name)"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "The recommendation text"
+                },
+                "authorFullname": {
+                  "type": "string",
+                  "description": "The recommender's full name"
+                },
+                "authorUrl": {
+                  "type": "string",
+                  "description": "The recommender's public profile page URL"
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "When the recommendation was written, ISO 8601. Omitted when the source carries no timestamp."
+                },
+                "lastModifiedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "When it was last edited, ISO 8601. Equal to createdAt when it was never edited."
+                }
+              }
+            }
+          },
+          "testScores": {
+            "type": "array",
+            "description": "Test scores listed on the profile",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Test name (e.g. \"TOEIC\")"
+                },
+                "score": {
+                  "type": "string",
+                  "description": "Score, as free text (e.g. \"990\")"
+                },
+                "date": {
+                  "type": "string",
+                  "description": "When the test was taken (e.g. Jun 2018)"
+                }
+              }
+            }
+          },
+          "industry": {
+            "type": "string",
+            "description": "The member's self-declared industry, e.g. \"Information Technology & Services\". It comes from the list LinkedIn shows on profiles, which is not the list company pages use, so do not join the two. Omitted when the member lists none."
+          },
+          "industryUrn": {
+            "type": "string",
+            "description": "Stable identifier for industry, e.g. \"urn:li:fsd_industry:96\"."
+          },
+          "primaryLocale": {
+            "type": "string",
+            "description": "The language the member wrote their profile in, e.g. \"es_ES\". The free text can be in another language: see title and description for the language you get. For language-independent values, use geoUrn, industryUrn or companyId."
+          },
+          "supportedLocales": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Every language the member published their profile in, e.g. [\"fr_FR\",\"en_US\"]. A member who wrote their profile once gets a single-entry array, so more than one entry is the signal that titleLocalized / descriptionLocalized have something to choose from."
+          },
+          "entityType": {
+            "type": "string",
+            "enum": [
+              "Person"
+            ],
+            "description": "Always \"Person\". We take only a LinkedIn profile URL, so a company page never comes back."
+          },
+          "publications": {
+            "type": "array",
+            "description": "Publications listed on the profile, in display order.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Publication title."
+                },
+                "publisher": {
+                  "type": "string",
+                  "description": "Publisher or journal."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "The member's own description. Omitted when blank."
+                },
+                "url": {
+                  "type": "string",
+                  "description": "Link to the publication."
+                },
+                "publishedDate": {
+                  "type": "string",
+                  "description": "Publication date, e.g. Sep 2021."
+                },
+                "publishedOn": {
+                  "type": "object",
+                  "description": "The same date structured, when finer than month is available.",
+                  "properties": {
+                    "year": {
+                      "type": "integer",
+                      "description": "The year."
+                    },
+                    "month": {
+                      "type": "integer",
+                      "description": "The month, 1 to 12."
+                    },
+                    "day": {
+                      "type": "integer",
+                      "description": "The day of the month."
+                    }
+                  }
+                },
+                "authors": {
+                  "type": "array",
+                  "description": "Credited co-authors.",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "fullName": {
+                        "type": "string",
+                        "description": "The contributor name. Omitted when a credited member profile could not be resolved, never an empty string."
+                      },
+                      "publicIdentifier": {
+                        "type": "string",
+                        "description": "Public identifier (slug), when the contributor is a member."
+                      },
+                      "profileUrn": {
+                        "type": "string",
+                        "description": "Profile URN, usable directly as profileUrlOrUrn on this endpoint."
+                      },
+                      "url": {
+                        "type": "string",
+                        "description": "Public profile URL."
+                      },
+                      "headline": {
+                        "type": "string",
+                        "description": "Headline at the time of the fetch."
+                      }
+                    }
+                  }
+                },
+                "publicationUrn": {
+                  "type": "string",
+                  "description": "URN of this publication entry."
+                }
+              }
+            }
+          },
+          "projects": {
+            "type": "array",
+            "description": "Projects listed on the profile, in display order.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "description": "Project title."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "The member's own description. Omitted when blank."
+                },
+                "url": {
+                  "type": "string",
+                  "description": "Project link."
+                },
+                "dateRange": {
+                  "type": "string",
+                  "description": "Formatted range, e.g. \"Apr 2018 - Mar 2019\". Empty string when the member gave no dates."
+                },
+                "timePeriod": {
+                  "type": "object",
+                  "description": "Structured start/end dates.",
+                  "properties": {
+                    "startDate": {
+                      "type": "object",
+                      "properties": {
+                        "year": {
+                          "type": "integer",
+                          "description": "The year."
+                        },
+                        "month": {
+                          "type": "integer",
+                          "description": "The month, 1 to 12."
+                        }
+                      },
+                      "description": "When it started."
+                    },
+                    "endDate": {
+                      "type": "object",
+                      "properties": {
+                        "year": {
+                          "type": "integer",
+                          "description": "The year."
+                        },
+                        "month": {
+                          "type": "integer",
+                          "description": "The month, 1 to 12."
+                        }
+                      },
+                      "description": "When it ended. `null` while it lasts."
+                    }
+                  }
+                },
+                "contributors": {
+                  "type": "array",
+                  "description": "Credited collaborators.",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "fullName": {
+                        "type": "string",
+                        "description": "The contributor name. Omitted when a credited member profile could not be resolved, never an empty string."
+                      },
+                      "publicIdentifier": {
+                        "type": "string",
+                        "description": "Public identifier (slug), when the contributor is a member."
+                      },
+                      "profileUrn": {
+                        "type": "string",
+                        "description": "Profile URN, usable directly as profileUrlOrUrn on this endpoint."
+                      },
+                      "url": {
+                        "type": "string",
+                        "description": "Public profile URL."
+                      },
+                      "headline": {
+                        "type": "string",
+                        "description": "Headline at the time of the fetch."
+                      }
+                    }
+                  }
+                },
+                "positionUrn": {
+                  "type": "string",
+                  "description": "Set when the project is attached to a role. Joins to experiences[].positionUrn."
+                },
+                "educationUrn": {
+                  "type": "string",
+                  "description": "Set when the project is attached to a school. Joins to educations[].educationUrn."
+                },
+                "projectUrn": {
+                  "type": "string",
+                  "description": "URN of this project entry."
+                }
+              }
+            }
+          },
+          "patents": {
+            "type": "array",
+            "description": "Patents listed on the profile, in display order.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "description": "Patent title."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "The member's own description. Omitted when blank."
+                },
+                "url": {
+                  "type": "string",
+                  "description": "Link to the patent record."
+                },
+                "issuer": {
+                  "type": "string",
+                  "description": "Patent office, as the member typed it (e.g. \"us\"). Free text, not a controlled vocabulary."
+                },
+                "patentNumber": {
+                  "type": "string",
+                  "description": "Patent number as entered."
+                },
+                "applicationNumber": {
+                  "type": "string",
+                  "description": "Application number as entered."
+                },
+                "pending": {
+                  "type": "boolean",
+                  "description": "Whether the patent is still an application rather than granted. Always present."
+                },
+                "issuedDate": {
+                  "type": "string",
+                  "description": "When granted, e.g. Jan 2017. Omitted while pending."
+                },
+                "filedDate": {
+                  "type": "string",
+                  "description": "When filed, e.g. Dec 2024."
+                },
+                "issuedOn": {
+                  "type": "object",
+                  "description": "`issuedDate` as a year, a month and a day.",
+                  "properties": {
+                    "year": {
+                      "type": "integer",
+                      "description": "The year."
+                    },
+                    "month": {
+                      "type": "integer",
+                      "description": "The month, 1 to 12."
+                    },
+                    "day": {
+                      "type": "integer",
+                      "description": "The day of the month."
+                    }
+                  }
+                },
+                "filedOn": {
+                  "type": "object",
+                  "description": "`filedDate` as a year, a month and a day.",
+                  "properties": {
+                    "year": {
+                      "type": "integer",
+                      "description": "The year."
+                    },
+                    "month": {
+                      "type": "integer",
+                      "description": "The month, 1 to 12."
+                    },
+                    "day": {
+                      "type": "integer",
+                      "description": "The day of the month."
+                    }
+                  }
+                },
+                "inventors": {
+                  "type": "array",
+                  "description": "Credited inventors.",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "fullName": {
+                        "type": "string",
+                        "description": "The contributor name. Omitted when a credited member profile could not be resolved, never an empty string."
+                      },
+                      "publicIdentifier": {
+                        "type": "string",
+                        "description": "Public identifier (slug), when the contributor is a member."
+                      },
+                      "profileUrn": {
+                        "type": "string",
+                        "description": "Profile URN, usable directly as profileUrlOrUrn on this endpoint."
+                      },
+                      "url": {
+                        "type": "string",
+                        "description": "Public profile URL."
+                      },
+                      "headline": {
+                        "type": "string",
+                        "description": "Headline at the time of the fetch."
+                      }
+                    }
+                  }
+                },
+                "patentUrn": {
+                  "type": "string",
+                  "description": "URN of this patent entry."
+                }
+              }
+            }
+          },
+          "honors": {
+            "type": "array",
+            "description": "Honors and awards listed on the profile, in display order.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string",
+                  "description": "Award title."
+                },
+                "issuer": {
+                  "type": "string",
+                  "description": "Who granted it, as free text."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "The member's own description. Omitted when blank."
+                },
+                "issuedDate": {
+                  "type": "string",
+                  "description": "When it was awarded, e.g. Oct 2018. A single date: an award has no end."
+                },
+                "positionUrn": {
+                  "type": "string",
+                  "description": "Joins to experiences[].positionUrn when attached to a role."
+                },
+                "educationUrn": {
+                  "type": "string",
+                  "description": "Joins to educations[].educationUrn when attached to a school."
+                },
+                "honorUrn": {
+                  "type": "string",
+                  "description": "URN of this award entry."
+                }
+              }
+            }
+          },
+          "organizations": {
+            "type": "array",
+            "description": "Organizations the member belongs to, in display order.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Organization name."
+                },
+                "positionHeld": {
+                  "type": "string",
+                  "description": "The role the member held there, e.g. \"Membership Chairperson\"."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "The member's own description. Omitted when blank."
+                },
+                "dateRange": {
+                  "type": "string",
+                  "description": "Formatted range, e.g. \"2015 - Jun 2016\". Empty string when no dates were given."
+                },
+                "timePeriod": {
+                  "type": "object",
+                  "description": "Structured start/end dates.",
+                  "properties": {
+                    "startDate": {
+                      "type": "object",
+                      "properties": {
+                        "year": {
+                          "type": "integer",
+                          "description": "The year."
+                        },
+                        "month": {
+                          "type": "integer",
+                          "description": "The month, 1 to 12."
+                        }
+                      },
+                      "description": "When it started."
+                    },
+                    "endDate": {
+                      "type": [
+                        "object",
+                        "null"
+                      ],
+                      "properties": {
+                        "year": {
+                          "type": "integer",
+                          "description": "The year."
+                        },
+                        "month": {
+                          "type": "integer",
+                          "description": "The month, 1 to 12."
+                        }
+                      },
+                      "description": "When it ended. `null` while it lasts."
+                    }
+                  }
+                },
+                "positionUrn": {
+                  "type": "string",
+                  "description": "Joins to experiences[].positionUrn when attached to a role."
+                },
+                "educationUrn": {
+                  "type": "string",
+                  "description": "Joins to educations[].educationUrn when attached to a school."
+                },
+                "organizationUrn": {
+                  "type": "string",
+                  "description": "URN of this entry."
+                }
+              }
+            }
+          },
+          "courses": {
+            "type": "array",
+            "description": "Courses listed on the profile, in display order.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Course name."
+                },
+                "number": {
+                  "type": "string",
+                  "description": "Course code as entered, e.g. \"Fin335\". Omitted when blank."
+                },
+                "positionUrn": {
+                  "type": "string",
+                  "description": "Joins to experiences[].positionUrn when attached to a role."
+                },
+                "educationUrn": {
+                  "type": "string",
+                  "description": "Joins to educations[].educationUrn when attached to a school."
+                },
+                "courseUrn": {
+                  "type": "string",
+                  "description": "URN of this entry."
+                }
+              }
+            }
+          },
+          "volunteerExperiences": {
+            "type": "array",
+            "description": "Volunteering roles: what the member did and for whom, in display order. Not the same as volunteerCauses, which lists the causes they say they care about.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "role": {
+                  "type": "string",
+                  "description": "What the member did, e.g. \"Pianist\", \"Instructor\"."
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Organization name, following the same convention as experiences[].name."
+                },
+                "cause": {
+                  "type": "string",
+                  "description": "The cause this role served, as a stable identifier, e.g. \"EDUCATION\". Omitted when not set."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "The member's own description. Omitted when blank."
+                },
+                "dateRange": {
+                  "type": "string",
+                  "description": "Formatted range, e.g. \"Mar 2014 - Present\". Empty string when no dates were given."
+                },
+                "timePeriod": {
+                  "type": "object",
+                  "description": "Structured start/end dates.",
+                  "properties": {
+                    "startDate": {
+                      "type": "object",
+                      "properties": {
+                        "year": {
+                          "type": "integer",
+                          "description": "The year."
+                        },
+                        "month": {
+                          "type": "integer",
+                          "description": "The month, 1 to 12."
+                        }
+                      },
+                      "description": "When it started."
+                    },
+                    "endDate": {
+                      "type": [
+                        "object",
+                        "null"
+                      ],
+                      "properties": {
+                        "year": {
+                          "type": "integer",
+                          "description": "The year."
+                        },
+                        "month": {
+                          "type": "integer",
+                          "description": "The month, 1 to 12."
+                        }
+                      },
+                      "description": "When it ended. `null` while it lasts."
+                    }
+                  }
+                },
+                "company": {
+                  "type": "object",
+                  "description": "The organization page, when it has one. Same shape as experiences[].company.",
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "description": "Organization page URL."
+                    },
+                    "name": {
+                      "type": "string",
+                      "description": "Organization name."
+                    },
+                    "logo": {
+                      "type": "string",
+                      "description": "Logo image URL."
+                    },
+                    "companyId": {
+                      "type": "string",
+                      "description": "Numeric company id."
+                    },
+                    "urn": {
+                      "type": "string",
+                      "description": "Full company URN."
+                    }
+                  }
+                },
+                "volunteerExperienceUrn": {
+                  "type": "string",
+                  "description": "URN of this entry."
+                }
+              }
+            }
+          },
+          "partial": {
+            "type": "object",
+            "description": "Present only when a read failed and part of the profile is missing. Fetchin builds a profile from several reads, and when one fails, the array that read fills holds fewer items than the profile shows. Use this field to tell whether a short list is complete.",
+            "properties": {
+              "sections": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Names of the response fields that may be short or missing on this call, e.g. [\"experiences\"]. An array Fetchin returned shorter than the member's real list: experiences, educations, skills, certifications, languages, testScores, publications, projects, patents, honors, organizations, courses or volunteerExperiences. A best-effort field Fetchin could not fetch, or fetched only in part: recommendations and recommendationsGiven (absent, or shorter than the member's real list), and joinDate, birthDate, websites and openProfile (absent). joinDate, birthDate and websites come from one read, so they are listed together. When birthDate is listed, Fetchin could not read it on this call. When it is absent and not listed, the member's profile does not show a birthday."
+              },
+              "totals": {
+                "type": "object",
+                "description": "The count LinkedIn gives for each incomplete section, when it gives one. It uses the same keys, except experienceGroups, which counts stints. A stint is one unbroken period at one employer: a member who left an employer and came back has two stints there (see experiences[].positionGroupUrn).",
+                "additionalProperties": {
+                  "type": "integer"
+                }
+              }
+            },
+            "additionalProperties": false
+          },
+          "recommendationsGiven": {
+            "type": "array",
+            "description": "Recommendations the member wrote for other people. Best-effort, exactly like `recommendations`: an empty array means they wrote none, while an absent key means the fetch failed and `partial` will say so. Note the named person here is the recipient, whereas in `recommendations` it is the author.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "description": {
+                  "type": "string",
+                  "description": "The recommendation text."
+                },
+                "caption": {
+                  "type": "string",
+                  "description": "The recipient's headline at the time of the fetch."
+                },
+                "recipientFullname": {
+                  "type": "string",
+                  "description": "Full name of the person who was recommended."
+                },
+                "recipientUrl": {
+                  "type": "string",
+                  "description": "The recipient's public profile page URL."
+                },
+                "createdAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "When the recommendation was written, ISO 8601. Omitted when the source carries no timestamp."
+                },
+                "lastModifiedAt": {
+                  "type": "string",
+                  "format": "date-time",
+                  "description": "When it was last edited, ISO 8601. Equal to createdAt when it was never edited."
+                }
+              }
+            }
+          },
+          "datacircle_meta": {
+            "$ref": "#/components/schemas/DatacircleMeta"
           }
-        }
+        },
+        "description": "Fetchin's answer: the profile object as Fetchin sends it, plus `datacircle_meta`.",
+        "required": [
+          "datacircle_meta"
+        ]
+      },
+      "FetchinError": {
+        "type": "object",
+        "required": [
+          "error",
+          "code",
+          "datacircle_meta"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Human-readable description of what went wrong. For display/logging. Do not branch on this string."
+          },
+          "code": {
+            "type": "string",
+            "enum": [
+              "MISSING_PARAMETER",
+              "INVALID_PARAMETER",
+              "INVALID_URN",
+              "UNAUTHENTICATED",
+              "INVALID_API_KEY",
+              "FORBIDDEN",
+              "NOT_FOUND",
+              "PROFILE_NOT_FOUND",
+              "POST_NOT_FOUND",
+              "COMPANY_NOT_FOUND",
+              "ENDPOINT_REMOVED",
+              "RATE_LIMITED",
+              "QUOTA_EXHAUSTED",
+              "INTERNAL_ERROR",
+              "UPSTREAM_ERROR",
+              "SERVICE_UNAVAILABLE",
+              "UPSTREAM_TIMEOUT"
+            ],
+            "description": "Stable, machine-readable error code. Branch your integration on this value, not on the HTTP status alone or the message text."
+          },
+          "datacircle_meta": {
+            "$ref": "#/components/schemas/DatacircleMeta"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Fetchin's own error, passed on with its status, plus `datacircle_meta`. `PROFILE_NOT_FOUND` (`404`) is billed, as Fetchin bills it, every other code is free."
       }
-    },
+    }
+  },
+  "paths": {
     "/me/api-key/reset/": {
       "post": {
         "tags": [
@@ -3307,6 +4643,7 @@
           "Datacircle"
         ],
         "summary": "Read the balance",
+        "description": "Your balance, in dollars: `balance_usd` is everything your calls can spend right now, then what it is made of: what is left of the signup credit, of the funds you added, of manual credits, and every temporary credit with its expiry. Read it to know whether it covers the calls you are about to make. Free.",
         "responses": {
           "200": {
             "description": "Balance split by kind",
@@ -3327,6 +4664,7 @@
           "Datacircle"
         ],
         "summary": "Start a Stripe Checkout",
+        "description": "Starts a Stripe Checkout that adds funds to your balance, any whole number of dollars from 5 to 10,000. Open `checkout_url`, or hand it to a human to pay: nothing is charged until they do. The funds land in `funds_usd` once Stripe confirms the payment, and never expire.",
         "requestBody": {
           "required": true,
           "content": {
@@ -3338,10 +4676,11 @@
                 ],
                 "properties": {
                   "amount_usd": {
-                    "description": "How much to add to your balance, in whole dollars.",
+                    "description": "How much to add to your balance, in whole dollars. Add \\$50 to your account: you get \\$50 of API PLUS the flat file (the co-op files in `GET /files/`).",
                     "type": "integer",
                     "minimum": 5,
-                    "maximum": 10000
+                    "maximum": 10000,
+                    "example": 50
                   }
                 }
               }
@@ -3407,6 +4746,7 @@
           "Datacircle"
         ],
         "summary": "List files",
+        "description": "The co-op files (`coop_up2data`, `coop_harvestapi`, `coop_fetchin`): every LinkedIn profile any customer fetched through each provider, new every day. Each has its `id` and `is_unlocked`. Get a file with `POST /files/{file_id}/download-link/`. This call is free.",
         "responses": {
           "200": {
             "description": "Every file with `is_unlocked` for this workspace",
@@ -3430,11 +4770,13 @@
           "Datacircle"
         ],
         "summary": "Get a download link",
+        "description": "A download link for one file of `GET /files/`, by its `id`: `url`, signed and valid one hour, fetched as is without your API key, and `next_step`, a ready-to-run call per provider for the live profile behind any row. A file not unlocked for this workspace answers `403`, its `error` saying how to unlock it. Free.",
         "parameters": [
           {
             "name": "file_id",
             "in": "path",
             "required": true,
+            "description": "The file's `id`, from `GET /files/` (List files).",
             "schema": {
               "type": "integer"
             }
@@ -3480,7 +4822,7 @@
                             "properties": {
                               "provider": {
                                 "type": "string",
-                                "description": "The provider the call goes to, e.g. `up2data` or `harvestapi`."
+                                "description": "The provider the call goes to: `up2data`, `harvestapi` or `fetchin`, its `X-Data-Provider` value."
                               },
                               "curl": {
                                 "type": "string",
@@ -3494,7 +4836,7 @@
                           "description": "Where Datacircle's docs are (a URL)."
                         }
                       },
-                      "description": "What to do with the file next: pull the live LinkedIn profile behind any row, at the provider's cost."
+                      "description": "What to do with the file next: pull the live LinkedIn profile behind any row, with no markup."
                     }
                   }
                 }
@@ -3520,13 +4862,13 @@
           "Up2Data"
         ],
         "summary": "Enrich one LinkedIn profile",
-        "description": "Up2Data's own request (https://api.up2data.ai/v1/profiles/enrich), sent to api.datacircle.dev with your Datacircle key in `Authorization` and `X-Data-Provider: up2data`. Nothing else changes. $0.00125 per profile found (Up2Data's price, no markup).",
+        "description": "Send Up2Data's own request (`POST https://api.up2data.ai/v1/profiles/enrich`) to api.datacircle.dev, with your Datacircle key in `Authorization` and `X-Data-Provider: up2data`. The path and the body stay the same. We charge $0.002375 per profile Up2Data finds, with no markup.",
         "parameters": [
           {
             "name": "X-Data-Provider",
             "in": "header",
             "required": true,
-            "description": "names the provider: `up2data`. With the host, the only change from the provider's own request.",
+            "description": "Names the provider: `up2data`. This header and the host are the only changes from the provider's own request.",
             "schema": {
               "type": "string",
               "enum": [
@@ -3549,24 +4891,24 @@
                 "properties": {
                   "url": {
                     "type": "string",
-                    "description": "the profile's LinkedIn URL (`https://www.linkedin.com/in/williamhgates`); Up2Data refuses a bare public identifier with its own `400`"
+                    "description": "The profile's LinkedIn URL (`https://www.linkedin.com/in/williamhgates`). Up2Data refuses a bare public identifier with its own `400`"
                   },
                   "fields": {
                     "type": "array",
                     "items": {
                       "type": "string"
                     },
-                    "description": "Restrict response to these top-level fields. Same cost. Listing followers_count or connections_count also opts into the extra scrape; listing skill_endorsements also opts into the full-skills scrape."
+                    "description": "Restrict response to these top-level fields. Same cost. Listing followers_count or connections_count also opts into the extra scrape. Listing skill_endorsements also opts into the full-skills scrape."
                   },
                   "with_followers_and_connections": {
                     "type": "boolean",
                     "default": false,
-                    "description": "Include followers_count and connections_count. Off by default — those numbers are a second LinkedIn request, not part of the main profile scrape. Same price; extra latency.\n"
+                    "description": "Include followers_count and connections_count. Off by default: those numbers are a second LinkedIn request, not part of the main profile scrape. Same price. Extra latency.\n"
                   },
                   "with_full_skills_and_endorsements": {
                     "type": "boolean",
                     "default": false,
-                    "description": "Return every skill LinkedIn exposes (up to LinkedIn's own 50-skill cap) plus skill_endorsements. Off by default — skills is capped at the first 20 without it, and this is a second LinkedIn request. Same price; extra latency.\n"
+                    "description": "Return every skill LinkedIn shows (up to LinkedIn's 50-skill cap) plus skill_endorsements. Off by default: without it you get the first 20 skills, and turning it on adds a second LinkedIn request. It costs nothing extra but takes longer."
                   }
                 },
                 "additionalProperties": false
@@ -3588,88 +4930,59 @@
                 "example": {
                   "data": {
                     "url": "https://www.linkedin.com/in/williamhgates",
-                    "full_name": "Bill Gates",
-                    "first_name": "Bill",
-                    "last_name": "Gates",
-                    "public_identifier": "williamhgates",
-                    "headline": "Chair, Gates Foundation and Founder, Breakthrough Energy",
+                    "full_name": "…",
+                    "first_name": "…",
+                    "last_name": "…",
+                    "public_identifier": "…",
+                    "headline": "…",
                     "location": {
-                      "city": "Seattle",
-                      "region": "Washington",
-                      "country": "United States",
-                      "raw": "Seattle, Washington, United States"
+                      "city": "…",
+                      "region": "…",
+                      "country": "…",
+                      "raw": "…"
                     },
-                    "about": "Chair of the Gates Foundation. Founder of Breakthrough Energy. Co-founder of Microsoft. Voracious reader. Avid traveler. Active blogger.",
-                    "urn": "urn:li:member:251749025",
-                    "linkedin_id": "251749025",
-                    "profile_urn": "urn:li:fsd_profile:ACoAAA8BYqEBCGLg_vT_ca6mMEqkpp9nVffJ3hc",
+                    "about": "…",
+                    "urn": "…",
+                    "linkedin_id": "…",
+                    "profile_urn": "…",
                     "positions": [
                       {
-                        "title": "Co-chair",
-                        "company": "Gates Foundation",
-                        "company_url": "https://www.linkedin.com/company/gates-foundation",
-                        "linkedin_id": "8736",
-                        "position_id": "urn:li:fsd_profilePosition:(ACoAAA8BYqEBCGLg_vT_ca6mMEqkpp9nVffJ3hc,392598211)",
-                        "started_at": "2000",
+                        "title": "…",
+                        "company": "…",
+                        "company_url": "…",
+                        "linkedin_id": "…",
+                        "position_id": "…",
+                        "started_at": "…",
                         "ended_at": null,
-                        "company_industry": "Non-profit Organization Management",
-                        "company_headcount": "1001-5000",
-                        "company_logo_url": "https://media.licdn.com/dms/image/v2/D560BAQEgMqqFTd40Tg/company-logo_400_400/company-logo_400_400/0/1736784969376/bill__melinda_gates_foundation_logo?e=1792627200&v=beta&t=pQQr7Y88vBlaIvx9BXqz34OGzr9w_sBzEShPWaPiJqE"
-                      },
-                      {
-                        "title": "Founder",
-                        "company": "Breakthrough Energy",
-                        "company_url": "https://www.linkedin.com/company/breakthrough-energy",
-                        "linkedin_id": "19141006",
-                        "position_id": "urn:li:fsd_profilePosition:(ACoAAA8BYqEBCGLg_vT_ca6mMEqkpp9nVffJ3hc,1836104012)",
-                        "started_at": "2015",
-                        "ended_at": null,
-                        "company_industry": "Management Consulting",
-                        "company_headcount": "51-200",
-                        "company_logo_url": "https://media.licdn.com/dms/image/v2/D560BAQFRMYiQN7-2kA/company-logo_400_400/B56ZoI4SGPI0AY-/0/1761085563539/breakthrough_energy_logo?e=1792627200&v=beta&t=dtaAXFJ8-71Bvs5Qhj4c81nOc6l2hDqHqSE8qtHK0qk"
-                      },
-                      {
-                        "title": "Co-founder",
-                        "company": "Microsoft",
-                        "company_url": "https://www.linkedin.com/company/microsoft",
-                        "linkedin_id": "1035",
-                        "position_id": "urn:li:fsd_profilePosition:(ACoAAA8BYqEBCGLg_vT_ca6mMEqkpp9nVffJ3hc,392599749)",
-                        "started_at": "1975",
-                        "ended_at": null,
-                        "company_industry": "Computer Software",
-                        "company_headcount": "10001+",
-                        "company_logo_url": "https://media.licdn.com/dms/image/v2/D560BAQH32RJQCl3dDQ/company-logo_400_400/B56ZYQ0mrGGoAc-/0/1744038948046/microsoft_logo?e=1792627200&v=beta&t=NqzcT-M4G01GGJ0WSG_kxqbOJ5GVTaeHs61vteFTnyE"
+                        "company_industry": "…",
+                        "company_headcount": "…",
+                        "company_logo_url": "…"
                       }
                     ],
                     "current_company": {
-                      "name": "Gates Foundation",
-                      "url": "https://www.linkedin.com/company/gates-foundation",
-                      "linkedin_id": "8736",
-                      "title": "Co-chair",
-                      "started_at": "2000",
-                      "logo_url": "https://media.licdn.com/dms/image/v2/D560BAQEgMqqFTd40Tg/company-logo_400_400/company-logo_400_400/0/1736784969376/bill__melinda_gates_foundation_logo?e=1792627200&v=beta&t=pQQr7Y88vBlaIvx9BXqz34OGzr9w_sBzEShPWaPiJqE",
-                      "industry": "Non-profit Organization Management",
-                      "headcount": "1001-5000"
+                      "name": "…",
+                      "url": "…",
+                      "linkedin_id": "…",
+                      "title": "…",
+                      "started_at": "…",
+                      "logo_url": "…",
+                      "industry": "…",
+                      "headcount": "…"
                     },
                     "education": [
                       {
-                        "school": "Harvard University",
-                        "education_id": "urn:li:fsd_profileEducation:(ACoAAA8BYqEBCGLg_vT_ca6mMEqkpp9nVffJ3hc,157656829)",
-                        "school_logo_url": "https://media.licdn.com/dms/image/v2/C4E0BAQF5t62bcL0e9g/company-logo_400_400/company-logo_400_400/0/1631318058235?e=1792627200&v=beta&t=0hJGm1CmYzZ20L5NhyvLll-4sDmb1U_RwRue5QCSDSI",
-                        "started_at": "1973",
-                        "ended_at": "1975"
-                      },
-                      {
-                        "school": "Lakeside School",
-                        "education_id": "urn:li:fsd_profileEducation:(ACoAAA8BYqEBCGLg_vT_ca6mMEqkpp9nVffJ3hc,157676006)",
-                        "school_logo_url": "https://media.licdn.com/dms/image/v2/D560BAQGFmOQmzpxg9A/company-logo_400_400/company-logo_400_400/0/1683732883164/lakeside_school_logo?e=1792627200&v=beta&t=9AdS9k6n1uMsFx4ZSbTtjlXeuxIyoxV06LfYpNzqRSs"
+                        "school": "…",
+                        "education_id": "…",
+                        "school_logo_url": "…",
+                        "started_at": "…",
+                        "ended_at": "…"
                       }
                     ],
-                    "primary_locale": "en_US",
+                    "primary_locale": "…",
                     "is_premium": true,
                     "is_open_to_work": false,
-                    "profile_picture_url": "https://media.licdn.com/dms/image/v2/D5603AQF-RYZP55jmXA/profile-displayphoto-shrink_800_800/B56ZRi8g.aGsAc-/0/1736826818808?e=1792627200&v=beta&t=wmgV6HYCkzeFN_YuUhRPVy-jys5YqHMucz6YL3NarYE",
-                    "scraped_at": "2026-10-03T13:54:57.750Z"
+                    "profile_picture_url": "…",
+                    "scraped_at": "…"
                   },
                   "meta": {
                     "creditsUsed": 1,
@@ -3678,15 +4991,15 @@
                   },
                   "datacircle_meta": {
                     "provider": "up2data",
-                    "cost_usd": 0.00125,
-                    "balance_usd": 4.99875
+                    "cost_usd": 0.002375,
+                    "balance_usd": 4.997625
                   }
                 }
               }
             }
           },
           "400": {
-            "description": "Not charged. A body that isn't a non-empty JSON object, or an `X-Data-Provider` value that isn't `up2data` or `harvestapi` (`Error`); or Up2Data's own `400`, passed on (`Up2DataError`, `error.type: invalid_request`): a `url` that isn't a LinkedIn profile URL, a field Up2Data doesn't take",
+            "description": "Not charged. A body that isn't a non-empty JSON object, or an `X-Data-Provider` value that isn't `up2data`, `harvestapi` or `fetchin` (`Error`). Or Up2Data's own `400`, passed on (`Up2DataError`, `error.type: invalid_request`): a `url` that isn't a LinkedIn profile URL, a field Up2Data doesn't take",
             "content": {
               "application/json": {
                 "schema": {
@@ -3738,7 +5051,7 @@
             }
           },
           "404": {
-            "description": "No `X-Data-Provider` header, or a path Datacircle doesn't call for that provider (e.g. `X-Data-Provider: harvestapi` on `/v1/profiles/enrich`); not charged",
+            "description": "No `X-Data-Provider` header, or a path Datacircle doesn't call for that provider (e.g. `X-Data-Provider: harvestapi` on `/v1/profiles/enrich`). Not charged",
             "content": {
               "application/json": {
                 "schema": {
@@ -3748,7 +5061,7 @@
             }
           },
           "422": {
-            "description": "Up2Data can't reach that profile (private, deleted or unreachable); not charged",
+            "description": "Up2Data can't reach that profile (private, deleted or unreachable). Not charged",
             "content": {
               "application/json": {
                 "schema": {
@@ -3758,7 +5071,7 @@
             }
           },
           "429": {
-            "description": "Datacircle's daily Up2Data limit, for your account or for everyone (it resets at 00:00 UTC), or Up2Data's own rate limit; not charged",
+            "description": "Datacircle's daily Up2Data limit, for your account or for everyone (it resets at 00:00 UTC), or Up2Data's own rate limit. Not charged",
             "content": {
               "application/json": {
                 "schema": {
@@ -3775,10 +5088,10 @@
             }
           },
           "502": {
-            "description": "Up2Data's own server failed three times in a row: its gateway answered an error page each time, and Datacircle sent the same request again twice before passing the last page on. Not charged; send the same request again. A gateway's `503` or `504` page passes on the same way, with its status."
+            "description": "Up2Data's own server failed three times in a row: its gateway answered an error page each time, and Datacircle sent the same request again twice before passing the last page on. Not charged. Send the same request again. A gateway's `503` or `504` page passes on the same way, with its status."
           },
           "503": {
-            "description": "Up2Data hasn't answered within 45 s, retries included, or can't be reached: Datacircle stops waiting. Not charged; send the same request again.",
+            "description": "Up2Data hasn't answered within 45 s, retries included, or can't be reached: Datacircle stops waiting. Not charged. Send the same request again.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3824,7 +5137,7 @@
           "HarvestAPI"
         ],
         "summary": "Get one LinkedIn profile",
-        "description": "HarvestAPI's own request (https://api.harvest-api.com/linkedin/profile), sent to api.datacircle.dev with your Datacircle key in `Authorization` and `X-Data-Provider: harvestapi`. Nothing else changes. $0.0037 per profile found, 0.0023 per profile not found (HarvestAPI's price, no markup).",
+        "description": "Send HarvestAPI's own request (`GET https://api.harvest-api.com/linkedin/profile`) to api.datacircle.dev, with your Datacircle key in `Authorization` and `X-Data-Provider: harvestapi`. The path and the query stay the same. We charge $0.0037 per profile HarvestAPI finds, with no markup.\n\nA profile HarvestAPI doesn't find costs $0.0023.",
         "parameters": [
           {
             "name": "url",
@@ -3840,7 +5153,7 @@
             "name": "X-Data-Provider",
             "in": "header",
             "required": true,
-            "description": "names the provider: `harvestapi`. With the host, the only change from the provider's own request.",
+            "description": "Names the provider: `harvestapi`. This header and the host are the only changes from the provider's own request.",
             "schema": {
               "type": "string",
               "enum": [
@@ -3865,7 +5178,7 @@
         ],
         "responses": {
           "200": {
-            "description": "HarvestAPI's answer plus `datacircle_meta`, as HarvestAPI sends it: a `200` whether it found the profile (`status: 200`, $0.0037) or not (`element: null`, `status: 404`, `error: Profile not found`, $0.0023: HarvestAPI bills the lookup)",
+            "description": "HarvestAPI's answer plus `datacircle_meta`, as HarvestAPI sends it: a `200` whether it found the profile (`status: 200`, \\$0.0037) or not (`element: null`, `status: 404`, `error: Profile not found`, \\$0.0023: HarvestAPI bills the lookup)",
             "content": {
               "application/json": {
                 "schema": {
@@ -3873,15 +5186,15 @@
                 },
                 "example": {
                   "element": {
-                    "id": "ACoAAA8BYqEBCGLg_vT_ca6mMEqkpp9nVffJ3hc",
-                    "publicIdentifier": "williamhgates",
+                    "id": "…",
+                    "publicIdentifier": "…",
                     "linkedinUrl": "https://www.linkedin.com/in/williamhgates",
-                    "firstName": "Bill",
-                    "lastName": "Gates",
+                    "firstName": "…",
+                    "lastName": "…",
                     "emails": [],
-                    "headline": "Chair, Gates Foundation and Founder, Breakthrough Energy",
+                    "headline": "…",
                     "websites": [
-                      "https://gatesnot.es/AI"
+                      "…"
                     ],
                     "openToWork": false,
                     "hiring": false,
@@ -3890,56 +5203,56 @@
                     "memorialized": false,
                     "creator": true,
                     "location": {
-                      "linkedinText": "Seattle, Washington, United States",
-                      "countryCode": "US",
+                      "linkedinText": "…",
+                      "countryCode": "…",
                       "parsed": {
-                        "text": "Seattle, WA, United States",
-                        "countryCode": "US",
+                        "text": "…",
+                        "countryCode": "…",
                         "regionCode": null,
-                        "country": "United States",
-                        "countryFull": "United States of America",
-                        "state": "Washington",
-                        "city": "Seattle"
+                        "country": "…",
+                        "countryFull": "…",
+                        "state": "…",
+                        "city": "…"
                       }
                     },
-                    "objectUrn": "251749025",
-                    "registeredAt": "2013-05-02T19:09:40.840Z",
+                    "objectUrn": "…",
+                    "registeredAt": "…",
                     "topSkills": [],
-                    "connectionsCount": 8,
-                    "followerCount": 40710904,
+                    "connectionsCount": 0,
+                    "followerCount": 0,
                     "verified": true,
-                    "about": "Chair of the Gates Foundation. Founder of Breakthrough Energy. Co-founder of Microsoft. Voracious reader. Avid traveler. Active blogger.",
+                    "about": "…",
                     "industry": {
-                      "id": 131,
-                      "name": "Philanthropic Fundraising Services"
+                      "id": 0,
+                      "name": "…"
                     },
                     "currentPosition": [
                       {
-                        "position": "Co-chair",
+                        "position": "…",
                         "location": null,
                         "employmentType": null,
                         "workplaceType": null,
-                        "companyName": "Gates Foundation",
-                        "companyUniversalName": "gates-foundation",
-                        "companyLinkedinUrl": "https://www.linkedin.com/company/gates-foundation/",
-                        "companyId": "8736",
-                        "duration": "26 yrs 10 mos",
+                        "companyName": "…",
+                        "companyUniversalName": "…",
+                        "companyLinkedinUrl": "…",
+                        "companyId": "…",
+                        "duration": "…",
                         "description": null,
                         "skills": null,
                         "startDate": {
-                          "year": 2000,
-                          "text": "2000"
+                          "year": 0,
+                          "text": "…"
                         },
                         "endDate": {
-                          "text": "Present"
+                          "text": "…"
                         },
                         "companyLogo": {
-                          "url": "https://media.licdn.com/dms/image/v2/D560BAQEgMqqFTd40Tg/company-logo_400_400/company-logo_400_400/0/1736784969376/bill__melinda_gates_foundation_logo?e=1793232000&v=beta&t=-3Or6OsbYEKsjb0OeDOnM7sqQbLZt5c7mY8psW87kHE",
+                          "url": "…",
                           "sizes": [
                             {
-                              "url": "https://media.licdn.com/dms/image/v2/D560BAQEgMqqFTd40Tg/company-logo_400_400/company-logo_400_400/0/1736784969376/bill__melinda_gates_foundation_logo?e=1793232000&v=beta&t=-3Or6OsbYEKsjb0OeDOnM7sqQbLZt5c7mY8psW87kHE",
-                              "width": 400,
-                              "height": 400
+                              "url": "…",
+                              "width": 0,
+                              "height": 0
                             }
                           ]
                         }
@@ -3947,30 +5260,30 @@
                     ],
                     "profileTopEducation": [
                       {
-                        "schoolName": "Harvard University",
+                        "schoolName": "…",
                         "description": null,
                         "insights": null,
                         "skills": null,
-                        "schoolLinkedinUrl": "https://www.linkedin.com/company/1646/",
-                        "schoolId": "1646",
+                        "schoolLinkedinUrl": "…",
+                        "schoolId": "…",
                         "degree": null,
                         "fieldOfStudy": null,
-                        "period": "1973 - 1975",
+                        "period": "…",
                         "startDate": {
-                          "year": 1973,
-                          "text": "1973"
+                          "year": 0,
+                          "text": "…"
                         },
                         "endDate": {
-                          "year": 1975,
-                          "text": "1975"
+                          "year": 0,
+                          "text": "…"
                         },
                         "schoolLogo": {
-                          "url": "https://media.licdn.com/dms/image/v2/C4E0BAQF5t62bcL0e9g/company-logo_400_400/company-logo_400_400/0/1631318058235?e=1793232000&v=beta&t=tG7qGly5_Uq33s6x0-9U8QrenZr2NTdEdR8ydLfb8II",
+                          "url": "…",
                           "sizes": [
                             {
-                              "url": "https://media.licdn.com/dms/image/v2/C4E0BAQF5t62bcL0e9g/company-logo_400_400/company-logo_400_400/0/1631318058235?e=1793232000&v=beta&t=tG7qGly5_Uq33s6x0-9U8QrenZr2NTdEdR8ydLfb8II",
-                              "width": 400,
-                              "height": 400
+                              "url": "…",
+                              "width": 0,
+                              "height": 0
                             }
                           ]
                         }
@@ -3978,105 +5291,75 @@
                     ],
                     "profileActions": [
                       {
-                        "label": "View my newsletter",
-                        "url": "https://www.linkedin.com/newsletters/gates-notes-6651495472181637121/"
+                        "label": "…",
+                        "url": "…"
                       }
                     ],
                     "profilePicture": {
-                      "url": "https://media.licdn.com/dms/image/v2/D5603AQF-RYZP55jmXA/profile-displayphoto-shrink_800_800/B56ZRi8g.aGsAc-/0/1736826818808?e=1793232000&v=beta&t=h84Ee-2NucG0tJjTkgWGFHOtQD4ICX0mrcRqdTWoQzM",
+                      "url": "…",
                       "sizes": [
                         {
-                          "url": "https://media.licdn.com/dms/image/v2/D5603AQF-RYZP55jmXA/profile-displayphoto-shrink_800_800/B56ZRi8g.aGsAc-/0/1736826818808?e=1793232000&v=beta&t=h84Ee-2NucG0tJjTkgWGFHOtQD4ICX0mrcRqdTWoQzM",
-                          "width": 800,
-                          "height": 800
+                          "url": "…",
+                          "width": 0,
+                          "height": 0
                         }
                       ]
                     },
                     "coverPicture": {
-                      "url": "https://media.licdn.com/dms/image/v2/D5616AQEjhPbTCeblYg/profile-displaybackgroundimage-shrink_350_1400/B56ZcytR5SGsAg-/0/1748902420393?e=1793232000&v=beta&t=PurNZciepthIMLCl9A59bR0oQS7vFuaZzm97H6JF1_8",
+                      "url": "…",
                       "sizes": [
                         {
-                          "url": "https://media.licdn.com/dms/image/v2/D5616AQEjhPbTCeblYg/profile-displaybackgroundimage-shrink_350_1400/B56ZcytR5SGsAg-/0/1748902420393?e=1793232000&v=beta&t=PurNZciepthIMLCl9A59bR0oQS7vFuaZzm97H6JF1_8",
-                          "width": 1400,
-                          "height": 350
+                          "url": "…",
+                          "width": 0,
+                          "height": 0
                         }
                       ]
                     },
-                    "photo": "https://media.licdn.com/dms/image/v2/D5603AQF-RYZP55jmXA/profile-displayphoto-shrink_800_800/B56ZRi8g.aGsAc-/0/1736826818808?e=1793232000&v=beta&t=h84Ee-2NucG0tJjTkgWGFHOtQD4ICX0mrcRqdTWoQzM",
+                    "photo": "…",
                     "profileLocales": [
                       {
-                        "country": "US",
-                        "language": "en"
+                        "country": "…",
+                        "language": "…"
                       }
                     ],
                     "primaryLocale": {
-                      "country": "US",
-                      "language": "en"
+                      "country": "…",
+                      "language": "…"
                     },
                     "multiLocaleHeadline": [
                       {
-                        "headline": "Chair, Gates Foundation and Founder, Breakthrough Energy",
-                        "locale": "en_US"
+                        "headline": "…",
+                        "locale": "…"
                       }
                     ],
                     "services": null,
                     "experience": [
                       {
-                        "position": "Co-chair",
+                        "position": "…",
                         "location": null,
                         "employmentType": null,
                         "workplaceType": null,
-                        "companyName": "Gates Foundation",
-                        "companyUniversalName": "gates-foundation",
-                        "companyLinkedinUrl": "https://www.linkedin.com/company/gates-foundation/",
-                        "companyId": "8736",
-                        "duration": "26 yrs 10 mos",
+                        "companyName": "…",
+                        "companyUniversalName": "…",
+                        "companyLinkedinUrl": "…",
+                        "companyId": "…",
+                        "duration": "…",
                         "description": null,
                         "skills": null,
                         "startDate": {
-                          "year": 2000,
-                          "text": "2000"
+                          "year": 0,
+                          "text": "…"
                         },
                         "endDate": {
-                          "text": "Present"
+                          "text": "…"
                         },
                         "companyLogo": {
-                          "url": "https://media.licdn.com/dms/image/v2/D560BAQEgMqqFTd40Tg/company-logo_400_400/company-logo_400_400/0/1736784969376/bill__melinda_gates_foundation_logo?e=1793232000&v=beta&t=-3Or6OsbYEKsjb0OeDOnM7sqQbLZt5c7mY8psW87kHE",
+                          "url": "…",
                           "sizes": [
                             {
-                              "url": "https://media.licdn.com/dms/image/v2/D560BAQEgMqqFTd40Tg/company-logo_400_400/company-logo_400_400/0/1736784969376/bill__melinda_gates_foundation_logo?e=1793232000&v=beta&t=-3Or6OsbYEKsjb0OeDOnM7sqQbLZt5c7mY8psW87kHE",
-                              "width": 400,
-                              "height": 400
-                            }
-                          ]
-                        }
-                      },
-                      {
-                        "position": "Founder",
-                        "location": null,
-                        "employmentType": null,
-                        "workplaceType": null,
-                        "companyName": "Breakthrough Energy ",
-                        "companyUniversalName": "breakthrough-energy",
-                        "companyLinkedinUrl": "https://www.linkedin.com/company/breakthrough-energy/",
-                        "companyId": "19141006",
-                        "duration": "11 yrs 10 mos",
-                        "description": null,
-                        "skills": null,
-                        "startDate": {
-                          "year": 2015,
-                          "text": "2015"
-                        },
-                        "endDate": {
-                          "text": "Present"
-                        },
-                        "companyLogo": {
-                          "url": "https://media.licdn.com/dms/image/v2/D560BAQFRMYiQN7-2kA/company-logo_400_400/B56ZoI4SGPI0AY-/0/1761085563539/breakthrough_energy_logo?e=1793232000&v=beta&t=FBopuNvB5P3C3RAvxFakKw8SfEvJkHDMC8Cy1ivv3a4",
-                          "sizes": [
-                            {
-                              "url": "https://media.licdn.com/dms/image/v2/D560BAQFRMYiQN7-2kA/company-logo_400_400/B56ZoI4SGPI0AY-/0/1761085563539/breakthrough_energy_logo?e=1793232000&v=beta&t=FBopuNvB5P3C3RAvxFakKw8SfEvJkHDMC8Cy1ivv3a4",
-                              "width": 400,
-                              "height": 400
+                              "url": "…",
+                              "width": 0,
+                              "height": 0
                             }
                           ]
                         }
@@ -4084,53 +5367,30 @@
                     ],
                     "education": [
                       {
-                        "schoolName": "Harvard University",
+                        "schoolName": "…",
                         "description": null,
                         "insights": null,
                         "skills": null,
-                        "schoolLinkedinUrl": "https://www.linkedin.com/company/1646/",
-                        "schoolId": "1646",
+                        "schoolLinkedinUrl": "…",
+                        "schoolId": "…",
                         "degree": null,
                         "fieldOfStudy": null,
-                        "period": "1973 - 1975",
+                        "period": "…",
                         "startDate": {
-                          "year": 1973,
-                          "text": "1973"
+                          "year": 0,
+                          "text": "…"
                         },
                         "endDate": {
-                          "year": 1975,
-                          "text": "1975"
+                          "year": 0,
+                          "text": "…"
                         },
                         "schoolLogo": {
-                          "url": "https://media.licdn.com/dms/image/v2/C4E0BAQF5t62bcL0e9g/company-logo_400_400/company-logo_400_400/0/1631318058235?e=1793232000&v=beta&t=tG7qGly5_Uq33s6x0-9U8QrenZr2NTdEdR8ydLfb8II",
+                          "url": "…",
                           "sizes": [
                             {
-                              "url": "https://media.licdn.com/dms/image/v2/C4E0BAQF5t62bcL0e9g/company-logo_400_400/company-logo_400_400/0/1631318058235?e=1793232000&v=beta&t=tG7qGly5_Uq33s6x0-9U8QrenZr2NTdEdR8ydLfb8II",
-                              "width": 400,
-                              "height": 400
-                            }
-                          ]
-                        }
-                      },
-                      {
-                        "schoolName": "Lakeside School",
-                        "description": null,
-                        "insights": null,
-                        "skills": null,
-                        "schoolLinkedinUrl": "https://www.linkedin.com/company/30288/",
-                        "schoolId": "30288",
-                        "degree": null,
-                        "fieldOfStudy": null,
-                        "period": null,
-                        "startDate": null,
-                        "endDate": null,
-                        "schoolLogo": {
-                          "url": "https://media.licdn.com/dms/image/v2/D560BAQGFmOQmzpxg9A/company-logo_400_400/company-logo_400_400/0/1683732883164/lakeside_school_logo?e=1793232000&v=beta&t=LuT1qFGoma5gJltCnUOlsIthuPoLj_fhfuT1SwUjyzM",
-                          "sizes": [
-                            {
-                              "url": "https://media.licdn.com/dms/image/v2/D560BAQGFmOQmzpxg9A/company-logo_400_400/company-logo_400_400/0/1683732883164/lakeside_school_logo?e=1793232000&v=beta&t=LuT1qFGoma5gJltCnUOlsIthuPoLj_fhfuT1SwUjyzM",
-                              "width": 400,
-                              "height": 400
+                              "url": "…",
+                              "width": 0,
+                              "height": 0
                             }
                           ]
                         }
@@ -4155,21 +5415,12 @@
                       "subtitle": null,
                       "slides": [
                         {
-                          "title": "The turbulent AI era is here. The choices we make now are critical.",
-                          "subtitle": "Bill Gates on LinkedIn • 5+ min read",
+                          "title": "…",
+                          "subtitle": "…",
                           "description": null,
-                          "url": "https://www.linkedin.com/feed/update/urn:li:activity:7498273886308966401?updateEntityUrn=urn%3Ali%3Afs_feedUpdate%3A%28V2%2Curn%3Ali%3Aactivity%3A7498273886308966401%29",
+                          "url": "…",
                           "image": {
-                            "url": "https://media.licdn.com/dms/image/v2/D4E12AQEXiYCQfVP_fQ/videocover-high/B4EaA6Xi8KHwBo-/0/1787685647281?e=1793232000&v=beta&t=xBM36VUG-NDJZZvsyjlwLMfThDkjoaJi36qnh34lLpU"
-                          }
-                        },
-                        {
-                          "title": "What the Gates Foundation hopes to accomplish over the next 20 years",
-                          "subtitle": "Bill Gates on LinkedIn • 5 min read",
-                          "description": null,
-                          "url": "https://www.linkedin.com/feed/update/urn:li:activity:7407934241675608064?updateEntityUrn=urn%3Ali%3Afs_feedUpdate%3A%28V2%2Curn%3Ali%3Aactivity%3A7407934241675608064%29",
-                          "image": {
-                            "url": "https://media.licdn.com/dms/image/v2/D5612AQE-eZUAKTbmyQ/article-cover_image-shrink_720_1280/B56Zs5D6pMKIAI-/0/1766188887129?e=1793232000&v=beta&t=0NTehccq7SqaYFFVyfTJvYLmI8OoCoHfSlDYWRQUSAQ"
+                            "url": "…"
                           }
                         }
                       ]
@@ -4177,25 +5428,17 @@
                     "composeOptionType": null,
                     "moreProfiles": [
                       {
-                        "id": "ACoAAE6FVtYBAW4bP82g1IhIHxzu_1J010WU3CQ",
-                        "firstName": "Sundar ",
-                        "lastName": "Pichai ",
-                        "position": "CEO at Google",
-                        "publicIdentifier": "sundarpichai",
-                        "linkedinUrl": "https://www.linkedin.com/in/sundarpichai"
-                      },
-                      {
-                        "id": "ACoAABBhhiABVwqIoiMz90f7wLjjl8xvtPe3u3c",
-                        "firstName": "Narendra",
-                        "lastName": "Modi",
-                        "position": "Prime Minister of India",
-                        "publicIdentifier": "narendramodi",
-                        "linkedinUrl": "https://www.linkedin.com/in/narendramodi"
+                        "id": "…",
+                        "firstName": "…",
+                        "lastName": "…",
+                        "position": "…",
+                        "publicIdentifier": "…",
+                        "linkedinUrl": "…"
                       }
                     ],
                     "sectionTotals": {
-                      "experience": 3,
-                      "education": 2,
+                      "experience": 0,
+                      "education": 0,
                       "certifications": 0,
                       "receivedRecommendations": 0,
                       "skills": 0,
@@ -4211,47 +5454,15 @@
                     },
                     "interests": [
                       {
-                        "interestName": "Top Voices",
+                        "interestName": "…",
                         "elements": [
                           {
-                            "title": "Mary Barra",
-                            "subtitle": "Chair and Chief Executive Officer at General Motors",
-                            "link": "https://www.linkedin.com/in/mary-barra",
-                            "caption": "1,509,312 followers",
+                            "title": "…",
+                            "subtitle": "…",
+                            "link": "…",
+                            "caption": "…",
                             "image": {
-                              "url": "https://media.licdn.com/dms/image/v2/D5603AQFNy7nvRz3AAA/profile-displayphoto-shrink_800_800/B56ZSTmJCnGsAc-/0/1737643037521?e=1793232000&v=beta&t=LaAFH90UQgMJRodv2svlgFb01iulYSOmCePcnMM-nOI"
-                            }
-                          },
-                          {
-                            "title": "Reid Hoffman",
-                            "subtitle": "Co-Founder, LinkedIn, Manas AI & Inflection AI. Founding Team, PayPal.  Author of Superagency.  Podcaster of Possible and Masters of Scale.  ",
-                            "link": "https://www.linkedin.com/in/reidhoffman",
-                            "caption": "2,795,991 followers",
-                            "image": {
-                              "url": "https://media.licdn.com/dms/image/v2/D5603AQHW7wKzPb3DAg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1718216236351?e=1793232000&v=beta&t=zIBEchZCbBW3vaYQ9dusPzn5bNGrt5qgE6SlK2lDUKs"
-                            }
-                          }
-                        ]
-                      },
-                      {
-                        "interestName": "Companies",
-                        "elements": [
-                          {
-                            "title": "Microsoft",
-                            "subtitle": null,
-                            "link": "https://www.linkedin.com/company/1035/",
-                            "caption": "29,252,965 followers",
-                            "image": {
-                              "url": "https://media.licdn.com/dms/image/v2/D560BAQH32RJQCl3dDQ/company-logo_400_400/B56ZYQ0mrGGoAc-/0/1744038948046/microsoft_logo?e=1793232000&v=beta&t=-G3KTWbySWNRDLM-7_sSgY3V09nqPA0Iswoptltp6cs"
-                            }
-                          },
-                          {
-                            "title": "LinkedIn",
-                            "subtitle": null,
-                            "link": "https://www.linkedin.com/company/1337/",
-                            "caption": "34,479,013 followers",
-                            "image": {
-                              "url": "https://media.licdn.com/dms/image/v2/C560BAQHaVYd13rRz3A/company-logo_400_400/company-logo_400_400/0/1638831590218/linkedin_logo?e=1793232000&v=beta&t=DDn52_5dJe1-e5SUzNqxbMt9eScyf-iFUgDNyoc83m4"
+                              "url": "…"
                             }
                           }
                         ]
@@ -4260,8 +5471,8 @@
                   },
                   "query": {
                     "url": "https://www.linkedin.com/in/williamhgates",
-                    "publicIdentifier": "williamhgates",
-                    "profileId": "ACoAAA8BYqEBCGLg_vT_ca6mMEqkpp9nVffJ3hc"
+                    "publicIdentifier": "…",
+                    "profileId": "…"
                   },
                   "status": 200,
                   "retries": 0,
@@ -4272,7 +5483,7 @@
                     "url": "https://www.linkedin.com/in/williamhgates"
                   },
                   "cost": 0.0037,
-                  "entityId": "ACoAAA8BYqEBCGLg_vT_ca6mMEqkpp9nVffJ3hc",
+                  "entityId": "…",
                   "datacircle_meta": {
                     "provider": "harvestapi",
                     "cost_usd": 0.0037,
@@ -4283,7 +5494,7 @@
             }
           },
           "400": {
-            "description": "Not charged, nothing sent to HarvestAPI: no `url`, a `url` that isn't a LinkedIn profile URL (`https://www.linkedin.com/in/<slug>`), a query parameter other than `url`, or an `X-Data-Provider` value that isn't `up2data` or `harvestapi`",
+            "description": "Not charged, nothing sent to HarvestAPI: no `url`, a `url` that isn't a LinkedIn profile URL (`https://www.linkedin.com/in/<slug>`), a query parameter other than `url`, or an `X-Data-Provider` value that isn't `up2data`, `harvestapi` or `fetchin`",
             "content": {
               "application/json": {
                 "schema": {
@@ -4328,7 +5539,7 @@
             }
           },
           "404": {
-            "description": "No `X-Data-Provider` header, or a path Datacircle doesn't call for that provider (e.g. `X-Data-Provider: up2data` on `/linkedin/profile`); not charged",
+            "description": "No `X-Data-Provider` header, or a path Datacircle doesn't call for that provider (e.g. `X-Data-Provider: up2data` on `/linkedin/profile`). Not charged",
             "content": {
               "application/json": {
                 "schema": {
@@ -4338,10 +5549,339 @@
             }
           },
           "502": {
-            "description": "HarvestAPI's own server failed: its error passes on as it came, with its status (`503` and `504` too). Not charged; send the same request again."
+            "description": "HarvestAPI's own server failed: its error passes on as it came, with its status (`503` and `504` too). Not charged. Send the same request again."
           },
           "503": {
-            "description": "HarvestAPI hasn't answered within 45 s, can't be reached, or refused Datacircle's own account with it: Datacircle stops waiting. Not charged; send the same request again.",
+            "description": "HarvestAPI hasn't answered within 45 s, can't be reached, or refused Datacircle's own account with it: Datacircle stops waiting. Not charged. Send the same request again.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Datacircle's own answer when the provider hasn't answered within 45 s, retries included, or can't be reached. Not charged.",
+                  "required": [
+                    "error",
+                    "balance_usd"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "What went wrong, in plain words."
+                    },
+                    "balance_usd": {
+                      "type": "number",
+                      "description": "Your balance now, in dollars (`balance_usd` in `GET /balance/`)."
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/profile": {
+      "get": {
+        "tags": [
+          "Fetchin"
+        ],
+        "summary": "Get one LinkedIn profile",
+        "description": "Send Fetchin's own request (`GET https://api.fetchin.io/api/v1/profile`) to api.datacircle.dev, with your Datacircle key in `Authorization` and `X-Data-Provider: fetchin`. The path and the query stay the same. We charge $0.001485 per profile, found or not, with no markup.",
+        "parameters": [
+          {
+            "name": "profileUrlOrUrn",
+            "in": "query",
+            "required": true,
+            "description": "The profile's LinkedIn URL, e.g. `https://www.linkedin.com/in/williamhgates`. The only Fetchin parameter Datacircle passes on, and only as a profile URL: Fetchin's public identifier and URN forms, and `fullProfile`, are refused with a `400`, not charged.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "https://www.linkedin.com/in/williamhgates"
+          },
+          {
+            "name": "X-Data-Provider",
+            "in": "header",
+            "required": true,
+            "description": "Names the provider: `fetchin`. This header and the host are the only changes from the provider's own request.",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "fetchin"
+              ],
+              "default": "fetchin"
+            },
+            "example": "fetchin"
+          }
+        ],
+        "x-codeSamples": [
+          {
+            "lang": "bash",
+            "label": "curl",
+            "source": "curl \"https://api.datacircle.dev/api/v1/profile?profileUrlOrUrn=https://www.linkedin.com/in/williamhgates\" \\\n  -H \"Authorization: Token $DATACIRCLE_API_KEY\" \\\n  -H \"X-Data-Provider: fetchin\""
+          },
+          {
+            "lang": "python",
+            "label": "Python",
+            "source": "import os\n\nimport requests\n\nresponse = requests.get(\n    \"https://api.datacircle.dev/api/v1/profile\",\n    headers={\"Authorization\": f\"Token {os.environ['DATACIRCLE_API_KEY']}\", \"X-Data-Provider\": \"fetchin\"},\n    params={'profileUrlOrUrn': 'https://www.linkedin.com/in/williamhgates'},\n)\nprint(response.json())"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Fetchin's answer plus `datacircle_meta`: the profile ($0.001485)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FetchinProfileResponse"
+                },
+                "example": {
+                  "id": "…",
+                  "firstName": "…",
+                  "lastName": "…",
+                  "title": "…",
+                  "titleLocalized": {
+                    "en_US": "…"
+                  },
+                  "profilePictureUrl": "…",
+                  "profilePictureUrls": [
+                    {
+                      "url": "…",
+                      "width": 0,
+                      "height": 0
+                    }
+                  ],
+                  "location": "…",
+                  "coverImageUrl": "…",
+                  "coverImageUrls": [
+                    {
+                      "url": "…",
+                      "width": 0,
+                      "height": 0
+                    }
+                  ],
+                  "publicIdentifier": "…",
+                  "url": "…",
+                  "profileId": "…",
+                  "geoLocationName": "…",
+                  "geoCountryName": "…",
+                  "connectionType": "…",
+                  "creator": true,
+                  "influencer": true,
+                  "premium": true,
+                  "isVerified": true,
+                  "geoUrn": "…",
+                  "creatorInfo": {
+                    "hashTags": [
+                      "…"
+                    ],
+                    "website": "…"
+                  },
+                  "memberId": "…",
+                  "openToWork": false,
+                  "hiring": false,
+                  "inRemembrance": false,
+                  "topVoice": true,
+                  "followerCount": 0,
+                  "connectionsCount": 0,
+                  "countryCode": "…",
+                  "jobTitle": "…",
+                  "companyName": "…",
+                  "companyPublicId": "…",
+                  "companyLinkedinUrl": "…",
+                  "currentPosition": {
+                    "positionUrn": "…",
+                    "name": "…",
+                    "companyId": "…",
+                    "companyUrn": "…",
+                    "publicIdentifier": "…",
+                    "url": "…",
+                    "title": "…"
+                  },
+                  "currentSchool": null,
+                  "openProfile": false,
+                  "description": "…",
+                  "languages": [],
+                  "certifications": [],
+                  "volunteerCauses": [],
+                  "skills": [],
+                  "experiences": [
+                    {
+                      "name": "…",
+                      "jobTitle": "…",
+                      "description": "…",
+                      "dateRange": "…",
+                      "current": true,
+                      "ongoing": true,
+                      "positionUrn": "…",
+                      "positionGroupUrn": "…",
+                      "positionGroupId": "…",
+                      "timePeriod": {
+                        "startDate": {
+                          "year": 0
+                        },
+                        "endDate": null
+                      },
+                      "totalDuration": "…",
+                      "company": {
+                        "url": "…",
+                        "name": "…",
+                        "logo": "…",
+                        "companyId": "…",
+                        "urn": "…"
+                      }
+                    }
+                  ],
+                  "educations": [
+                    {
+                      "name": "…",
+                      "description": "…",
+                      "dateRange": "…",
+                      "current": false,
+                      "ongoing": false,
+                      "educationUrn": "…",
+                      "schoolLogo": "…",
+                      "schoolUrl": "…",
+                      "timePeriod": {
+                        "startDate": {
+                          "year": 0
+                        },
+                        "endDate": {
+                          "year": 0
+                        }
+                      }
+                    }
+                  ],
+                  "joinDate": {
+                    "month": 0,
+                    "year": 0
+                  },
+                  "websites": [
+                    {
+                      "url": "…",
+                      "category": "…"
+                    }
+                  ],
+                  "recommendations": [],
+                  "recommendationsGiven": [],
+                  "testScores": [],
+                  "publications": [],
+                  "projects": [],
+                  "patents": [],
+                  "honors": [],
+                  "organizations": [],
+                  "courses": [],
+                  "volunteerExperiences": [],
+                  "industry": "…",
+                  "industryUrn": "…",
+                  "primaryLocale": "…",
+                  "supportedLocales": [
+                    "…"
+                  ],
+                  "descriptionLocalized": {
+                    "en_US": "…"
+                  },
+                  "entityType": "…",
+                  "datacircle_meta": {
+                    "provider": "fetchin",
+                    "cost_usd": 0.001485,
+                    "balance_usd": 20.5
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Not charged: no `profileUrlOrUrn`, one that isn't a LinkedIn profile URL (`https://www.linkedin.com/in/<slug>`), a query parameter other than `profileUrlOrUrn`, or an `X-Data-Provider` value that isn't `up2data`, `harvestapi` or `fetchin` (`Error`). Or Fetchin's own `400`, passed on (`FetchinError`)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/FetchinError"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid API key",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Balance too low",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "error",
+                    "balance_usd"
+                  ],
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "description": "Why the call was refused: your balance can't cover it. Not charged."
+                    },
+                    "balance_usd": {
+                      "type": "number",
+                      "description": "Your balance now, in dollars (`balance_usd` in `GET /balance/`). `POST /checkout/` adds funds."
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Fetchin can't find the profile (`FetchinError`, `code: PROFILE_NOT_FOUND`): $0.001485, Fetchin bills the lookup. Or no `X-Data-Provider` header, or a path Datacircle doesn't call for that provider (`Error`), not charged",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/FetchinError"
+                    },
+                    {
+                      "$ref": "#/components/schemas/Error"
+                    }
+                  ]
+                },
+                "example": {
+                  "error": "LinkedIn profile not found",
+                  "code": "PROFILE_NOT_FOUND",
+                  "datacircle_meta": {
+                    "provider": "fetchin",
+                    "cost_usd": 0.001485,
+                    "balance_usd": 20.5
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Fetchin's rate limit (`code: RATE_LIMITED`): 5 requests a second for all Datacircle customers together. Not charged. Send the same request again in a second.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FetchinError"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Fetchin's own server failed: its error passes on as it came, with its status (`500`, `503` and `504` too, in `FetchinError`). Not charged. Send the same request again."
+          },
+          "503": {
+            "description": "Fetchin hasn't answered within 45 s, can't be reached, or refused Datacircle's own account (its `401`, `402` or `403`): Datacircle stops waiting. Not charged. Send the same request again.",
             "content": {
               "application/json": {
                 "schema": {

@@ -1,5 +1,5 @@
 name: Datacircle MCP Server
-generated: '2026-10-09'
+generated: '2026-10-11'
 method: searched
 source: https://docs.datacircle.dev/mcp-server.md
 url: https://api.datacircle.dev/mcp
@@ -16,8 +16,9 @@ tools:
 - name: get_linkedin_profile
   source: documented
   rest:
-  - enrichLinkedinProfile
+  - postV1ProfilesEnrich
   - getLinkedinProfile
+  - getApiV1Profile
 - name: get_balance
   source: documented
   rest:
@@ -25,19 +26,15 @@ tools:
 - name: list_files
   source: documented
   rest:
-  - listFiles
+  - getFiles
 - name: get_download_link
   source: documented
   rest:
-  - getFileDownloadLink
+  - postFilesByFileIdDownloadLink
 - name: add_funds
   source: documented
   rest:
-  - createCheckout
-- name: get_invite_link
-  source: documented
-  rest:
-  - getInviteLink
+  - postCheckout
 note: Tool names are as documented on the provider MCP page (table); not observed
   from a live tools/list (gated, 401). docs.datacircle.dev/mcp is a separate Mintlify
   docs-search MCP.

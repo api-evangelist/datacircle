@@ -1,21 +1,24 @@
 # Datacircle
 
-- [Datacircle](https://docs.datacircle.dev/index.md): B2B data API. Co-op. No markup.
-- [Quickstart](https://docs.datacircle.dev/quickstart.md)
+- [A data co-op: B2B data APIs with no markup](https://docs.datacircle.dev/index.md): Datacircle is a data co-op. Step 1: Query your favorite B2B data APIs through us. Same request, same price, no markup. Step 2: You're DONE. Every morning, you get the flat file of your data plus everyone else's.
+- [Quickstart](https://docs.datacircle.dev/quickstart.md): Sign up with your work email, send the provider's own request to api.datacircle.dev with your Datacircle key (same request, same price, no markup), then get the flat file.
 - [MCP server](https://docs.datacircle.dev/mcp-server.md): Datacircle in Claude, ChatGPT, Cursor and any MCP client: one URL, sign in, and your agent fetches profiles from your balance.
+- [n8n](https://docs.datacircle.dev/n8n.md): The Datacircle n8n node gets a LinkedIn profile from its URL, in a workflow or as an AI agent's tool.
+- [ActiveCampaign](https://docs.datacircle.dev/activecampaign.md): Put a person's LinkedIn headline, job title and company on their ActiveCampaign record, from the LinkedIn URL on it, with n8n or your own code.
+- [Brevo](https://docs.datacircle.dev/brevo.md): Put a person's LinkedIn headline, job title and company in their Brevo attributes, from the LinkedIn URL in one, with n8n or your own code.
 - [Pricing](https://docs.datacircle.dev/pricing.md): What each provider costs, side by side, so you can pick one at a glance.
 - [Balance and credits](https://docs.datacircle.dev/balance.md): Your balance, adding funds, the credits Datacircle gives, and the order they are spent in.
-- [LinkedIn Profile API](https://docs.datacircle.dev/linkedin-profile.md): Up2Data's and HarvestAPI's own APIs, through your Datacircle key, at the provider's cost.
-- [Files](https://docs.datacircle.dev/files.md): The 10M and 50M US datasets, the co-op file (every LinkedIn profile fetched through Up2Data), and the free lists you got.
-- [Dataset fields](https://docs.datacircle.dev/fields.md): Columns of the 10M+ and 50M+ U.S. datasets, with fill rates, and of the co-op files.
-- [Read the balance](https://docs.datacircle.dev/api-reference/datacircle/read-the-balance.md)
-- [Start a Stripe Checkout](https://docs.datacircle.dev/api-reference/datacircle/start-a-stripe-checkout.md)
-- [List files](https://docs.datacircle.dev/api-reference/datacircle/list-files.md)
-- [Get a download link](https://docs.datacircle.dev/api-reference/datacircle/get-a-download-link.md)
-- [Get your invite link](https://docs.datacircle.dev/api-reference/datacircle/get-your-invite-link.md): Your invite link and how many people you invited signed up. What they unlock: `unlocks` and `unlocks_datasets` below, and [Files](/files).
+- [LinkedIn Profile API](https://docs.datacircle.dev/linkedin-profile.md): Up2Data's, HarvestAPI's and Fetchin's own APIs, through your Datacircle key, with no markup.
+- [Files](https://docs.datacircle.dev/files.md): The co-op files: every LinkedIn profile fetched through Up2Data, HarvestAPI or Fetchin, one file per provider, new every day.
+- [Dataset fields](https://docs.datacircle.dev/fields.md): Every column of the co-op files, one per provider, with its type.
+- [Read the balance](https://docs.datacircle.dev/api-reference/datacircle/read-the-balance.md): Your balance, in dollars: `balance_usd` is everything your calls can spend right now, then what it is made of: what is left of the signup credit, of the funds you added, of manual credits, and every temporary credit with its expiry. Read it to know whether it covers the calls you are about to make.…
+- [Start a Stripe Checkout](https://docs.datacircle.dev/api-reference/datacircle/start-a-stripe-checkout.md): Starts a Stripe Checkout that adds funds to your balance, any whole number of dollars from 5 to 10,000. Open `checkout_url`, or hand it to a human to pay: nothing is charged until they do. The funds land in `funds_usd` once Stripe confirms the payment, and never expire.
+- [List files](https://docs.datacircle.dev/api-reference/datacircle/list-files.md): The co-op files (`coop_up2data`, `coop_harvestapi`, `coop_fetchin`): every LinkedIn profile any customer fetched through each provider, new every day. Each has its `id` and `is_unlocked`. Get a file with `POST /files/{file_id}/download-link/`. This call is free.
+- [Get a download link](https://docs.datacircle.dev/api-reference/datacircle/get-a-download-link.md): A download link for one file of `GET /files/`, by its `id`: `url`, signed and valid one hour, fetched as is without your API key, and `next_step`, a ready-to-run call per provider for the live profile behind any row. A file not unlocked for this workspace answers `403`, its `error` saying how to unl…
 - [Reset your API key](https://docs.datacircle.dev/api-reference/datacircle/reset-your-api-key.md): The old key stops working at once.
-- [Enrich one LinkedIn profile](https://docs.datacircle.dev/api-reference/up2data/enrich-one-linkedin-profile.md): Up2Data's own request (https://api.up2data.ai/v1/profiles/enrich), sent to api.datacircle.dev with your Datacircle key in `Authorization` and `X-Data-Provider: up2data`. Nothing else changes. $0.00125 per profile found (Up2Data's price, no markup).
-- [Get one LinkedIn profile](https://docs.datacircle.dev/api-reference/harvestapi/get-one-linkedin-profile.md): HarvestAPI's own request (https://api.harvest-api.com/linkedin/profile), sent to api.datacircle.dev with your Datacircle key in `Authorization` and `X-Data-Provider: harvestapi`. Nothing else changes. $0.0037 per profile found, 0.0023 per profile not found (HarvestAPI's price, no markup).
+- [Enrich one LinkedIn profile](https://docs.datacircle.dev/api-reference/up2data/enrich-one-linkedin-profile.md): Send Up2Data's own request (`POST https://api.up2data.ai/v1/profiles/enrich`) to api.datacircle.dev, with your Datacircle key in `Authorization` and `X-Data-Provider: up2data`. The path and the body stay the same. We charge $0.002375 per profile Up2Data finds, with no markup.
+- [Get one LinkedIn profile](https://docs.datacircle.dev/api-reference/harvestapi/get-one-linkedin-profile.md): Send HarvestAPI's own request (`GET https://api.harvest-api.com/linkedin/profile`) to api.datacircle.dev, with your Datacircle key in `Authorization` and `X-Data-Provider: harvestapi`. The path and the query stay the same. We charge $0.0037 per profile HarvestAPI finds, with no markup.
+- [Get one LinkedIn profile](https://docs.datacircle.dev/api-reference/fetchin/get-one-linkedin-profile.md): Send Fetchin's own request (`GET https://api.fetchin.io/api/v1/profile`) to api.datacircle.dev, with your Datacircle key in `Authorization` and `X-Data-Provider: fetchin`. The path and the query stay the same. We charge $0.001485 per profile, found or not, with no markup.
 
 ## OpenAPI Specs
 

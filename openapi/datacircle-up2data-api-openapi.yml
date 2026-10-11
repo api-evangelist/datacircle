@@ -2,15 +2,15 @@ openapi: 3.2.0
 info:
   title: Datacircle Up2 Data API
   version: '1'
+  description: Datacircle is a data co-op.
+  termsOfService: https://datacircle.dev/terms
   contact:
     name: Datacircle
     url: https://datacircle.dev
     email: wayne@datacircle.dev
-  termsOfService: https://datacircle.dev/terms
   x-logo:
     url: https://datacircle.dev/favicon.png
     altText: Datacircle
-  description: 'Operations tagged Up2Data across 2 of this provider''s published API definitions: datacircle-openapi.json, datacircle-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.datacircle.dev
 security:
@@ -24,12 +24,12 @@ paths:
       tags:
       - Up2Data
       summary: Enrich one LinkedIn profile
-      description: 'Up2Data''s own request (https://api.up2data.ai/v1/profiles/enrich), sent to api.datacircle.dev with your Datacircle key in `Authorization` and `X-Data-Provider: up2data`. Nothing else changes. $0.00125 per profile found (Up2Data''s price, no markup).'
+      description: 'Send Up2Data''s own request (`POST https://api.up2data.ai/v1/profiles/enrich`) to api.datacircle.dev, with your Datacircle key in `Authorization` and `X-Data-Provider: up2data`. The path and the body stay the same. We charge $0.002375 per profile Up2Data finds, with no markup.'
       parameters:
       - name: X-Data-Provider
         in: header
         required: true
-        description: 'names the provider: `up2data`. With the host, the only change from the provider''s own request.'
+        description: 'Names the provider: `up2data`. This header and the host are the only changes from the provider''s own request.'
         schema:
           type: string
           enum:
@@ -47,24 +47,22 @@ paths:
               properties:
                 url:
                   type: string
-                  description: the profile's LinkedIn URL (`https://www.linkedin.com/in/williamhgates`); Up2Data refuses a bare public identifier with its own `400`
+                  description: The profile's LinkedIn URL (`https://www.linkedin.com/in/williamhgates`). Up2Data refuses a bare public identifier with its own `400`
                 fields:
                   type: array
                   items:
                     type: string
-                  description: Restrict response to these top-level fields. Same cost. Listing followers_count or connections_count also opts into the extra scrape; listing skill_endorsements also opts into the full-skills scrape.
+                  description: Restrict response to these top-level fields. Same cost. Listing followers_count or connections_count also opts into the extra scrape. Listing skill_endorsements also opts into the full-skills scrape.
                 with_followers_and_connections:
                   type: boolean
                   default: false
-                  description: 'Include followers_count and connections_count. Off by default — those numbers are a second LinkedIn request, not part of the main profile scrape. Same price; extra latency.
+                  description: 'Include followers_count and connections_count. Off by default: those numbers are a second LinkedIn request, not part of the main profile scrape. Same price. Extra latency.
 
                     '
                 with_full_skills_and_endorsements:
                   type: boolean
                   default: false
-                  description: 'Return every skill LinkedIn exposes (up to LinkedIn''s own 50-skill cap) plus skill_endorsements. Off by default — skills is capped at the first 20 without it, and this is a second LinkedIn request. Same price; extra latency.
-
-                    '
+                  description: 'Return every skill LinkedIn shows (up to LinkedIn''s 50-skill cap) plus skill_endorsements. Off by default: without it you get the first 20 skills, and turning it on adds a second LinkedIn request. It costs nothing extra but takes longer.'
               additionalProperties: false
             example:
               url: https://www.linkedin.com/in/williamhgates
@@ -78,84 +76,61 @@ paths:
               example:
                 data:
                   url: https://www.linkedin.com/in/williamhgates
-                  full_name: Bill Gates
-                  first_name: Bill
-                  last_name: Gates
-                  public_identifier: williamhgates
-                  headline: Chair, Gates Foundation and Founder, Breakthrough Energy
+                  full_name: …
+                  first_name: …
+                  last_name: …
+                  public_identifier: …
+                  headline: …
                   location:
-                    city: Seattle
-                    region: Washington
-                    country: United States
-                    raw: Seattle, Washington, United States
-                  about: Chair of the Gates Foundation. Founder of Breakthrough Energy. Co-founder of Microsoft. Voracious reader. Avid traveler. Active blogger.
-                  urn: urn:li:member:251749025
-                  linkedin_id: '251749025'
-                  profile_urn: urn:li:fsd_profile:ACoAAA8BYqEBCGLg_vT_ca6mMEqkpp9nVffJ3hc
+                    city: …
+                    region: …
+                    country: …
+                    raw: …
+                  about: …
+                  urn: …
+                  linkedin_id: …
+                  profile_urn: …
                   positions:
-                  - title: Co-chair
-                    company: Gates Foundation
-                    company_url: https://www.linkedin.com/company/gates-foundation
-                    linkedin_id: '8736'
-                    position_id: urn:li:fsd_profilePosition:(ACoAAA8BYqEBCGLg_vT_ca6mMEqkpp9nVffJ3hc,392598211)
-                    started_at: '2000'
+                  - title: …
+                    company: …
+                    company_url: …
+                    linkedin_id: …
+                    position_id: …
+                    started_at: …
                     ended_at: null
-                    company_industry: Non-profit Organization Management
-                    company_headcount: 1001-5000
-                    company_logo_url: https://media.licdn.com/dms/image/v2/D560BAQEgMqqFTd40Tg/company-logo_400_400/company-logo_400_400/0/1736784969376/bill__melinda_gates_foundation_logo?e=1792627200&v=beta&t=pQQr7Y88vBlaIvx9BXqz34OGzr9w_sBzEShPWaPiJqE
-                  - title: Founder
-                    company: Breakthrough Energy
-                    company_url: https://www.linkedin.com/company/breakthrough-energy
-                    linkedin_id: '19141006'
-                    position_id: urn:li:fsd_profilePosition:(ACoAAA8BYqEBCGLg_vT_ca6mMEqkpp9nVffJ3hc,1836104012)
-                    started_at: '2015'
-                    ended_at: null
-                    company_industry: Management Consulting
-                    company_headcount: 51-200
-                    company_logo_url: https://media.licdn.com/dms/image/v2/D560BAQFRMYiQN7-2kA/company-logo_400_400/B56ZoI4SGPI0AY-/0/1761085563539/breakthrough_energy_logo?e=1792627200&v=beta&t=dtaAXFJ8-71Bvs5Qhj4c81nOc6l2hDqHqSE8qtHK0qk
-                  - title: Co-founder
-                    company: Microsoft
-                    company_url: https://www.linkedin.com/company/microsoft
-                    linkedin_id: '1035'
-                    position_id: urn:li:fsd_profilePosition:(ACoAAA8BYqEBCGLg_vT_ca6mMEqkpp9nVffJ3hc,392599749)
-                    started_at: '1975'
-                    ended_at: null
-                    company_industry: Computer Software
-                    company_headcount: 10001+
-                    company_logo_url: https://media.licdn.com/dms/image/v2/D560BAQH32RJQCl3dDQ/company-logo_400_400/B56ZYQ0mrGGoAc-/0/1744038948046/microsoft_logo?e=1792627200&v=beta&t=NqzcT-M4G01GGJ0WSG_kxqbOJ5GVTaeHs61vteFTnyE
+                    company_industry: …
+                    company_headcount: …
+                    company_logo_url: …
                   current_company:
-                    name: Gates Foundation
-                    url: https://www.linkedin.com/company/gates-foundation
-                    linkedin_id: '8736'
-                    title: Co-chair
-                    started_at: '2000'
-                    logo_url: https://media.licdn.com/dms/image/v2/D560BAQEgMqqFTd40Tg/company-logo_400_400/company-logo_400_400/0/1736784969376/bill__melinda_gates_foundation_logo?e=1792627200&v=beta&t=pQQr7Y88vBlaIvx9BXqz34OGzr9w_sBzEShPWaPiJqE
-                    industry: Non-profit Organization Management
-                    headcount: 1001-5000
+                    name: …
+                    url: …
+                    linkedin_id: …
+                    title: …
+                    started_at: …
+                    logo_url: …
+                    industry: …
+                    headcount: …
                   education:
-                  - school: Harvard University
-                    education_id: urn:li:fsd_profileEducation:(ACoAAA8BYqEBCGLg_vT_ca6mMEqkpp9nVffJ3hc,157656829)
-                    school_logo_url: https://media.licdn.com/dms/image/v2/C4E0BAQF5t62bcL0e9g/company-logo_400_400/company-logo_400_400/0/1631318058235?e=1792627200&v=beta&t=0hJGm1CmYzZ20L5NhyvLll-4sDmb1U_RwRue5QCSDSI
-                    started_at: '1973'
-                    ended_at: '1975'
-                  - school: Lakeside School
-                    education_id: urn:li:fsd_profileEducation:(ACoAAA8BYqEBCGLg_vT_ca6mMEqkpp9nVffJ3hc,157676006)
-                    school_logo_url: https://media.licdn.com/dms/image/v2/D560BAQGFmOQmzpxg9A/company-logo_400_400/company-logo_400_400/0/1683732883164/lakeside_school_logo?e=1792627200&v=beta&t=9AdS9k6n1uMsFx4ZSbTtjlXeuxIyoxV06LfYpNzqRSs
-                  primary_locale: en_US
+                  - school: …
+                    education_id: …
+                    school_logo_url: …
+                    started_at: …
+                    ended_at: …
+                  primary_locale: …
                   is_premium: true
                   is_open_to_work: false
-                  profile_picture_url: https://media.licdn.com/dms/image/v2/D5603AQF-RYZP55jmXA/profile-displayphoto-shrink_800_800/B56ZRi8g.aGsAc-/0/1736826818808?e=1792627200&v=beta&t=wmgV6HYCkzeFN_YuUhRPVy-jys5YqHMucz6YL3NarYE
-                  scraped_at: '2026-10-03T13:54:57.750Z'
+                  profile_picture_url: …
+                  scraped_at: …
                 meta:
                   creditsUsed: 1
                   billed: true
                   reason: profile_found
                 datacircle_meta:
                   provider: up2data
-                  cost_usd: 0.00125
-                  balance_usd: 4.99875
+                  cost_usd: 0.002375
+                  balance_usd: 4.997625
         '400':
-          description: 'Not charged. A body that isn''t a non-empty JSON object, or an `X-Data-Provider` value that isn''t `up2data` or `harvestapi` (`Error`); or Up2Data''s own `400`, passed on (`Up2DataError`, `error.type: invalid_request`): a `url` that isn''t a LinkedIn profile URL, a field Up2Data doesn''t take'
+          description: 'Not charged. A body that isn''t a non-empty JSON object, or an `X-Data-Provider` value that isn''t `up2data`, `harvestapi` or `fetchin` (`Error`). Or Up2Data''s own `400`, passed on (`Up2DataError`, `error.type: invalid_request`): a `url` that isn''t a LinkedIn profile URL, a field Up2Data doesn''t take'
           content:
             application/json:
               schema:
@@ -186,19 +161,19 @@ paths:
                     description: Your balance now, in dollars (`balance_usd` in `GET /balance/`). `POST /checkout/` adds funds.
                 additionalProperties: false
         '404':
-          description: 'No `X-Data-Provider` header, or a path Datacircle doesn''t call for that provider (e.g. `X-Data-Provider: harvestapi` on `/v1/profiles/enrich`); not charged'
+          description: 'No `X-Data-Provider` header, or a path Datacircle doesn''t call for that provider (e.g. `X-Data-Provider: harvestapi` on `/v1/profiles/enrich`). Not charged'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
         '422':
-          description: Up2Data can't reach that profile (private, deleted or unreachable); not charged
+          description: Up2Data can't reach that profile (private, deleted or unreachable). Not charged
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Up2DataError'
         '429':
-          description: Datacircle's daily Up2Data limit, for your account or for everyone (it resets at 00:00 UTC), or Up2Data's own rate limit; not charged
+          description: Datacircle's daily Up2Data limit, for your account or for everyone (it resets at 00:00 UTC), or Up2Data's own rate limit. Not charged
           content:
             application/json:
               schema:
@@ -206,9 +181,9 @@ paths:
                 - $ref: '#/components/schemas/Error'
                 - $ref: '#/components/schemas/Up2DataError'
         '502':
-          description: 'Up2Data''s own server failed three times in a row: its gateway answered an error page each time, and Datacircle sent the same request again twice before passing the last page on. Not charged; send the same request again. A gateway''s `503` or `504` page passes on the same way, with its status.'
+          description: 'Up2Data''s own server failed three times in a row: its gateway answered an error page each time, and Datacircle sent the same request again twice before passing the last page on. Not charged. Send the same request again. A gateway''s `503` or `504` page passes on the same way, with its status.'
         '503':
-          description: 'Up2Data hasn''t answered within 45 s, retries included, or can''t be reached: Datacircle stops waiting. Not charged; send the same request again.'
+          description: 'Up2Data hasn''t answered within 45 s, retries included, or can''t be reached: Datacircle stops waiting. Not charged. Send the same request again.'
           content:
             application/json:
               schema:
@@ -234,24 +209,21 @@ paths:
         source: "import os\n\nimport requests\n\nresponse = requests.post(\n    \"https://api.datacircle.dev/v1/profiles/enrich\",\n    headers={\"Authorization\": f\"Token {os.environ['DATACIRCLE_API_KEY']}\", \"X-Data-Provider\": \"up2data\"},\n    json={'url': 'https://www.linkedin.com/in/williamhgates'},\n)\nprint(response.json())"
       operationId: postV1ProfilesEnrich
       x-operation-id-source: derived
-    servers:
-    - url: https://api.datacircle.dev
 components:
   schemas:
-    Up2DataEnrichResponse:
+    Up2DataMeta:
       type: object
-      description: Up2Data's own response to POST /v1/profiles/enrich, plus `datacircle_meta`
-      required:
-      - data
-      - meta
-      - datacircle_meta
+      description: Up2Data's billing metadata, minus `creditsRemaining`, `requestId` and `latencyMs` (our account with Up2Data, not yours)
       properties:
-        data:
-          $ref: '#/components/schemas/Up2DataProfile'
-        meta:
-          $ref: '#/components/schemas/Up2DataMeta'
-        datacircle_meta:
-          $ref: '#/components/schemas/DatacircleMeta'
+        creditsUsed:
+          type: integer
+          description: 'Up2Data credits this call used (1 per profile found). What it costs you is `datacircle_meta.cost_usd`: $0.002375 per Up2Data credit'
+        billed:
+          type: boolean
+          description: 'Whether Up2Data billed this call (`false`: it didn''t, and you weren''t charged). What this call costs you is `datacircle_meta.cost_usd`'
+        reason:
+          type: string
+          description: Why Up2Data billed this call or not, in its words, e.g. `profile_found`.
       additionalProperties: false
     DatacircleMeta:
       type: object
@@ -266,14 +238,38 @@ components:
           enum:
           - up2data
           - harvestapi
-          description: which provider answered
+          - fetchin
+          description: Which provider answered
         cost_usd:
           type: number
-          description: 'what this call cost, in dollars: the provider''s price, no markup'
+          description: 'What this call cost, in dollars: the provider''s price, no markup'
         balance_usd:
           type: number
-          description: your balance after this call, in dollars (`balance_usd` in `GET /balance/`)
+          description: Your balance after this call, in dollars (`balance_usd` in `GET /balance/`)
       additionalProperties: false
+    Up2DataEnrichResponse:
+      type: object
+      description: Up2Data's own response to `POST /v1/profiles/enrich`, plus `datacircle_meta`
+      required:
+      - data
+      - meta
+      - datacircle_meta
+      properties:
+        data:
+          $ref: '#/components/schemas/Up2DataProfile'
+        meta:
+          $ref: '#/components/schemas/Up2DataMeta'
+        datacircle_meta:
+          $ref: '#/components/schemas/DatacircleMeta'
+      additionalProperties: false
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          description: What went wrong, in plain words.
     Up2DataError:
       type: object
       properties:
@@ -306,14 +302,6 @@ components:
       description: Up2Data's own error answer, plus `datacircle_meta`
       required:
       - error
-    Error:
-      type: object
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          description: What went wrong, in plain words.
     Up2DataProfile:
       type: object
       properties:
@@ -411,7 +399,7 @@ components:
                 type:
                 - string
                 - 'null'
-                description: When the role ended, `YYYY-MM` or `YYYY`; `null` for a current role.
+                description: When the role ended, `YYYY-MM` or `YYYY`. `null` for a current role.
               description:
                 type: string
                 description: The role's description.
@@ -464,7 +452,7 @@ components:
                 type:
                 - string
                 - 'null'
-                description: When it ended, `YYYY-MM` or `YYYY`; `null` when ongoing.
+                description: When it ended, `YYYY-MM` or `YYYY`. `null` when ongoing.
             additionalProperties: false
           description: Education history.
         skills:
@@ -492,12 +480,12 @@ components:
           description: The profile's About section.
         urn:
           type: string
-          description: 'urn:li:member:{id} on enrich.
+          description: '`urn:li:member:{id}` on enrich.
 
             '
         profile_urn:
           type: string
-          description: 'urn:li:fsd_profile:{ACo…}, the profile id Sales Navigator and LinkedIn messaging use.
+          description: '`urn:li:fsd_profile:{ACo…}`, the profile id Sales Navigator and LinkedIn messaging use.
 
             '
         languages:
@@ -522,7 +510,7 @@ components:
                 - PROFESSIONAL_WORKING
                 - LIMITED_WORKING
                 - ELEMENTARY
-                description: The proficiency the member chose; omitted when they chose none.
+                description: The proficiency the member chose. Omitted when they chose none.
             additionalProperties: false
         certifications:
           type: array
@@ -673,20 +661,6 @@ components:
           description: LinkedIn headshot CDN URL.
       additionalProperties: false
       description: Up2Data's profile record, every field as Up2Data documents it (docs.up2data.ai). `fields` in the request restricts it to the fields listed.
-    Up2DataMeta:
-      type: object
-      description: Up2Data's billing metadata, minus `creditsRemaining`, `requestId` and `latencyMs` (our account with Up2Data, not yours)
-      properties:
-        creditsUsed:
-          type: integer
-          description: 'Up2Data credits this call used (1 per profile found). What it costs you is `datacircle_meta.cost_usd`: $0.00125 per Up2Data credit'
-        billed:
-          type: boolean
-          description: 'Whether Up2Data billed this call (`false`: it didn''t, and you weren''t charged). What this call costs you is `datacircle_meta.cost_usd`'
-        reason:
-          type: string
-          description: Why Up2Data billed this call or not, in its words, e.g. `profile_found`.
-      additionalProperties: false
   securitySchemes:
     token:
       type: http
@@ -695,6 +669,3 @@ components:
 externalDocs:
   description: Datacircle docs
   url: https://docs.datacircle.dev
-x-refined-from:
-- datacircle-openapi.json
-- datacircle-openapi.yml

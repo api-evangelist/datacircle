@@ -2,10 +2,10 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/api-evangelist/datacircle/main/json-schema/datacircle-balance-schema.json",
   "title": "Balance",
-  "x-generated": "2026-10-09",
+  "x-generated": "2026-10-11",
   "x-method": "derived",
   "x-generator": "derive-json-schema.py",
-  "x-source": "openapi/datacircle-openapi.yml#/components/schemas/Balance",
+  "x-source": "openapi/datacircle-datacircle-api-openapi.yml#/components/schemas/Balance",
   "type": "object",
   "properties": {
     "balance_usd": {
@@ -31,7 +31,7 @@
         "properties": {
           "campaign": {
             "type": "string",
-            "description": "The campaign that gave this credit, e.g. `launch_20` (the launch week's $20 credit)."
+            "description": "The campaign that gave this credit, by its name."
           },
           "credit_usd": {
             "type": "number",
@@ -44,7 +44,7 @@
           }
         }
       },
-      "description": "Temporary credits: one entry per campaign grant that has not expired yet, soonest to expire first; empty when you have none. At `expires_at` the entry leaves this list and whatever is left of it is gone."
+      "description": "Temporary credits: one entry per campaign grant that has not expired yet, soonest to expire first. Empty when you have none. At `expires_at` the entry leaves this list and whatever is left of it is gone."
     }
   }
 }

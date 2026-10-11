@@ -2,37 +2,35 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/api-evangelist/datacircle/main/json-schema/datacircle-file-schema.json",
   "title": "File",
-  "x-generated": "2026-10-09",
+  "x-generated": "2026-10-11",
   "x-method": "derived",
   "x-generator": "derive-json-schema.py",
-  "x-source": "openapi/datacircle-openapi.yml#/components/schemas/File",
+  "x-source": "openapi/datacircle-datacircle-api-openapi.yml#/components/schemas/File",
   "type": "object",
   "properties": {
     "id": {
       "type": "integer",
-      "description": "The file's id: pass it to `POST /files/{file_id}/download-link/`. Every daily file gets a new id; old ids still download."
+      "description": "The file's id: pass it to `POST /files/{file_id}/download-link/`. Every daily file gets a new id. Old ids still download."
     },
     "dataset": {
       "type": "string",
       "enum": [
-        "us_10m",
         "coop_up2data",
         "coop_harvestapi",
-        "us_50m",
-        "free_list"
+        "coop_fetchin"
       ],
-      "description": "Which dataset this file is a snapshot of: `us_10m` is the 10M US dataset (10M+ US B2B leads), `us_50m` the 50M US dataset (50M+ US B2B), `coop_up2data` and `coop_harvestapi` the co-op files: every LinkedIn profile fetched through Up2Data, and through HarvestAPI, one flat Parquet table each (columns: docs Dataset fields), rebuilt every day. `GET /files/` lists the newest file of each dataset. `free_list` is a free list we give away (a CSV in a zip): `GET /files/` lists each one you opened the link of (`datacircle.dev/lists/<list>`), and `filename` says which."
+      "description": "Which dataset this file is a snapshot of: `coop_up2data`, `coop_harvestapi` and `coop_fetchin` are the co-op files: every LinkedIn profile fetched through Up2Data, through HarvestAPI and through Fetchin, one flat Parquet table each (columns: docs Dataset fields), rebuilt every day. `GET /files/` lists the newest file of each dataset."
     },
     "filename": {
       "type": "string",
-      "description": "The name the file downloads as: `us_smb_mid_market.zip`, `coop_up2data.parquet`, `2026-10-07-us-software-founders.zip`."
+      "description": "The download's file name, such as `coop_up2data.parquet`."
     },
     "row_count": {
       "type": [
         "integer",
         "null"
       ],
-      "description": "Rows in the file; `null` when we have not counted it."
+      "description": "Rows in the file. `null` when we have not counted it."
     },
     "size_bytes": {
       "type": "integer",
@@ -43,7 +41,7 @@
         "string",
         "null"
       ],
-      "description": "The file's SHA-256, in hex, to check your download; `null` when we have not measured it."
+      "description": "The file's SHA-256, in hex, to check your download. `null` when we have not measured it."
     },
     "created_at": {
       "type": "string",
@@ -52,7 +50,7 @@
     },
     "is_unlocked": {
       "type": "boolean",
-      "description": "Whether this workspace may download it: always `true` for `us_10m` and `free_list`; `true` for `coop_up2data` and `coop_harvestapi` once this workspace has added $50 in funds or 3 people you invited signed up; `true` for `us_50m` only once 3 people you invited signed up (`GET /me/invites/`)."
+      "description": "Whether this workspace may download it: `true` once this workspace has added $50 in funds."
     }
   }
 }

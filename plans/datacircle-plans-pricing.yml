@@ -1,5 +1,5 @@
 name: Datacircle Pricing
-generated: '2026-10-09'
+generated: '2026-10-11'
 method: searched
 source: https://docs.datacircle.dev/pricing
 audience: developer-api
@@ -9,21 +9,34 @@ delivery:
   delivery: managed
 plans:
 - name: Up2Data LinkedIn profile
-  price: 0.00125
-  price_text: $0.00125
+  price: 0.002375
+  price_text: $0.002375 ($2.375 per 1,000)
   currency: USD
   description: Per profile found via POST /v1/profiles/enrich; profile not found is
     free (422).
   features:
   - followers and connections, every skill with its endorsements
   limits:
-  - $1 a day per account (800 profiles)
+  - $1 a day per account (421 profiles), with a shared daily limit for all customers; past either, 429 until 00:00 UTC
 - name: HarvestAPI LinkedIn profile
   price: 0.0037
-  price_text: $0.0037
+  price_text: $0.0037 ($3.70 per 1,000)
   currency: USD
   description: Per profile found via GET /linkedin/profile; not found billed $0.0023.
   features:
   - 'every section of the profile: jobs, schools, skills, certifications, recommendations,
     interests'
   limits: []
+- name: Fetchin LinkedIn profile
+  price: 0.001485
+  price_text: $0.001485 ($1.485 per 1,000)
+  currency: USD
+  description: Per profile found via GET /api/v1/profile; a profile not found (404)
+    is billed the same, $0.001485.
+  features:
+  - 'every section of the profile: jobs, schools, skills, certifications, honors,
+    languages, recommendations given and received, volunteering, courses, projects,
+    publications, patents, organizations'
+  - followers and connections
+  limits:
+  - 5 requests a second for all customers together; past it, Fetchin's 429, not charged

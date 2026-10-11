@@ -2,15 +2,15 @@ openapi: 3.2.0
 info:
   title: Datacircle Harvest API
   version: '1'
+  description: Datacircle is a data co-op.
+  termsOfService: https://datacircle.dev/terms
   contact:
     name: Datacircle
     url: https://datacircle.dev
     email: wayne@datacircle.dev
-  termsOfService: https://datacircle.dev/terms
   x-logo:
     url: https://datacircle.dev/favicon.png
     altText: Datacircle
-  description: 'Operations tagged HarvestAPI across 2 of this provider''s published API definitions: datacircle-openapi.json, datacircle-openapi.yml. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.datacircle.dev
 security:
@@ -24,7 +24,10 @@ paths:
       tags:
       - HarvestAPI
       summary: Get one LinkedIn profile
-      description: 'HarvestAPI''s own request (https://api.harvest-api.com/linkedin/profile), sent to api.datacircle.dev with your Datacircle key in `Authorization` and `X-Data-Provider: harvestapi`. Nothing else changes. $0.0037 per profile found, 0.0023 per profile not found (HarvestAPI''s price, no markup).'
+      description: 'Send HarvestAPI''s own request (`GET https://api.harvest-api.com/linkedin/profile`) to api.datacircle.dev, with your Datacircle key in `Authorization` and `X-Data-Provider: harvestapi`. The path and the query stay the same. We charge $0.0037 per profile HarvestAPI finds, with no markup.
+
+
+        A profile HarvestAPI doesn''t find costs $0.0023.'
       parameters:
       - name: url
         in: query
@@ -36,7 +39,7 @@ paths:
       - name: X-Data-Provider
         in: header
         required: true
-        description: 'names the provider: `harvestapi`. With the host, the only change from the provider''s own request.'
+        description: 'Names the provider: `harvestapi`. This header and the host are the only changes from the provider''s own request.'
         schema:
           type: string
           enum:
@@ -52,22 +55,22 @@ paths:
         source: "import os\n\nimport requests\n\nresponse = requests.get(\n    \"https://api.datacircle.dev/linkedin/profile\",\n    headers={\"Authorization\": f\"Token {os.environ['DATACIRCLE_API_KEY']}\", \"X-Data-Provider\": \"harvestapi\"},\n    params={'url': 'https://www.linkedin.com/in/williamhgates'},\n)\nprint(response.json())"
       responses:
         '200':
-          description: 'HarvestAPI''s answer plus `datacircle_meta`, as HarvestAPI sends it: a `200` whether it found the profile (`status: 200`, $0.0037) or not (`element: null`, `status: 404`, `error: Profile not found`, $0.0023: HarvestAPI bills the lookup)'
+          description: 'HarvestAPI''s answer plus `datacircle_meta`, as HarvestAPI sends it: a `200` whether it found the profile (`status: 200`, \$0.0037) or not (`element: null`, `status: 404`, `error: Profile not found`, \$0.0023: HarvestAPI bills the lookup)'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HarvestApiProfileResponse'
               example:
                 element:
-                  id: ACoAAA8BYqEBCGLg_vT_ca6mMEqkpp9nVffJ3hc
-                  publicIdentifier: williamhgates
+                  id: …
+                  publicIdentifier: …
                   linkedinUrl: https://www.linkedin.com/in/williamhgates
-                  firstName: Bill
-                  lastName: Gates
+                  firstName: …
+                  lastName: …
                   emails: []
-                  headline: Chair, Gates Foundation and Founder, Breakthrough Energy
+                  headline: …
                   websites:
-                  - https://gatesnot.es/AI
+                  - …
                   openToWork: false
                   hiring: false
                   premium: true
@@ -75,181 +78,142 @@ paths:
                   memorialized: false
                   creator: true
                   location:
-                    linkedinText: Seattle, Washington, United States
-                    countryCode: US
+                    linkedinText: …
+                    countryCode: …
                     parsed:
-                      text: Seattle, WA, United States
-                      countryCode: US
+                      text: …
+                      countryCode: …
                       regionCode: null
-                      country: United States
-                      countryFull: United States of America
-                      state: Washington
-                      city: Seattle
-                  objectUrn: '251749025'
-                  registeredAt: '2013-05-02T19:09:40.840Z'
+                      country: …
+                      countryFull: …
+                      state: …
+                      city: …
+                  objectUrn: …
+                  registeredAt: …
                   topSkills: []
-                  connectionsCount: 8
-                  followerCount: 40710904
+                  connectionsCount: 0
+                  followerCount: 0
                   verified: true
-                  about: Chair of the Gates Foundation. Founder of Breakthrough Energy. Co-founder of Microsoft. Voracious reader. Avid traveler. Active blogger.
+                  about: …
                   industry:
-                    id: 131
-                    name: Philanthropic Fundraising Services
+                    id: 0
+                    name: …
                   currentPosition:
-                  - position: Co-chair
+                  - position: …
                     location: null
                     employmentType: null
                     workplaceType: null
-                    companyName: Gates Foundation
-                    companyUniversalName: gates-foundation
-                    companyLinkedinUrl: https://www.linkedin.com/company/gates-foundation/
-                    companyId: '8736'
-                    duration: 26 yrs 10 mos
+                    companyName: …
+                    companyUniversalName: …
+                    companyLinkedinUrl: …
+                    companyId: …
+                    duration: …
                     description: null
                     skills: null
                     startDate:
-                      year: 2000
-                      text: '2000'
+                      year: 0
+                      text: …
                     endDate:
-                      text: Present
+                      text: …
                     companyLogo:
-                      url: https://media.licdn.com/dms/image/v2/D560BAQEgMqqFTd40Tg/company-logo_400_400/company-logo_400_400/0/1736784969376/bill__melinda_gates_foundation_logo?e=1793232000&v=beta&t=-3Or6OsbYEKsjb0OeDOnM7sqQbLZt5c7mY8psW87kHE
+                      url: …
                       sizes:
-                      - url: https://media.licdn.com/dms/image/v2/D560BAQEgMqqFTd40Tg/company-logo_400_400/company-logo_400_400/0/1736784969376/bill__melinda_gates_foundation_logo?e=1793232000&v=beta&t=-3Or6OsbYEKsjb0OeDOnM7sqQbLZt5c7mY8psW87kHE
-                        width: 400
-                        height: 400
+                      - url: …
+                        width: 0
+                        height: 0
                   profileTopEducation:
-                  - schoolName: Harvard University
+                  - schoolName: …
                     description: null
                     insights: null
                     skills: null
-                    schoolLinkedinUrl: https://www.linkedin.com/company/1646/
-                    schoolId: '1646'
+                    schoolLinkedinUrl: …
+                    schoolId: …
                     degree: null
                     fieldOfStudy: null
-                    period: 1973 - 1975
+                    period: …
                     startDate:
-                      year: 1973
-                      text: '1973'
+                      year: 0
+                      text: …
                     endDate:
-                      year: 1975
-                      text: '1975'
+                      year: 0
+                      text: …
                     schoolLogo:
-                      url: https://media.licdn.com/dms/image/v2/C4E0BAQF5t62bcL0e9g/company-logo_400_400/company-logo_400_400/0/1631318058235?e=1793232000&v=beta&t=tG7qGly5_Uq33s6x0-9U8QrenZr2NTdEdR8ydLfb8II
+                      url: …
                       sizes:
-                      - url: https://media.licdn.com/dms/image/v2/C4E0BAQF5t62bcL0e9g/company-logo_400_400/company-logo_400_400/0/1631318058235?e=1793232000&v=beta&t=tG7qGly5_Uq33s6x0-9U8QrenZr2NTdEdR8ydLfb8II
-                        width: 400
-                        height: 400
+                      - url: …
+                        width: 0
+                        height: 0
                   profileActions:
-                  - label: View my newsletter
-                    url: https://www.linkedin.com/newsletters/gates-notes-6651495472181637121/
+                  - label: …
+                    url: …
                   profilePicture:
-                    url: https://media.licdn.com/dms/image/v2/D5603AQF-RYZP55jmXA/profile-displayphoto-shrink_800_800/B56ZRi8g.aGsAc-/0/1736826818808?e=1793232000&v=beta&t=h84Ee-2NucG0tJjTkgWGFHOtQD4ICX0mrcRqdTWoQzM
+                    url: …
                     sizes:
-                    - url: https://media.licdn.com/dms/image/v2/D5603AQF-RYZP55jmXA/profile-displayphoto-shrink_800_800/B56ZRi8g.aGsAc-/0/1736826818808?e=1793232000&v=beta&t=h84Ee-2NucG0tJjTkgWGFHOtQD4ICX0mrcRqdTWoQzM
-                      width: 800
-                      height: 800
+                    - url: …
+                      width: 0
+                      height: 0
                   coverPicture:
-                    url: https://media.licdn.com/dms/image/v2/D5616AQEjhPbTCeblYg/profile-displaybackgroundimage-shrink_350_1400/B56ZcytR5SGsAg-/0/1748902420393?e=1793232000&v=beta&t=PurNZciepthIMLCl9A59bR0oQS7vFuaZzm97H6JF1_8
+                    url: …
                     sizes:
-                    - url: https://media.licdn.com/dms/image/v2/D5616AQEjhPbTCeblYg/profile-displaybackgroundimage-shrink_350_1400/B56ZcytR5SGsAg-/0/1748902420393?e=1793232000&v=beta&t=PurNZciepthIMLCl9A59bR0oQS7vFuaZzm97H6JF1_8
-                      width: 1400
-                      height: 350
-                  photo: https://media.licdn.com/dms/image/v2/D5603AQF-RYZP55jmXA/profile-displayphoto-shrink_800_800/B56ZRi8g.aGsAc-/0/1736826818808?e=1793232000&v=beta&t=h84Ee-2NucG0tJjTkgWGFHOtQD4ICX0mrcRqdTWoQzM
+                    - url: …
+                      width: 0
+                      height: 0
+                  photo: …
                   profileLocales:
-                  - country: US
-                    language: en
+                  - country: …
+                    language: …
                   primaryLocale:
-                    country: US
-                    language: en
+                    country: …
+                    language: …
                   multiLocaleHeadline:
-                  - headline: Chair, Gates Foundation and Founder, Breakthrough Energy
-                    locale: en_US
+                  - headline: …
+                    locale: …
                   services: null
                   experience:
-                  - position: Co-chair
+                  - position: …
                     location: null
                     employmentType: null
                     workplaceType: null
-                    companyName: Gates Foundation
-                    companyUniversalName: gates-foundation
-                    companyLinkedinUrl: https://www.linkedin.com/company/gates-foundation/
-                    companyId: '8736'
-                    duration: 26 yrs 10 mos
+                    companyName: …
+                    companyUniversalName: …
+                    companyLinkedinUrl: …
+                    companyId: …
+                    duration: …
                     description: null
                     skills: null
                     startDate:
-                      year: 2000
-                      text: '2000'
+                      year: 0
+                      text: …
                     endDate:
-                      text: Present
+                      text: …
                     companyLogo:
-                      url: https://media.licdn.com/dms/image/v2/D560BAQEgMqqFTd40Tg/company-logo_400_400/company-logo_400_400/0/1736784969376/bill__melinda_gates_foundation_logo?e=1793232000&v=beta&t=-3Or6OsbYEKsjb0OeDOnM7sqQbLZt5c7mY8psW87kHE
+                      url: …
                       sizes:
-                      - url: https://media.licdn.com/dms/image/v2/D560BAQEgMqqFTd40Tg/company-logo_400_400/company-logo_400_400/0/1736784969376/bill__melinda_gates_foundation_logo?e=1793232000&v=beta&t=-3Or6OsbYEKsjb0OeDOnM7sqQbLZt5c7mY8psW87kHE
-                        width: 400
-                        height: 400
-                  - position: Founder
-                    location: null
-                    employmentType: null
-                    workplaceType: null
-                    companyName: 'Breakthrough Energy '
-                    companyUniversalName: breakthrough-energy
-                    companyLinkedinUrl: https://www.linkedin.com/company/breakthrough-energy/
-                    companyId: '19141006'
-                    duration: 11 yrs 10 mos
-                    description: null
-                    skills: null
-                    startDate:
-                      year: 2015
-                      text: '2015'
-                    endDate:
-                      text: Present
-                    companyLogo:
-                      url: https://media.licdn.com/dms/image/v2/D560BAQFRMYiQN7-2kA/company-logo_400_400/B56ZoI4SGPI0AY-/0/1761085563539/breakthrough_energy_logo?e=1793232000&v=beta&t=FBopuNvB5P3C3RAvxFakKw8SfEvJkHDMC8Cy1ivv3a4
-                      sizes:
-                      - url: https://media.licdn.com/dms/image/v2/D560BAQFRMYiQN7-2kA/company-logo_400_400/B56ZoI4SGPI0AY-/0/1761085563539/breakthrough_energy_logo?e=1793232000&v=beta&t=FBopuNvB5P3C3RAvxFakKw8SfEvJkHDMC8Cy1ivv3a4
-                        width: 400
-                        height: 400
+                      - url: …
+                        width: 0
+                        height: 0
                   education:
-                  - schoolName: Harvard University
+                  - schoolName: …
                     description: null
                     insights: null
                     skills: null
-                    schoolLinkedinUrl: https://www.linkedin.com/company/1646/
-                    schoolId: '1646'
+                    schoolLinkedinUrl: …
+                    schoolId: …
                     degree: null
                     fieldOfStudy: null
-                    period: 1973 - 1975
+                    period: …
                     startDate:
-                      year: 1973
-                      text: '1973'
+                      year: 0
+                      text: …
                     endDate:
-                      year: 1975
-                      text: '1975'
+                      year: 0
+                      text: …
                     schoolLogo:
-                      url: https://media.licdn.com/dms/image/v2/C4E0BAQF5t62bcL0e9g/company-logo_400_400/company-logo_400_400/0/1631318058235?e=1793232000&v=beta&t=tG7qGly5_Uq33s6x0-9U8QrenZr2NTdEdR8ydLfb8II
+                      url: …
                       sizes:
-                      - url: https://media.licdn.com/dms/image/v2/C4E0BAQF5t62bcL0e9g/company-logo_400_400/company-logo_400_400/0/1631318058235?e=1793232000&v=beta&t=tG7qGly5_Uq33s6x0-9U8QrenZr2NTdEdR8ydLfb8II
-                        width: 400
-                        height: 400
-                  - schoolName: Lakeside School
-                    description: null
-                    insights: null
-                    skills: null
-                    schoolLinkedinUrl: https://www.linkedin.com/company/30288/
-                    schoolId: '30288'
-                    degree: null
-                    fieldOfStudy: null
-                    period: null
-                    startDate: null
-                    endDate: null
-                    schoolLogo:
-                      url: https://media.licdn.com/dms/image/v2/D560BAQGFmOQmzpxg9A/company-logo_400_400/company-logo_400_400/0/1683732883164/lakeside_school_logo?e=1793232000&v=beta&t=LuT1qFGoma5gJltCnUOlsIthuPoLj_fhfuT1SwUjyzM
-                      sizes:
-                      - url: https://media.licdn.com/dms/image/v2/D560BAQGFmOQmzpxg9A/company-logo_400_400/company-logo_400_400/0/1683732883164/lakeside_school_logo?e=1793232000&v=beta&t=LuT1qFGoma5gJltCnUOlsIthuPoLj_fhfuT1SwUjyzM
-                        width: 400
-                        height: 400
+                      - url: …
+                        width: 0
+                        height: 0
                   certifications: []
                   projects: []
                   volunteering: []
@@ -268,35 +232,23 @@ paths:
                     title: null
                     subtitle: null
                     slides:
-                    - title: The turbulent AI era is here. The choices we make now are critical.
-                      subtitle: Bill Gates on LinkedIn • 5+ min read
+                    - title: …
+                      subtitle: …
                       description: null
-                      url: https://www.linkedin.com/feed/update/urn:li:activity:7498273886308966401?updateEntityUrn=urn%3Ali%3Afs_feedUpdate%3A%28V2%2Curn%3Ali%3Aactivity%3A7498273886308966401%29
+                      url: …
                       image:
-                        url: https://media.licdn.com/dms/image/v2/D4E12AQEXiYCQfVP_fQ/videocover-high/B4EaA6Xi8KHwBo-/0/1787685647281?e=1793232000&v=beta&t=xBM36VUG-NDJZZvsyjlwLMfThDkjoaJi36qnh34lLpU
-                    - title: What the Gates Foundation hopes to accomplish over the next 20 years
-                      subtitle: Bill Gates on LinkedIn • 5 min read
-                      description: null
-                      url: https://www.linkedin.com/feed/update/urn:li:activity:7407934241675608064?updateEntityUrn=urn%3Ali%3Afs_feedUpdate%3A%28V2%2Curn%3Ali%3Aactivity%3A7407934241675608064%29
-                      image:
-                        url: https://media.licdn.com/dms/image/v2/D5612AQE-eZUAKTbmyQ/article-cover_image-shrink_720_1280/B56Zs5D6pMKIAI-/0/1766188887129?e=1793232000&v=beta&t=0NTehccq7SqaYFFVyfTJvYLmI8OoCoHfSlDYWRQUSAQ
+                        url: …
                   composeOptionType: null
                   moreProfiles:
-                  - id: ACoAAE6FVtYBAW4bP82g1IhIHxzu_1J010WU3CQ
-                    firstName: 'Sundar '
-                    lastName: 'Pichai '
-                    position: CEO at Google
-                    publicIdentifier: sundarpichai
-                    linkedinUrl: https://www.linkedin.com/in/sundarpichai
-                  - id: ACoAABBhhiABVwqIoiMz90f7wLjjl8xvtPe3u3c
-                    firstName: Narendra
-                    lastName: Modi
-                    position: Prime Minister of India
-                    publicIdentifier: narendramodi
-                    linkedinUrl: https://www.linkedin.com/in/narendramodi
+                  - id: …
+                    firstName: …
+                    lastName: …
+                    position: …
+                    publicIdentifier: …
+                    linkedinUrl: …
                   sectionTotals:
-                    experience: 3
-                    education: 2
+                    experience: 0
+                    education: 0
                     certifications: 0
                     receivedRecommendations: 0
                     skills: 0
@@ -310,38 +262,18 @@ paths:
                     honorsAndAwards: 0
                     causes: 0
                   interests:
-                  - interestName: Top Voices
+                  - interestName: …
                     elements:
-                    - title: Mary Barra
-                      subtitle: Chair and Chief Executive Officer at General Motors
-                      link: https://www.linkedin.com/in/mary-barra
-                      caption: 1,509,312 followers
+                    - title: …
+                      subtitle: …
+                      link: …
+                      caption: …
                       image:
-                        url: https://media.licdn.com/dms/image/v2/D5603AQFNy7nvRz3AAA/profile-displayphoto-shrink_800_800/B56ZSTmJCnGsAc-/0/1737643037521?e=1793232000&v=beta&t=LaAFH90UQgMJRodv2svlgFb01iulYSOmCePcnMM-nOI
-                    - title: Reid Hoffman
-                      subtitle: 'Co-Founder, LinkedIn, Manas AI & Inflection AI. Founding Team, PayPal.  Author of Superagency.  Podcaster of Possible and Masters of Scale.  '
-                      link: https://www.linkedin.com/in/reidhoffman
-                      caption: 2,795,991 followers
-                      image:
-                        url: https://media.licdn.com/dms/image/v2/D5603AQHW7wKzPb3DAg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1718216236351?e=1793232000&v=beta&t=zIBEchZCbBW3vaYQ9dusPzn5bNGrt5qgE6SlK2lDUKs
-                  - interestName: Companies
-                    elements:
-                    - title: Microsoft
-                      subtitle: null
-                      link: https://www.linkedin.com/company/1035/
-                      caption: 29,252,965 followers
-                      image:
-                        url: https://media.licdn.com/dms/image/v2/D560BAQH32RJQCl3dDQ/company-logo_400_400/B56ZYQ0mrGGoAc-/0/1744038948046/microsoft_logo?e=1793232000&v=beta&t=-G3KTWbySWNRDLM-7_sSgY3V09nqPA0Iswoptltp6cs
-                    - title: LinkedIn
-                      subtitle: null
-                      link: https://www.linkedin.com/company/1337/
-                      caption: 34,479,013 followers
-                      image:
-                        url: https://media.licdn.com/dms/image/v2/C560BAQHaVYd13rRz3A/company-logo_400_400/company-logo_400_400/0/1638831590218/linkedin_logo?e=1793232000&v=beta&t=DDn52_5dJe1-e5SUzNqxbMt9eScyf-iFUgDNyoc83m4
+                        url: …
                 query:
                   url: https://www.linkedin.com/in/williamhgates
-                  publicIdentifier: williamhgates
-                  profileId: ACoAAA8BYqEBCGLg_vT_ca6mMEqkpp9nVffJ3hc
+                  publicIdentifier: …
+                  profileId: …
                 status: 200
                 retries: 0
                 payments:
@@ -349,13 +281,13 @@ paths:
                 originalQuery:
                   url: https://www.linkedin.com/in/williamhgates
                 cost: 0.0037
-                entityId: ACoAAA8BYqEBCGLg_vT_ca6mMEqkpp9nVffJ3hc
+                entityId: …
                 datacircle_meta:
                   provider: harvestapi
                   cost_usd: 0.0037
                   balance_usd: 4.9963
         '400':
-          description: 'Not charged, nothing sent to HarvestAPI: no `url`, a `url` that isn''t a LinkedIn profile URL (`https://www.linkedin.com/in/<slug>`), a query parameter other than `url`, or an `X-Data-Provider` value that isn''t `up2data` or `harvestapi`'
+          description: 'Not charged, nothing sent to HarvestAPI: no `url`, a `url` that isn''t a LinkedIn profile URL (`https://www.linkedin.com/in/<slug>`), a query parameter other than `url`, or an `X-Data-Provider` value that isn''t `up2data`, `harvestapi` or `fetchin`'
           content:
             application/json:
               schema:
@@ -384,15 +316,15 @@ paths:
                     description: Your balance now, in dollars (`balance_usd` in `GET /balance/`). `POST /checkout/` adds funds.
                 additionalProperties: false
         '404':
-          description: 'No `X-Data-Provider` header, or a path Datacircle doesn''t call for that provider (e.g. `X-Data-Provider: up2data` on `/linkedin/profile`); not charged'
+          description: 'No `X-Data-Provider` header, or a path Datacircle doesn''t call for that provider (e.g. `X-Data-Provider: up2data` on `/linkedin/profile`). Not charged'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
         '502':
-          description: 'HarvestAPI''s own server failed: its error passes on as it came, with its status (`503` and `504` too). Not charged; send the same request again.'
+          description: 'HarvestAPI''s own server failed: its error passes on as it came, with its status (`503` and `504` too). Not charged. Send the same request again.'
         '503':
-          description: 'HarvestAPI hasn''t answered within 45 s, can''t be reached, or refused Datacircle''s own account with it: Datacircle stops waiting. Not charged; send the same request again.'
+          description: 'HarvestAPI hasn''t answered within 45 s, can''t be reached, or refused Datacircle''s own account with it: Datacircle stops waiting. Not charged. Send the same request again.'
           content:
             application/json:
               schema:
@@ -411,116 +343,8 @@ paths:
                 additionalProperties: false
       operationId: getLinkedinProfile
       x-operation-id-source: derived
-    servers:
-    - url: https://api.datacircle.dev
 components:
   schemas:
-    Error:
-      type: object
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          description: What went wrong, in plain words.
-    HarvestApiProfileResponse:
-      type: object
-      properties:
-        element:
-          anyOf:
-          - $ref: '#/components/schemas/HarvestApiProfile'
-          - type: 'null'
-          description: The profile; `null` when HarvestAPI can't find it (`status` `404`) or refuses the request (`status` `400`).
-        cost:
-          type: number
-          description: What HarvestAPI billed for the call, e.g. `0.0037` for a profile, `0.0023` for a profile it can't find. Datacircle charges you the same amount in dollars (`datacircle_meta.cost_usd`).
-        entityId:
-          type:
-          - string
-          - 'null'
-          description: The profile's LinkedIn member id (`ACoAA…`), as `element.id`; `null` when not found.
-        error:
-          type: string
-          description: HarvestAPI's message when `element` is `null`, e.g. `Profile not found`.
-        free:
-          type: boolean
-          description: '`true` when HarvestAPI didn''t bill the call (a request it refuses).'
-        originalQuery:
-          type: object
-          properties:
-            url:
-              type: string
-              description: The profile URL HarvestAPI got.
-          required:
-          - url
-          additionalProperties: false
-          description: The request HarvestAPI got.
-        payments:
-          type: array
-          items:
-            type: string
-          description: 'What HarvestAPI billed, by name: `linkedinProfile` for a profile, `linkedinProfileShort` for a lookup that found nothing.'
-        query:
-          type: object
-          properties:
-            profileId:
-              type:
-              - string
-              - 'null'
-              description: The profile's LinkedIn member id (`ACoAA…`); `null` when not found.
-            publicIdentifier:
-              type:
-              - string
-              - 'null'
-              description: The profile's slug, linkedin.com/in/<publicIdentifier>; `null` when not found.
-            url:
-              type: string
-              description: The profile URL HarvestAPI read.
-          required:
-          - url
-          additionalProperties: false
-          description: 'The request as HarvestAPI understood it: the `url` it read, with the `publicIdentifier` and `profileId` it resolved.'
-        retries:
-          type: integer
-          description: How many times HarvestAPI retried LinkedIn for this answer.
-        status:
-          type: integer
-          description: 'HarvestAPI''s own status, inside an HTTP `200`: `200` found, `404` not found, `400` a request it refuses.'
-        datacircle_meta:
-          $ref: '#/components/schemas/DatacircleMeta'
-      required:
-      - cost
-      - element
-      - entityId
-      - originalQuery
-      - payments
-      - query
-      - retries
-      - status
-      - datacircle_meta
-      additionalProperties: false
-      description: HarvestAPI's own answer to GET /linkedin/profile, minus `user` and `requestId` (our account with HarvestAPI), plus `datacircle_meta`.
-    DatacircleMeta:
-      type: object
-      description: Datacircle's only addition to the provider's answer
-      required:
-      - provider
-      - cost_usd
-      - balance_usd
-      properties:
-        provider:
-          type: string
-          enum:
-          - up2data
-          - harvestapi
-          description: which provider answered
-        cost_usd:
-          type: number
-          description: 'what this call cost, in dollars: the provider''s price, no markup'
-        balance_usd:
-          type: number
-          description: your balance after this call, in dollars (`balance_usd` in `GET /balance/`)
-      additionalProperties: false
     HarvestApiProfile:
       type: object
       properties:
@@ -735,7 +559,7 @@ components:
                 type:
                 - string
                 - 'null'
-                description: 'The company''s slug: linkedin.com/company/<companyUniversalName>.'
+                description: 'The company''s slug: `linkedin.com/company/<companyUniversalName>`.'
               description:
                 type:
                 - string
@@ -750,7 +574,7 @@ components:
                 type:
                 - string
                 - 'null'
-                description: e.g. `Full-time`, `Self-employed`.
+                description: Employment type, e.g. `Full-time` or `Self-employed`.
               endDate:
                 type: object
                 properties:
@@ -760,7 +584,7 @@ components:
                 required:
                 - text
                 additionalProperties: false
-                description: 'When it ended; `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them.'
+                description: 'When it ended. `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them.'
               experienceGroupId:
                 type:
                 - string
@@ -804,7 +628,7 @@ components:
                 type:
                 - string
                 - 'null'
-                description: e.g. `On-site`, `Hybrid`, `Remote`.
+                description: Where the role is worked, e.g. `On-site`, `Hybrid` or `Remote`.
             required:
             - companyId
             - companyLinkedinUrl
@@ -857,7 +681,7 @@ components:
                 - text
                 - year
                 additionalProperties: false
-                description: 'When it ended; `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them.'
+                description: 'When it ended. `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them.'
               fieldOfStudy:
                 type:
                 - string
@@ -1025,7 +849,7 @@ components:
                 type:
                 - string
                 - 'null'
-                description: 'The company''s slug: linkedin.com/company/<companyUniversalName>.'
+                description: 'The company''s slug: `linkedin.com/company/<companyUniversalName>`.'
               description:
                 type:
                 - string
@@ -1040,7 +864,7 @@ components:
                 type:
                 - string
                 - 'null'
-                description: e.g. `Full-time`, `Self-employed`.
+                description: Employment type, e.g. `Full-time` or `Self-employed`.
               endDate:
                 type:
                 - object
@@ -1060,7 +884,7 @@ components:
                 required:
                 - text
                 additionalProperties: false
-                description: 'When it ended; `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them.'
+                description: 'When it ended. `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them.'
               experienceGroupId:
                 type:
                 - string
@@ -1106,7 +930,7 @@ components:
                 type:
                 - string
                 - 'null'
-                description: e.g. `On-site`, `Hybrid`, `Remote`.
+                description: Where the role is worked, e.g. `On-site`, `Hybrid` or `Remote`.
             required:
             - companyId
             - companyLinkedinUrl
@@ -1212,7 +1036,7 @@ components:
           - subtitle
           - title
           additionalProperties: false
-          description: The profile's Featured section; `null` when it has none.
+          description: The profile's Featured section. `null` when it has none.
         firstName:
           type: string
           description: The member's first name.
@@ -1479,7 +1303,7 @@ components:
                 required:
                 - text
                 additionalProperties: false
-                description: 'When it ended; `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them.'
+                description: 'When it ended. `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them.'
               logo:
                 type:
                 - string
@@ -1677,7 +1501,7 @@ components:
                 - text
                 - year
                 additionalProperties: false
-                description: 'When it ended; `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them.'
+                description: 'When it ended. `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them.'
               fieldOfStudy:
                 type:
                 - string
@@ -1816,7 +1640,7 @@ components:
                 required:
                 - text
                 additionalProperties: false
-                description: 'When it ended; `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them.'
+                description: 'When it ended. `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them.'
               startDate:
                 type:
                 - object
@@ -2011,7 +1835,7 @@ components:
           - skills
           - volunteering
           additionalProperties: false
-          description: How many entries each section of the profile has on LinkedIn; a list above may hold fewer.
+          description: How many entries each section of the profile has on LinkedIn. A list above may hold fewer.
         services:
           type:
           - object
@@ -2100,7 +1924,7 @@ components:
           - requestUrl
           - servicesList
           additionalProperties: false
-          description: The services the member offers (LinkedIn's Services page); `null` when none.
+          description: The services the member offers (LinkedIn's Services page). `null` when none.
         skills:
           type: array
           items:
@@ -2168,7 +1992,7 @@ components:
                 required:
                 - text
                 additionalProperties: false
-                description: 'When it ended; `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them.'
+                description: 'When it ended. `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them.'
               organizationLinkedinUrl:
                 type: string
                 description: The organization's LinkedIn page.
@@ -2274,6 +2098,113 @@ components:
       - volunteering
       additionalProperties: false
       description: A LinkedIn profile, as HarvestAPI answers it.
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          description: What went wrong, in plain words.
+    DatacircleMeta:
+      type: object
+      description: Datacircle's only addition to the provider's answer
+      required:
+      - provider
+      - cost_usd
+      - balance_usd
+      properties:
+        provider:
+          type: string
+          enum:
+          - up2data
+          - harvestapi
+          - fetchin
+          description: Which provider answered
+        cost_usd:
+          type: number
+          description: 'What this call cost, in dollars: the provider''s price, no markup'
+        balance_usd:
+          type: number
+          description: Your balance after this call, in dollars (`balance_usd` in `GET /balance/`)
+      additionalProperties: false
+    HarvestApiProfileResponse:
+      type: object
+      properties:
+        element:
+          anyOf:
+          - $ref: '#/components/schemas/HarvestApiProfile'
+          - type: 'null'
+          description: The profile. `null` when HarvestAPI can't find it (`status` `404`) or refuses the request (`status` `400`).
+        cost:
+          type: number
+          description: What HarvestAPI billed for the call, e.g. `0.0037` for a profile, `0.0023` for a profile it can't find. Datacircle charges you the same amount in dollars (`datacircle_meta.cost_usd`).
+        entityId:
+          type:
+          - string
+          - 'null'
+          description: The profile's LinkedIn member id (`ACoAA…`), as `element.id`. `null` when not found.
+        error:
+          type: string
+          description: HarvestAPI's message when `element` is `null`, e.g. `Profile not found`.
+        free:
+          type: boolean
+          description: '`true` when HarvestAPI didn''t bill the call (a request it refuses).'
+        originalQuery:
+          type: object
+          properties:
+            url:
+              type: string
+              description: The profile URL HarvestAPI got.
+          required:
+          - url
+          additionalProperties: false
+          description: The request HarvestAPI got.
+        payments:
+          type: array
+          items:
+            type: string
+          description: 'What HarvestAPI billed, by name: `linkedinProfile` for a profile, `linkedinProfileShort` for a lookup that found nothing.'
+        query:
+          type: object
+          properties:
+            profileId:
+              type:
+              - string
+              - 'null'
+              description: The profile's LinkedIn member id (`ACoAA…`). `null` when not found.
+            publicIdentifier:
+              type:
+              - string
+              - 'null'
+              description: The profile's slug, linkedin.com/in/<publicIdentifier>. `null` when not found.
+            url:
+              type: string
+              description: The profile URL HarvestAPI read.
+          required:
+          - url
+          additionalProperties: false
+          description: 'The request as HarvestAPI understood it: the `url` it read, with the `publicIdentifier` and `profileId` it resolved.'
+        retries:
+          type: integer
+          description: How many times HarvestAPI retried LinkedIn for this answer.
+        status:
+          type: integer
+          description: 'HarvestAPI''s own status, inside an HTTP `200`: `200` found, `404` not found, `400` a request it refuses.'
+        datacircle_meta:
+          $ref: '#/components/schemas/DatacircleMeta'
+      required:
+      - cost
+      - element
+      - entityId
+      - originalQuery
+      - payments
+      - query
+      - retries
+      - status
+      - datacircle_meta
+      additionalProperties: false
+      description: HarvestAPI's own answer to `GET /linkedin/profile`, minus `user` and `requestId` (our account with HarvestAPI), plus `datacircle_meta`.
   securitySchemes:
     token:
       type: http
@@ -2282,6 +2213,3 @@ components:
 externalDocs:
   description: Datacircle docs
   url: https://docs.datacircle.dev
-x-refined-from:
-- datacircle-openapi.json
-- datacircle-openapi.yml

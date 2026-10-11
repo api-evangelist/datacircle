@@ -1,34 +1,25 @@
-generated: '2026-10-09'
+generated: '2026-10-11'
 method: generated
-source: openapi/datacircle-openapi.yml
+source: openapi/datacircle-datacircle-api-openapi.yml, openapi/datacircle-fetchin-api-openapi.yml,
+  openapi/datacircle-harvestapi-api-openapi.yml, openapi/datacircle-up2data-api-openapi.yml
 description: Recommended x-agentic-access execution contracts, classified heuristically from
   the OpenAPI. A governance starting point for exposing this API to AI agents — review and bind
   audience per deployment. See research/curity/agentic-governance/.
 summary:
   operations: 8
   by_action_class:
-    connected: 5
     acting: 3
+    connected: 5
   by_consequence:
-    read: 5
     safety-critical: 1
+    read: 5
     physical: 1
     write: 1
   human_in_the_loop_required: 1
 operations:
-- path: /me/invites/
-  method: get
-  operationId: getInviteLink
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none
 - path: /me/api-key/reset/
   method: post
-  operationId: resetApiKey
+  operationId: postMeApiKeyReset
   x-agentic-access:
     action-class: acting
     consequence: safety-critical
@@ -54,7 +45,7 @@ operations:
     audit: none
 - path: /checkout/
   method: post
-  operationId: createCheckout
+  operationId: postCheckout
   x-agentic-access:
     action-class: acting
     consequence: physical
@@ -72,7 +63,7 @@ operations:
     audit: required
 - path: /files/
   method: get
-  operationId: listFiles
+  operationId: getFiles
   x-agentic-access:
     action-class: connected
     consequence: read
@@ -82,7 +73,27 @@ operations:
     audit: none
 - path: /files/{file_id}/download-link/
   method: post
-  operationId: getFileDownloadLink
+  operationId: postFilesByFileIdDownloadLink
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /api/v1/profile
+  method: get
+  operationId: getApiV1Profile
+  x-agentic-access:
+    action-class: connected
+    consequence: read
+    subject: optional
+    token:
+      max-ttl: 3600
+    audit: none
+- path: /linkedin/profile
+  method: get
+  operationId: getLinkedinProfile
   x-agentic-access:
     action-class: connected
     consequence: read
@@ -92,7 +103,7 @@ operations:
     audit: none
 - path: /v1/profiles/enrich
   method: post
-  operationId: enrichLinkedinProfile
+  operationId: postV1ProfilesEnrich
   x-agentic-access:
     action-class: acting
     consequence: write
@@ -106,13 +117,3 @@ operations:
       - abnormal
       - high-value
     audit: required
-- path: /linkedin/profile
-  method: get
-  operationId: getLinkedinProfile
-  x-agentic-access:
-    action-class: connected
-    consequence: read
-    subject: optional
-    token:
-      max-ttl: 3600
-    audit: none

@@ -2,11 +2,11 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/api-evangelist/datacircle/main/json-schema/datacircle-up2-data-enrich-response-schema.json",
   "title": "Up2DataEnrichResponse",
-  "description": "Up2Data's own response to POST /v1/profiles/enrich, plus `datacircle_meta`",
-  "x-generated": "2026-10-09",
+  "description": "Up2Data's own response to `POST /v1/profiles/enrich`, plus `datacircle_meta`",
+  "x-generated": "2026-10-11",
   "x-method": "derived",
   "x-generator": "derive-json-schema.py",
-  "x-source": "openapi/datacircle-openapi.yml#/components/schemas/Up2DataEnrichResponse",
+  "x-source": "openapi/datacircle-up2data-api-openapi.yml#/components/schemas/Up2DataEnrichResponse",
   "type": "object",
   "required": [
     "data",
@@ -39,17 +39,18 @@
           "type": "string",
           "enum": [
             "up2data",
-            "harvestapi"
+            "harvestapi",
+            "fetchin"
           ],
-          "description": "which provider answered"
+          "description": "Which provider answered"
         },
         "cost_usd": {
           "type": "number",
-          "description": "what this call cost, in dollars: the provider's price, no markup"
+          "description": "What this call cost, in dollars: the provider's price, no markup"
         },
         "balance_usd": {
           "type": "number",
-          "description": "your balance after this call, in dollars (`balance_usd` in `GET /balance/`)"
+          "description": "Your balance after this call, in dollars (`balance_usd` in `GET /balance/`)"
         }
       },
       "additionalProperties": false
@@ -60,7 +61,7 @@
       "properties": {
         "creditsUsed": {
           "type": "integer",
-          "description": "Up2Data credits this call used (1 per profile found). What it costs you is `datacircle_meta.cost_usd`: $0.00125 per Up2Data credit"
+          "description": "Up2Data credits this call used (1 per profile found). What it costs you is `datacircle_meta.cost_usd`: $0.002375 per Up2Data credit"
         },
         "billed": {
           "type": "boolean",
@@ -200,7 +201,7 @@
                   "string",
                   "null"
                 ],
-                "description": "When the role ended, `YYYY-MM` or `YYYY`; `null` for a current role."
+                "description": "When the role ended, `YYYY-MM` or `YYYY`. `null` for a current role."
               },
               "description": {
                 "type": "string",
@@ -272,7 +273,7 @@
                   "string",
                   "null"
                 ],
-                "description": "When it ended, `YYYY-MM` or `YYYY`; `null` when ongoing."
+                "description": "When it ended, `YYYY-MM` or `YYYY`. `null` when ongoing."
               }
             },
             "additionalProperties": false
@@ -310,11 +311,11 @@
         },
         "urn": {
           "type": "string",
-          "description": "urn:li:member:{id} on enrich.\n"
+          "description": "`urn:li:member:{id}` on enrich.\n"
         },
         "profile_urn": {
           "type": "string",
-          "description": "urn:li:fsd_profile:{ACo…}, the profile id Sales Navigator and LinkedIn messaging use.\n"
+          "description": "`urn:li:fsd_profile:{ACo…}`, the profile id Sales Navigator and LinkedIn messaging use.\n"
         },
         "languages": {
           "type": "array",
@@ -342,7 +343,7 @@
                   "LIMITED_WORKING",
                   "ELEMENTARY"
                 ],
-                "description": "The proficiency the member chose; omitted when they chose none."
+                "description": "The proficiency the member chose. Omitted when they chose none."
               }
             },
             "additionalProperties": false

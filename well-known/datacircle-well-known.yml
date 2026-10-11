@@ -1,4 +1,4 @@
-generated: '2026-10-09'
+generated: '2026-10-11'
 method: probed
 generator: harvest-well-known.py
 source: Live GET of the named /.well-known/ path list on every host the record knows; every row is a request that
@@ -6,7 +6,7 @@ source: Live GET of the named /.well-known/ path list on every host the record k
 summary:
   hosts_probed: 5
   paths_probed: 55
-  documents_served: 8
+  documents_served: 9
 hosts:
 - host: api.datacircle.dev
   control:
@@ -88,8 +88,10 @@ hosts:
     status: 404
     standard: ACP
   - path: /.well-known/mcp/server-card.json
-    status: 404
+    status: 200
     standard: MCP server card
+    content_type: application/json
+    file: datacircle-docs-mcp-server-card.json
 - host: datacircle.dev
   control:
     path: /.well-known/apis-io-negative-control-7f3ab91c.json
@@ -127,8 +129,10 @@ hosts:
     status: 404
     standard: ACP
   - path: /.well-known/mcp/server-card.json
-    status: 404
+    status: 200
     standard: MCP server card
+    content_type: application/json
+    file: datacircle-mcp-server-card.json
 - host: mintlify.com
   control:
     path: /.well-known/apis-io-negative-control-7f3ab91c.json
@@ -189,10 +193,9 @@ hosts:
     content_type: application/json; charset=utf-8
     file: datacircle-mcp-openid-configuration.json
   - path: /.well-known/oauth-authorization-server
-    status: 200
+    status: null
     standard: RFC 8414
-    content_type: application/json; charset=utf-8
-    file: datacircle-mcp-oauth-authorization-server.json
+    note: 'unreachable: TimeoutError'
   - path: /.well-known/oauth-protected-resource
     status: 200
     standard: RFC 9728

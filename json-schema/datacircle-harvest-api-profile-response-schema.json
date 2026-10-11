@@ -2,11 +2,11 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://raw.githubusercontent.com/api-evangelist/datacircle/main/json-schema/datacircle-harvest-api-profile-response-schema.json",
   "title": "HarvestApiProfileResponse",
-  "description": "HarvestAPI's own answer to GET /linkedin/profile, minus `user` and `requestId` (our account with HarvestAPI), plus `datacircle_meta`.",
-  "x-generated": "2026-10-09",
+  "description": "HarvestAPI's own answer to `GET /linkedin/profile`, minus `user` and `requestId` (our account with HarvestAPI), plus `datacircle_meta`.",
+  "x-generated": "2026-10-11",
   "x-method": "derived",
   "x-generator": "derive-json-schema.py",
-  "x-source": "openapi/datacircle-openapi.yml#/components/schemas/HarvestApiProfileResponse",
+  "x-source": "openapi/datacircle-harvestapi-api-openapi.yml#/components/schemas/HarvestApiProfileResponse",
   "type": "object",
   "properties": {
     "element": {
@@ -18,7 +18,7 @@
           "type": "null"
         }
       ],
-      "description": "The profile; `null` when HarvestAPI can't find it (`status` `404`) or refuses the request (`status` `400`)."
+      "description": "The profile. `null` when HarvestAPI can't find it (`status` `404`) or refuses the request (`status` `400`)."
     },
     "cost": {
       "type": "number",
@@ -29,7 +29,7 @@
         "string",
         "null"
       ],
-      "description": "The profile's LinkedIn member id (`ACoAA…`), as `element.id`; `null` when not found."
+      "description": "The profile's LinkedIn member id (`ACoAA…`), as `element.id`. `null` when not found."
     },
     "error": {
       "type": "string",
@@ -68,14 +68,14 @@
             "string",
             "null"
           ],
-          "description": "The profile's LinkedIn member id (`ACoAA…`); `null` when not found."
+          "description": "The profile's LinkedIn member id (`ACoAA…`). `null` when not found."
         },
         "publicIdentifier": {
           "type": [
             "string",
             "null"
           ],
-          "description": "The profile's slug, linkedin.com/in/<publicIdentifier>; `null` when not found."
+          "description": "The profile's slug, linkedin.com/in/<publicIdentifier>. `null` when not found."
         },
         "url": {
           "type": "string",
@@ -126,17 +126,18 @@
           "type": "string",
           "enum": [
             "up2data",
-            "harvestapi"
+            "harvestapi",
+            "fetchin"
           ],
-          "description": "which provider answered"
+          "description": "Which provider answered"
         },
         "cost_usd": {
           "type": "number",
-          "description": "what this call cost, in dollars: the provider's price, no markup"
+          "description": "What this call cost, in dollars: the provider's price, no markup"
         },
         "balance_usd": {
           "type": "number",
-          "description": "your balance after this call, in dollars (`balance_usd` in `GET /balance/`)"
+          "description": "Your balance after this call, in dollars (`balance_usd` in `GET /balance/`)"
         }
       },
       "additionalProperties": false
@@ -431,7 +432,7 @@
                   "string",
                   "null"
                 ],
-                "description": "The company's slug: linkedin.com/company/<companyUniversalName>."
+                "description": "The company's slug: `linkedin.com/company/<companyUniversalName>`."
               },
               "description": {
                 "type": [
@@ -452,7 +453,7 @@
                   "string",
                   "null"
                 ],
-                "description": "e.g. `Full-time`, `Self-employed`."
+                "description": "Employment type, e.g. `Full-time` or `Self-employed`."
               },
               "endDate": {
                 "type": "object",
@@ -466,7 +467,7 @@
                   "text"
                 ],
                 "additionalProperties": false,
-                "description": "When it ended; `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them."
+                "description": "When it ended. `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them."
               },
               "experienceGroupId": {
                 "type": [
@@ -527,7 +528,7 @@
                   "string",
                   "null"
                 ],
-                "description": "e.g. `On-site`, `Hybrid`, `Remote`."
+                "description": "Where the role is worked, e.g. `On-site`, `Hybrid` or `Remote`."
               }
             },
             "required": [
@@ -596,7 +597,7 @@
                   "year"
                 ],
                 "additionalProperties": false,
-                "description": "When it ended; `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them."
+                "description": "When it ended. `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them."
               },
               "fieldOfStudy": {
                 "type": [
@@ -824,7 +825,7 @@
                   "string",
                   "null"
                 ],
-                "description": "The company's slug: linkedin.com/company/<companyUniversalName>."
+                "description": "The company's slug: `linkedin.com/company/<companyUniversalName>`."
               },
               "description": {
                 "type": [
@@ -845,7 +846,7 @@
                   "string",
                   "null"
                 ],
-                "description": "e.g. `Full-time`, `Self-employed`."
+                "description": "Employment type, e.g. `Full-time` or `Self-employed`."
               },
               "endDate": {
                 "type": [
@@ -873,7 +874,7 @@
                   "text"
                 ],
                 "additionalProperties": false,
-                "description": "When it ended; `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them."
+                "description": "When it ended. `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them."
               },
               "experienceGroupId": {
                 "type": [
@@ -937,7 +938,7 @@
                   "string",
                   "null"
                 ],
-                "description": "e.g. `On-site`, `Hybrid`, `Remote`."
+                "description": "Where the role is worked, e.g. `On-site`, `Hybrid` or `Remote`."
               }
             },
             "required": [
@@ -1078,7 +1079,7 @@
             "title"
           ],
           "additionalProperties": false,
-          "description": "The profile's Featured section; `null` when it has none."
+          "description": "The profile's Featured section. `null` when it has none."
         },
         "firstName": {
           "type": "string",
@@ -1437,7 +1438,7 @@
                   "text"
                 ],
                 "additionalProperties": false,
-                "description": "When it ended; `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them."
+                "description": "When it ended. `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them."
               },
               "logo": {
                 "type": [
@@ -1707,7 +1708,7 @@
                   "year"
                 ],
                 "additionalProperties": false,
-                "description": "When it ended; `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them."
+                "description": "When it ended. `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them."
               },
               "fieldOfStudy": {
                 "type": [
@@ -1896,7 +1897,7 @@
                   "text"
                 ],
                 "additionalProperties": false,
-                "description": "When it ended; `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them."
+                "description": "When it ended. `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them."
               },
               "startDate": {
                 "type": [
@@ -2156,7 +2157,7 @@
             "volunteering"
           ],
           "additionalProperties": false,
-          "description": "How many entries each section of the profile has on LinkedIn; a list above may hold fewer."
+          "description": "How many entries each section of the profile has on LinkedIn. A list above may hold fewer."
         },
         "services": {
           "type": [
@@ -2277,7 +2278,7 @@
             "servicesList"
           ],
           "additionalProperties": false,
-          "description": "The services the member offers (LinkedIn's Services page); `null` when none."
+          "description": "The services the member offers (LinkedIn's Services page). `null` when none."
         },
         "skills": {
           "type": "array",
@@ -2370,7 +2371,7 @@
                   "text"
                 ],
                 "additionalProperties": false,
-                "description": "When it ended; `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them."
+                "description": "When it ended. `text` is `Present` for a current one: `text` as LinkedIn shows it (e.g. `Jun 2010`), with `year` and `month` when LinkedIn gives them."
               },
               "organizationLinkedinUrl": {
                 "type": "string",

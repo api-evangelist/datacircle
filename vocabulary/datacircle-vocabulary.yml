@@ -1,76 +1,96 @@
-generated: '2026-10-09'
+generated: '2026-10-11'
 method: derived
 generator: derive-vocabulary.py
-source: openapi/datacircle-openapi.yml
+source:
+- openapi/datacircle-datacircle-api-openapi.yml
+- openapi/datacircle-fetchin-api-openapi.yml
+- openapi/datacircle-harvestapi-api-openapi.yml
+- openapi/datacircle-up2data-api-openapi.yml
 vocabulary:
   name: Datacircle Domain Vocabulary
   description: 'Terms declared by Datacircle''s own API contract: its resource groups, objects and enumerations, with the contract''s definitions.
     Derived, not authored.'
-  version: '2026-10-09'
+  version: '2026-10-11'
   terms:
   - term: Datacircle
-    definition: 'Your Datacircle account: balance, adding funds, files, invites, API key.'
+    definition: 'Your Datacircle account: balance, adding funds, files, API key.'
     tags:
     - Resource Group
-    source: openapi/datacircle-openapi.yml
-  - term: Up2Data
-    definition: 'LinkedIn Profile API: Up2Data''s own request, sent to api.datacircle.dev with your Datacircle key and `X-Data-Provider: up2data`.'
+    source: openapi/datacircle-datacircle-api-openapi.yml
+  - term: Fetchin
+    definition: 'LinkedIn Profile API: Fetchin''s own request, sent to api.datacircle.dev with your Datacircle key and `X-Data-Provider: fetchin`.'
     tags:
     - Resource Group
-    source: openapi/datacircle-openapi.yml
+    source: openapi/datacircle-fetchin-api-openapi.yml
   - term: HarvestAPI
     definition: 'LinkedIn Profile API: HarvestAPI''s own request, sent to api.datacircle.dev with your Datacircle key and `X-Data-Provider: harvestapi`.'
     tags:
     - Resource Group
-    source: openapi/datacircle-openapi.yml
-  - term: Balance
-    definition: 'Object declared by the contract with fields: balance_usd, signup_credit_usd, funds_usd, manual_credit_usd, temporary_credits.'
+    source: openapi/datacircle-harvestapi-api-openapi.yml
+  - term: Up2Data
+    definition: 'LinkedIn Profile API: Up2Data''s own request, sent to api.datacircle.dev with your Datacircle key and `X-Data-Provider: up2data`.'
     tags:
-    - Object
-    source: openapi/datacircle-openapi.yml#/components/schemas/Balance
-  - term: File
-    definition: 'Object declared by the contract with fields: id, dataset, filename, row_count, size_bytes, sha256, created_at, is_unlocked.'
-    tags:
-    - Object
-    source: openapi/datacircle-openapi.yml#/components/schemas/File
+    - Resource Group
+    source: openapi/datacircle-up2data-api-openapi.yml
   - term: Error
     definition: 'Object declared by the contract with fields: error.'
     tags:
     - Object
-    source: openapi/datacircle-openapi.yml#/components/schemas/Error
+    source: openapi/datacircle-datacircle-api-openapi.yml#/components/schemas/Error
+  - term: Balance
+    definition: 'Object declared by the contract with fields: balance_usd, signup_credit_usd, funds_usd, manual_credit_usd, temporary_credits.'
+    tags:
+    - Object
+    source: openapi/datacircle-datacircle-api-openapi.yml#/components/schemas/Balance
+  - term: File
+    definition: 'Object declared by the contract with fields: id, dataset, filename, row_count, size_bytes, sha256, created_at, is_unlocked.'
+    tags:
+    - Object
+    source: openapi/datacircle-datacircle-api-openapi.yml#/components/schemas/File
+  - term: FetchinError
+    definition: Fetchin's own error, passed on with its status, plus `datacircle_meta`. `PROFILE_NOT_FOUND` (`404`) is billed, as Fetchin bills
+      it, every other code is free.
+    tags:
+    - Object
+    source: openapi/datacircle-fetchin-api-openapi.yml#/components/schemas/FetchinError
   - term: DatacircleMeta
     definition: Datacircle's only addition to the provider's answer
     tags:
     - Object
-    source: openapi/datacircle-openapi.yml#/components/schemas/DatacircleMeta
+    source: openapi/datacircle-fetchin-api-openapi.yml#/components/schemas/DatacircleMeta
+  - term: FetchinProfileResponse
+    definition: 'Fetchin''s answer: the profile object as Fetchin sends it, plus `datacircle_meta`.'
+    tags:
+    - Object
+    source: openapi/datacircle-fetchin-api-openapi.yml#/components/schemas/FetchinProfileResponse
+  - term: HarvestApiProfile
+    definition: A LinkedIn profile, as HarvestAPI answers it.
+    tags:
+    - Object
+    source: openapi/datacircle-harvestapi-api-openapi.yml#/components/schemas/HarvestApiProfile
+  - term: HarvestApiProfileResponse
+    definition: HarvestAPI's own answer to `GET /linkedin/profile`, minus `user` and `requestId` (our account with HarvestAPI), plus `datacircle_meta`.
+    tags:
+    - Object
+    source: openapi/datacircle-harvestapi-api-openapi.yml#/components/schemas/HarvestApiProfileResponse
+  - term: Up2DataMeta
+    definition: Up2Data's billing metadata, minus `creditsRemaining`, `requestId` and `latencyMs` (our account with Up2Data, not yours)
+    tags:
+    - Object
+    source: openapi/datacircle-up2data-api-openapi.yml#/components/schemas/Up2DataMeta
+  - term: Up2DataEnrichResponse
+    definition: Up2Data's own response to `POST /v1/profiles/enrich`, plus `datacircle_meta`
+    tags:
+    - Object
+    source: openapi/datacircle-up2data-api-openapi.yml#/components/schemas/Up2DataEnrichResponse
+  - term: Up2DataError
+    definition: Up2Data's own error answer, plus `datacircle_meta`
+    tags:
+    - Object
+    source: openapi/datacircle-up2data-api-openapi.yml#/components/schemas/Up2DataError
   - term: Up2DataProfile
     definition: Up2Data's profile record, every field as Up2Data documents it (docs.up2data.ai). `fields` in the request restricts it to the fields
       listed.
     tags:
     - Object
-    source: openapi/datacircle-openapi.yml#/components/schemas/Up2DataProfile
-  - term: Up2DataMeta
-    definition: Up2Data's billing metadata, minus `creditsRemaining`, `requestId` and `latencyMs` (our account with Up2Data, not yours)
-    tags:
-    - Object
-    source: openapi/datacircle-openapi.yml#/components/schemas/Up2DataMeta
-  - term: Up2DataError
-    definition: Up2Data's own error answer, plus `datacircle_meta`
-    tags:
-    - Object
-    source: openapi/datacircle-openapi.yml#/components/schemas/Up2DataError
-  - term: Up2DataEnrichResponse
-    definition: Up2Data's own response to POST /v1/profiles/enrich, plus `datacircle_meta`
-    tags:
-    - Object
-    source: openapi/datacircle-openapi.yml#/components/schemas/Up2DataEnrichResponse
-  - term: HarvestApiProfile
-    definition: A LinkedIn profile, as HarvestAPI answers it.
-    tags:
-    - Object
-    source: openapi/datacircle-openapi.yml#/components/schemas/HarvestApiProfile
-  - term: HarvestApiProfileResponse
-    definition: HarvestAPI's own answer to GET /linkedin/profile, minus `user` and `requestId` (our account with HarvestAPI), plus `datacircle_meta`.
-    tags:
-    - Object
-    source: openapi/datacircle-openapi.yml#/components/schemas/HarvestApiProfileResponse
+    source: openapi/datacircle-up2data-api-openapi.yml#/components/schemas/Up2DataProfile

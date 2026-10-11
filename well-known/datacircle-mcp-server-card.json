@@ -1,0 +1,29 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/v1/server-card.schema.json",
+  "name": "dev.datacircle/datacircle",
+  "version": "1.0.0",
+  "title": "Datacircle",
+  "description": "Query your favorite B2B data APIs through us. Same request, same price, no markup.",
+  "websiteUrl": "https://datacircle.dev",
+  "icons": [
+    {
+      "src": "https://datacircle.dev/favicon.png",
+      "mimeType": "image/png",
+      "sizes": [
+        "1024x1024"
+      ]
+    }
+  ],
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://api.datacircle.dev/mcp",
+      "supportedProtocolVersions": [
+        "2025-11-25",
+        "2025-06-18",
+        "2025-03-26",
+        "2024-11-05"
+      ]
+    }
+  ]
+}

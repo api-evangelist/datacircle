@@ -1,27 +1,21 @@
 {
   "provider": "datacircle",
   "sources": [
-    "_original/datacircle-openapi.json",
-    "datacircle-openapi.yml"
+    "_original/datacircle-openapi.json"
   ],
   "outputs": [
     "datacircle-datacircle-api-openapi.yml",
+    "datacircle-fetchin-api-openapi.yml",
     "datacircle-harvestapi-api-openapi.yml",
     "datacircle-up2data-api-openapi.yml"
   ],
-  "archived": [
-    "archived openapi/datacircle-openapi.yml"
-  ],
+  "archived": [],
   "errors": [],
   "warnings": [],
   "notes": [
     "sourced from openapi/_original/ (1 archived document(s)); previously refined output at the top level was skipped rather than re-split",
     "datacircle-openapi.json: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "datacircle-openapi.yml: upgraded openapi 3.1.0 -> OpenAPI 3.2.0",
-    "tag 'Datacircle' spans 2 source specs (datacircle-openapi.json, datacircle-openapi.yml): per-path servers applied",
-    "tag 'HarvestAPI' spans 2 source specs (datacircle-openapi.json, datacircle-openapi.yml): per-path servers applied",
-    "tag 'Up2Data' spans 2 source specs (datacircle-openapi.json, datacircle-openapi.yml): per-path servers applied",
-    "apis.yml register: written (+3 apis, 4 total)"
+    "apis.yml register: written (+1 apis, 5 total)"
   ],
   "skipped": []
 }

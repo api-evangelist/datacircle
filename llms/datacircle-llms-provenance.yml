@@ -1,6 +1,6 @@
-generated: '2026-10-09'
+generated: '2026-10-11'
 method: probed
 generator: harvest-llms.py
 source: https://docs.datacircle.dev/llms.txt
-bytes: 2797
+bytes: 5026
 note: saved verbatim; the provider's own document

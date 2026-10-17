@@ -345,6 +345,113 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    HarvestApiProfileResponse:
+      type: object
+      properties:
+        element:
+          anyOf:
+          - $ref: '#/components/schemas/HarvestApiProfile'
+          - type: 'null'
+          description: The profile. `null` when HarvestAPI can't find it (`status` `404`) or refuses the request (`status` `400`).
+        cost:
+          type: number
+          description: What HarvestAPI billed for the call, e.g. `0.0037` for a profile, `0.0023` for a profile it can't find. Datacircle charges you the same amount in dollars (`datacircle_meta.cost_usd`).
+        entityId:
+          type:
+          - string
+          - 'null'
+          description: The profile's LinkedIn member id (`ACoAA…`), as `element.id`. `null` when not found.
+        error:
+          type: string
+          description: HarvestAPI's message when `element` is `null`, e.g. `Profile not found`.
+        free:
+          type: boolean
+          description: '`true` when HarvestAPI didn''t bill the call (a request it refuses).'
+        originalQuery:
+          type: object
+          properties:
+            url:
+              type: string
+              description: The profile URL HarvestAPI got.
+          required:
+          - url
+          additionalProperties: false
+          description: The request HarvestAPI got.
+        payments:
+          type: array
+          items:
+            type: string
+          description: 'What HarvestAPI billed, by name: `linkedinProfile` for a profile, `linkedinProfileShort` for a lookup that found nothing.'
+        query:
+          type: object
+          properties:
+            profileId:
+              type:
+              - string
+              - 'null'
+              description: The profile's LinkedIn member id (`ACoAA…`). `null` when not found.
+            publicIdentifier:
+              type:
+              - string
+              - 'null'
+              description: The profile's slug, linkedin.com/in/<publicIdentifier>. `null` when not found.
+            url:
+              type: string
+              description: The profile URL HarvestAPI read.
+          required:
+          - url
+          additionalProperties: false
+          description: 'The request as HarvestAPI understood it: the `url` it read, with the `publicIdentifier` and `profileId` it resolved.'
+        retries:
+          type: integer
+          description: How many times HarvestAPI retried LinkedIn for this answer.
+        status:
+          type: integer
+          description: 'HarvestAPI''s own status, inside an HTTP `200`: `200` found, `404` not found, `400` a request it refuses.'
+        datacircle_meta:
+          $ref: '#/components/schemas/DatacircleMeta'
+      required:
+      - cost
+      - element
+      - entityId
+      - originalQuery
+      - payments
+      - query
+      - retries
+      - status
+      - datacircle_meta
+      additionalProperties: false
+      description: HarvestAPI's own answer to `GET /linkedin/profile`, minus `user` and `requestId` (our account with HarvestAPI), plus `datacircle_meta`.
+    DatacircleMeta:
+      type: object
+      description: Datacircle's only addition to the provider's answer
+      required:
+      - provider
+      - cost_usd
+      - balance_usd
+      properties:
+        provider:
+          type: string
+          enum:
+          - up2data
+          - harvestapi
+          - fetchin
+          description: Which provider answered
+        cost_usd:
+          type: number
+          description: 'What this call cost, in dollars: the provider''s price, no markup'
+        balance_usd:
+          type: number
+          description: Your balance after this call, in dollars (`balance_usd` in `GET /balance/`)
+      additionalProperties: false
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          description: What went wrong, in plain words.
     HarvestApiProfile:
       type: object
       properties:
@@ -2098,113 +2205,6 @@ components:
       - volunteering
       additionalProperties: false
       description: A LinkedIn profile, as HarvestAPI answers it.
-    Error:
-      type: object
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          description: What went wrong, in plain words.
-    DatacircleMeta:
-      type: object
-      description: Datacircle's only addition to the provider's answer
-      required:
-      - provider
-      - cost_usd
-      - balance_usd
-      properties:
-        provider:
-          type: string
-          enum:
-          - up2data
-          - harvestapi
-          - fetchin
-          description: Which provider answered
-        cost_usd:
-          type: number
-          description: 'What this call cost, in dollars: the provider''s price, no markup'
-        balance_usd:
-          type: number
-          description: Your balance after this call, in dollars (`balance_usd` in `GET /balance/`)
-      additionalProperties: false
-    HarvestApiProfileResponse:
-      type: object
-      properties:
-        element:
-          anyOf:
-          - $ref: '#/components/schemas/HarvestApiProfile'
-          - type: 'null'
-          description: The profile. `null` when HarvestAPI can't find it (`status` `404`) or refuses the request (`status` `400`).
-        cost:
-          type: number
-          description: What HarvestAPI billed for the call, e.g. `0.0037` for a profile, `0.0023` for a profile it can't find. Datacircle charges you the same amount in dollars (`datacircle_meta.cost_usd`).
-        entityId:
-          type:
-          - string
-          - 'null'
-          description: The profile's LinkedIn member id (`ACoAA…`), as `element.id`. `null` when not found.
-        error:
-          type: string
-          description: HarvestAPI's message when `element` is `null`, e.g. `Profile not found`.
-        free:
-          type: boolean
-          description: '`true` when HarvestAPI didn''t bill the call (a request it refuses).'
-        originalQuery:
-          type: object
-          properties:
-            url:
-              type: string
-              description: The profile URL HarvestAPI got.
-          required:
-          - url
-          additionalProperties: false
-          description: The request HarvestAPI got.
-        payments:
-          type: array
-          items:
-            type: string
-          description: 'What HarvestAPI billed, by name: `linkedinProfile` for a profile, `linkedinProfileShort` for a lookup that found nothing.'
-        query:
-          type: object
-          properties:
-            profileId:
-              type:
-              - string
-              - 'null'
-              description: The profile's LinkedIn member id (`ACoAA…`). `null` when not found.
-            publicIdentifier:
-              type:
-              - string
-              - 'null'
-              description: The profile's slug, linkedin.com/in/<publicIdentifier>. `null` when not found.
-            url:
-              type: string
-              description: The profile URL HarvestAPI read.
-          required:
-          - url
-          additionalProperties: false
-          description: 'The request as HarvestAPI understood it: the `url` it read, with the `publicIdentifier` and `profileId` it resolved.'
-        retries:
-          type: integer
-          description: How many times HarvestAPI retried LinkedIn for this answer.
-        status:
-          type: integer
-          description: 'HarvestAPI''s own status, inside an HTTP `200`: `200` found, `404` not found, `400` a request it refuses.'
-        datacircle_meta:
-          $ref: '#/components/schemas/DatacircleMeta'
-      required:
-      - cost
-      - element
-      - entityId
-      - originalQuery
-      - payments
-      - query
-      - retries
-      - status
-      - datacircle_meta
-      additionalProperties: false
-      description: HarvestAPI's own answer to `GET /linkedin/profile`, minus `user` and `requestId` (our account with HarvestAPI), plus `datacircle_meta`.
   securitySchemes:
     token:
       type: http

@@ -192,14 +192,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    Error:
-      type: object
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          description: What went wrong, in plain words.
     Balance:
       type: object
       properties:
@@ -231,6 +223,14 @@ components:
                 format: date-time
                 description: 'When this grant expires (ISO 8601): after it, what is left is gone.'
           description: 'Temporary credits: one entry per campaign grant that has not expired yet, soonest to expire first. Empty when you have none. At `expires_at` the entry leaves this list and whatever is left of it is gone.'
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          description: What went wrong, in plain words.
     File:
       type: object
       properties:

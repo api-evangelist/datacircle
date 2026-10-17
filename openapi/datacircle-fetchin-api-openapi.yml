@@ -256,71 +256,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    FetchinError:
-      type: object
-      required:
-      - error
-      - code
-      - datacircle_meta
-      properties:
-        error:
-          type: string
-          description: Human-readable description of what went wrong. For display/logging. Do not branch on this string.
-        code:
-          type: string
-          enum:
-          - MISSING_PARAMETER
-          - INVALID_PARAMETER
-          - INVALID_URN
-          - UNAUTHENTICATED
-          - INVALID_API_KEY
-          - FORBIDDEN
-          - NOT_FOUND
-          - PROFILE_NOT_FOUND
-          - POST_NOT_FOUND
-          - COMPANY_NOT_FOUND
-          - ENDPOINT_REMOVED
-          - RATE_LIMITED
-          - QUOTA_EXHAUSTED
-          - INTERNAL_ERROR
-          - UPSTREAM_ERROR
-          - SERVICE_UNAVAILABLE
-          - UPSTREAM_TIMEOUT
-          description: Stable, machine-readable error code. Branch your integration on this value, not on the HTTP status alone or the message text.
-        datacircle_meta:
-          $ref: '#/components/schemas/DatacircleMeta'
-      additionalProperties: false
-      description: Fetchin's own error, passed on with its status, plus `datacircle_meta`. `PROFILE_NOT_FOUND` (`404`) is billed, as Fetchin bills it, every other code is free.
-    Error:
-      type: object
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          description: What went wrong, in plain words.
-    DatacircleMeta:
-      type: object
-      description: Datacircle's only addition to the provider's answer
-      required:
-      - provider
-      - cost_usd
-      - balance_usd
-      properties:
-        provider:
-          type: string
-          enum:
-          - up2data
-          - harvestapi
-          - fetchin
-          description: Which provider answered
-        cost_usd:
-          type: number
-          description: 'What this call cost, in dollars: the provider''s price, no markup'
-        balance_usd:
-          type: number
-          description: Your balance after this call, in dollars (`balance_usd` in `GET /balance/`)
-      additionalProperties: false
     FetchinProfileResponse:
       type: object
       properties:
@@ -1297,6 +1232,71 @@ components:
       description: 'Fetchin''s answer: the profile object as Fetchin sends it, plus `datacircle_meta`.'
       required:
       - datacircle_meta
+    DatacircleMeta:
+      type: object
+      description: Datacircle's only addition to the provider's answer
+      required:
+      - provider
+      - cost_usd
+      - balance_usd
+      properties:
+        provider:
+          type: string
+          enum:
+          - up2data
+          - harvestapi
+          - fetchin
+          description: Which provider answered
+        cost_usd:
+          type: number
+          description: 'What this call cost, in dollars: the provider''s price, no markup'
+        balance_usd:
+          type: number
+          description: Your balance after this call, in dollars (`balance_usd` in `GET /balance/`)
+      additionalProperties: false
+    Error:
+      type: object
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          description: What went wrong, in plain words.
+    FetchinError:
+      type: object
+      required:
+      - error
+      - code
+      - datacircle_meta
+      properties:
+        error:
+          type: string
+          description: Human-readable description of what went wrong. For display/logging. Do not branch on this string.
+        code:
+          type: string
+          enum:
+          - MISSING_PARAMETER
+          - INVALID_PARAMETER
+          - INVALID_URN
+          - UNAUTHENTICATED
+          - INVALID_API_KEY
+          - FORBIDDEN
+          - NOT_FOUND
+          - PROFILE_NOT_FOUND
+          - POST_NOT_FOUND
+          - COMPANY_NOT_FOUND
+          - ENDPOINT_REMOVED
+          - RATE_LIMITED
+          - QUOTA_EXHAUSTED
+          - INTERNAL_ERROR
+          - UPSTREAM_ERROR
+          - SERVICE_UNAVAILABLE
+          - UPSTREAM_TIMEOUT
+          description: Stable, machine-readable error code. Branch your integration on this value, not on the HTTP status alone or the message text.
+        datacircle_meta:
+          $ref: '#/components/schemas/DatacircleMeta'
+      additionalProperties: false
+      description: Fetchin's own error, passed on with its status, plus `datacircle_meta`. `PROFILE_NOT_FOUND` (`404`) is billed, as Fetchin bills it, every other code is free.
   securitySchemes:
     token:
       type: http

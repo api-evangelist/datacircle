@@ -247,21 +247,6 @@ components:
           type: number
           description: Your balance after this call, in dollars (`balance_usd` in `GET /balance/`)
       additionalProperties: false
-    Up2DataEnrichResponse:
-      type: object
-      description: Up2Data's own response to `POST /v1/profiles/enrich`, plus `datacircle_meta`
-      required:
-      - data
-      - meta
-      - datacircle_meta
-      properties:
-        data:
-          $ref: '#/components/schemas/Up2DataProfile'
-        meta:
-          $ref: '#/components/schemas/Up2DataMeta'
-        datacircle_meta:
-          $ref: '#/components/schemas/DatacircleMeta'
-      additionalProperties: false
     Error:
       type: object
       required:
@@ -302,6 +287,21 @@ components:
       description: Up2Data's own error answer, plus `datacircle_meta`
       required:
       - error
+    Up2DataEnrichResponse:
+      type: object
+      description: Up2Data's own response to `POST /v1/profiles/enrich`, plus `datacircle_meta`
+      required:
+      - data
+      - meta
+      - datacircle_meta
+      properties:
+        data:
+          $ref: '#/components/schemas/Up2DataProfile'
+        meta:
+          $ref: '#/components/schemas/Up2DataMeta'
+        datacircle_meta:
+          $ref: '#/components/schemas/DatacircleMeta'
+      additionalProperties: false
     Up2DataProfile:
       type: object
       properties:

@@ -9,9 +9,8 @@ deployment:
   endpoint: https://api.datacircle.dev/mcp
   auth: oauth
   verified: probed
-  note: 'POST tools/list anonymously returned 401 "authentication required: Authorization:
-    Bearer <your API key or OAuth access token>"; OAuth sign-in or API key header
-    per docs.'
+  note: 'POST tools/list anonymously returned 401 "authentication required: Authorization: Bearer <your
+    API key or OAuth access token>"; OAuth sign-in or API key header per docs.'
 tools:
 - name: get_linkedin_profile
   source: documented
@@ -35,6 +34,30 @@ tools:
   source: documented
   rest:
   - postCheckout
-note: Tool names are as documented on the provider MCP page (table); not observed
-  from a live tools/list (gated, 401). docs.datacircle.dev/mcp is a separate Mintlify
-  docs-search MCP.
+note: Tool names are as documented on the provider MCP page (table); not observed from a live tools/list
+  (gated, 401). docs.datacircle.dev/mcp is a separate Mintlify docs-search MCP.
+tool_quality:
+  tool_count: 2
+  tokens_total: 626
+  tokens_per_tool_median: 313
+  heavy_tools: []
+  heavy_tool_count: 0
+  params_total: 5
+  params_undescribed: 0
+  params_described_pct: 100.0
+  tools_with_undescribed_params: 0
+  tools_annotated: 2
+  annotated_pct: 100.0
+  state_changing_unhinted: []
+  tools_missing_schema: 0
+  short_descriptions: 0
+  duplicate_descriptions: 0
+  duplicate_names: 0
+  nonportable_names: []
+  output_schema_count: 0
+  token_estimate: chars/3.6 of each compact tool definition
+  source: mcp/datacircle-mcp-tools.json
+  measured: '2026-10-20'
+  scored: false
+  note: Facts from the saved tools/list capture (mcp_tool_quality.py); recorded, not scored. Checks learned
+    from Glimind's agent-readiness audit.

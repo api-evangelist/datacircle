@@ -12,28 +12,14 @@ deployment:
   note: 'POST tools/list anonymously returned 401 "authentication required: Authorization: Bearer <your
     API key or OAuth access token>"; OAuth sign-in or API key header per docs.'
 tools:
-- name: get_linkedin_profile
-  source: documented
-  rest:
-  - postV1ProfilesEnrich
-  - getLinkedinProfile
-  - getApiV1Profile
-- name: get_balance
-  source: documented
-  rest:
-  - getBalance
-- name: list_files
-  source: documented
-  rest:
-  - getFiles
-- name: get_download_link
-  source: documented
-  rest:
-  - postFilesByFileIdDownloadLink
-- name: add_funds
-  source: documented
-  rest:
-  - postCheckout
+- name: list_apis
+  description: The GTM APIs on Datacircle's sheet, each with how many plans and providers it has. Pass
+    an API's name to search_plans.
+- name: search_plans
+  description: 'The sheet''s rows, one for each plan of each call, each with every key of the sheet''s
+    JSON download: its provider, plan, billing, $ per 1,000 (perThousand), score out of 100 (score), rate
+    limits, speed, the fields it returns and the pages we read it from. total counts every row found,
+    plans holds up to limit of them from offset. What each key means: https://datacircle.dev/fields'
 note: Tool names are as documented on the provider MCP page (table); not observed from a live tools/list
   (gated, 401). docs.datacircle.dev/mcp is a separate Mintlify docs-search MCP.
 tool_quality:
@@ -61,3 +47,4 @@ tool_quality:
   scored: false
   note: Facts from the saved tools/list capture (mcp_tool_quality.py); recorded, not scored. Checks learned
     from Glimind's agent-readiness audit.
+tools_count: 2

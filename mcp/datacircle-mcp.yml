@@ -1,27 +1,29 @@
 name: Datacircle MCP Server
-generated: '2026-10-11'
-method: searched
-source: https://docs.datacircle.dev/mcp-server.md
+generated: '2026-10-21'
+method: probed
+source: https://datacircle.dev/docs/mcp
 url: https://api.datacircle.dev/mcp
 transport: streamable-http
 deployment:
   mode: remote
   endpoint: https://api.datacircle.dev/mcp
-  auth: oauth
+  auth: none
   verified: probed
-  note: 'POST tools/list anonymously returned 401 "authentication required: Authorization: Bearer <your
-    API key or OAuth access token>"; OAuth sign-in or API key header per docs.'
+  probe: live
+  checked: '2026-10-21'
+  note: initialize + tools/list anonymously on 2026-10-21 returned 200 (serverInfo datacircle 2.0.0, protocol 2025-06-18)
+    and 2 tools; no key, as https://datacircle.dev/docs/mcp states.
 tools:
 - name: list_apis
-  description: The GTM APIs on Datacircle's sheet, each with how many plans and providers it has. Pass
-    an API's name to search_plans.
+  description: The GTM APIs on Datacircle's sheet, each with how many plans and providers it has. Pass an API's
+    name to search_plans.
 - name: search_plans
-  description: 'The sheet''s rows, one for each plan of each call, each with every key of the sheet''s
-    JSON download: its provider, plan, billing, $ per 1,000 (perThousand), score out of 100 (score), rate
-    limits, speed, the fields it returns and the pages we read it from. total counts every row found,
-    plans holds up to limit of them from offset. What each key means: https://datacircle.dev/fields'
-note: Tool names are as documented on the provider MCP page (table); not observed from a live tools/list
-  (gated, 401). docs.datacircle.dev/mcp is a separate Mintlify docs-search MCP.
+  description: 'The sheet''s rows, one for each plan of each call, each with every key of the sheet''s JSON download:
+    its provider, plan, billing, $ per 1,000 (perThousand), score out of 100 (score), rate limits, speed, the fields
+    it returns and the pages we read it from. total counts every row found, plans holds up to limit of them from
+    offset. What each key means: https://datacircle.dev/fields'
+note: Provider closed its REST API and plugins (api-evangelist/datacircle#2); the MCP server is now open, keyless,
+  and answers from the Datacircle sheet of GTM APIs. Tools observed from a live tools/list.
 tool_quality:
   tool_count: 2
   tokens_total: 626
@@ -45,6 +47,7 @@ tool_quality:
   source: mcp/datacircle-mcp-tools.json
   measured: '2026-10-20'
   scored: false
-  note: Facts from the saved tools/list capture (mcp_tool_quality.py); recorded, not scored. Checks learned
-    from Glimind's agent-readiness audit.
+  note: Facts from the saved tools/list capture (mcp_tool_quality.py); recorded, not scored. Checks learned from
+    Glimind's agent-readiness audit.
 tools_count: 2
+documentation: https://datacircle.dev/docs/mcp

@@ -64,5 +64,82 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Datacircle is a company surfaced via the API Evangelist harvest backlog (source: new-submission) and added to the network as a stub for full-pipeline profiling.
-- https://datacircle.dev
+Datacircle lists all the GTM APIs. Its MCP server is open to anyone, with no key: add api.datacircle.dev/mcp to Claude, ChatGPT or Cursor. It answers from the sheet. list_apis lists the GTM APIs on it, and search_plans finds their plans by API, provider or price. Each plan comes with its score, and the best come first, as on the sheet.
+
+**Areas:** Company · B2B Data · MCP
+
+## Datacircle on APIs.io
+
+Everything profiled for Datacircle is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/datacircle/](https://apis.io/providers/datacircle/)** — or go straight to one of the APIs or properties below.
+
+### APIs (5)
+
+- [Datacircle MCP Server](https://apis.io/apis/datacircle/datacircle-mcp/) — Remote Streamable HTTP MCP server exposing five tools that each wrap one Datacircle REST call; OAuth sign-in or API key.
+- [Datacircle Datacircle API](https://apis.io/apis/datacircle/datacircle-datacircle-api/) — Your Datacircle account: balance, adding funds, files, API key.
+- [Datacircle Harvest API](https://apis.io/apis/datacircle/datacircle-harvestapi-api/) — LinkedIn Profile API: HarvestAPI's own request, sent to api.datacircle.dev with your Datacircle key and `X-Data-Provider: harvestapi`.
+- [Datacircle Up2 Data API](https://apis.io/apis/datacircle/datacircle-up2data-api/) — LinkedIn Profile API: Up2Data's own request, sent to api.datacircle.dev with your Datacircle key and `X-Data-Provider: up2data`.
+- [Datacircle Fetchin API](https://apis.io/apis/datacircle/datacircle-fetchin-api/) — LinkedIn Profile API: Fetchin's own request, sent to api.datacircle.dev with your Datacircle key and `X-Data-Provider: fetchin`.
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://datacircle.dev)
+- [Documentation](https://datacircle.dev/docs/mcp)
+- [Support](https://datacircle.dev/support)
+- [Terms of service](https://datacircle.dev/terms)
+- [Privacy policy](https://datacircle.dev/privacy)
+- [GitHub](https://github.com/waynehamadi/datacircle)
+
+## API Evangelist rating
+
+**Kin Score 52.6** — developing · rubric 0.23.0 · scored 2026-10-11
+
+| Facet | Score |
+|---|---|
+| Discoverability | 65.0 |
+| Contract quality | 64.2 |
+| Contract governance | 22.0 |
+| Operational transparency | 26.3 |
+| Developer ergonomics | 47.6 |
+| Access clarity | 65.8 |
+
+**Agent readiness 56.0** — agent-ready (gated down from agent-native)
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | documented (partial credit) |
+| Auth Clarity | served (partial credit) |
+| Idempotency | — |
+| Error Semantics | verified |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | — |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | conformant |
+| Dry Run Mode | — |
+| Delegated Identity | served (partial credit) |
+| Protected Resource Metadata | verified |
+| Dynamic Client Registration | yes |
+| Agentic Commerce | — |
+
+**Regulatory alignment 24.5** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/datacircle/](https://apis.io/providers/datacircle/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Datacircle: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/datacircle/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).

@@ -72,13 +72,9 @@ Datacircle lists all the GTM APIs. Its MCP server is open to anyone, with no key
 
 Everything profiled for Datacircle is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/datacircle/](https://apis.io/providers/datacircle/)** — or go straight to one of the APIs or properties below.
 
-### APIs (5)
+### APIs (1)
 
-- [Datacircle MCP Server](https://apis.io/apis/datacircle/datacircle-mcp/) — Remote Streamable HTTP MCP server exposing five tools that each wrap one Datacircle REST call; OAuth sign-in or API key.
-- [Datacircle Datacircle API](https://apis.io/apis/datacircle/datacircle-datacircle-api/) — Your Datacircle account: balance, adding funds, files, API key.
-- [Datacircle Harvest API](https://apis.io/apis/datacircle/datacircle-harvestapi-api/) — LinkedIn Profile API: HarvestAPI's own request, sent to api.datacircle.dev with your Datacircle key and `X-Data-Provider: harvestapi`.
-- [Datacircle Up2 Data API](https://apis.io/apis/datacircle/datacircle-up2data-api/) — LinkedIn Profile API: Up2Data's own request, sent to api.datacircle.dev with your Datacircle key and `X-Data-Provider: up2data`.
-- [Datacircle Fetchin API](https://apis.io/apis/datacircle/datacircle-fetchin-api/) — LinkedIn Profile API: Fetchin's own request, sent to api.datacircle.dev with your Datacircle key and `X-Data-Provider: fetchin`.
+- [Datacircle MCP Server](https://apis.io/apis/datacircle/datacircle-mcp/) — Remote MCP server, open to anyone with no key.
 
 ## Where to find this API
 

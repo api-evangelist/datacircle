@@ -64,17 +64,78 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Datacircle lists all the GTM APIs. Its MCP server is open to anyone, with no key: add api.datacircle.dev/mcp to Claude, ChatGPT or Cursor. It answers from the sheet. list_apis lists the GTM APIs on it, and search_plans finds their plans by API, provider or price. Each plan comes with its score, and the best come first, as on the sheet.
+Datacircle is an open platform that benchmarks and lists Google Tag Manager (GTM) APIs. It provides a public MCP server without authentication, allowing developers to query the full catalog of GTM APIs, retrieve detailed plan information, pricing, accuracy, speed, and other performance metrics. The site aggregates data from over a thousand providers, offering searchable, sortable results and scoring each plan to help users find the best fit for their needs.
 
-**Areas:** Company · B2B Data · MCP
+**Areas:** Company · B2B Data · MCP · API Directory · Benchmark · Open Data
 
 ## Datacircle on APIs.io
 
 Everything profiled for Datacircle is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/datacircle/](https://apis.io/providers/datacircle/)** — or go straight to one of the APIs or properties below.
 
-### APIs (1)
+### APIs (5)
 
-- [Datacircle MCP Server](https://apis.io/apis/datacircle/datacircle-mcp/) — Remote MCP server, open to anyone with no key.
+- [Datacircle MCP Server](https://apis.io/apis/datacircle/datacircle-mcp/) — Remote Streamable HTTP MCP server, open with no key, answering from the Datacircle sheet of GTM APIs: list_apis lists the GTM APIs on it, and search_plans…
+- [Datacircle Datacircle API](https://apis.io/apis/datacircle/datacircle-datacircle-api/) — Your Datacircle account: balance, adding funds, files, API key.
+- [Datacircle Fetchin API](https://apis.io/apis/datacircle/datacircle-fetchin-api/) — LinkedIn Profile API: Fetchin's own request, sent to api.datacircle.dev with your Datacircle key and `X-Data-Provider: fetchin`.
+- [Datacircle Harvest API](https://apis.io/apis/datacircle/datacircle-harvestapi-api/) — LinkedIn Profile API: HarvestAPI's own request, sent to api.datacircle.dev with your Datacircle key and `X-Data-Provider: harvestapi`.
+- [Datacircle Up2 Data API](https://apis.io/apis/datacircle/datacircle-up2data-api/) — LinkedIn Profile API: Up2Data's own request, sent to api.datacircle.dev with your Datacircle key and `X-Data-Provider: up2data`.
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [Datacircle MCP Server](https://apis.io/servers/datacircle/datacircle-mcp-server/)
+
+#### Agentic access (1)
+
+Which operations an agent can call, which act, and which need a human in the loop.
+
+- [Datacircle Agentic Access](https://apis.io/agentic-access/datacircle/datacircle-agentic-access/)
+
+#### JSON Schema (5)
+
+The data models the API reads and writes.
+
+- [Balance](https://apis.io/schemas/datacircle/datacircle-balance/)
+- [FetchinProfileResponse](https://apis.io/schemas/datacircle/datacircle-fetchin-profile-response/)
+- [File](https://apis.io/schemas/datacircle/datacircle-file/)
+- [HarvestApiProfileResponse](https://apis.io/schemas/datacircle/datacircle-harvest-api-profile-response/)
+- [Up2DataEnrichResponse](https://apis.io/schemas/datacircle/datacircle-up2-data-enrich-response/)
+
+#### JSON-LD (1)
+
+Linked-data contexts for the provider's vocabulary.
+
+- [Datacircle Context](https://apis.io/jsonld/datacircle/datacircle-context/)
+
+#### Governance rules (1)
+
+Spectral rulesets for the provider's contracts.
+
+- [Datacircle API Rules](https://apis.io/rules/datacircle/datacircle-rules/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Datacircle Authentication](https://apis.io/security/datacircle/datacircle-authentication/)
+- [Datacircle Domain Security](https://apis.io/security/datacircle/datacircle-domain-security/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Datacircle Plans Pricing](https://apis.io/plans/datacircle/datacircle-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Datacircle Rate Limits](https://apis.io/rate-limits/datacircle/datacircle-rate-limits/)
 
 ## Where to find this API
 
@@ -82,6 +143,7 @@ Links to the company's own pages. This repository publishes no copy of their spe
 
 - [Website](https://datacircle.dev)
 - [Documentation](https://datacircle.dev/docs/mcp)
+- [API reference](https://datacircle.dev/docs)
 - [Support](https://datacircle.dev/support)
 - [Terms of service](https://datacircle.dev/terms)
 - [Privacy policy](https://datacircle.dev/privacy)
